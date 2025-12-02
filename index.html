@@ -49,13 +49,54 @@ header{background-color:var(--secondary);padding:15px 0;position:sticky;top:0;z-
 /* Notification Badge */
 .notification-badge{position:absolute;top:-5px;right:-5px;background:var(--highlight);color:white;border-radius:50%;width:18px;height:18px;font-size:0.7rem;display:flex;align-items:center;justify-content:center;font-weight:bold;}
 /* --- HORIZONTAL SPORT TABS --- */
-.mobile-tabs-bar{background:var(--accent);overflow-x:auto;white-space:nowrap;padding:10px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;display:none;box-shadow:0 2px 8px rgba(0, 0, 0, 0.2) inset;}
+.mobile-tabs-bar{
+    display: none;
+    position: sticky;
+    top: 70px;
+    z-index: 99;
+    background: var(--accent);
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) inset;
+}
 .mobile-tabs-bar::-webkit-scrollbar{display:none;}
-.mobile-tabs-content{display:inline-flex;gap:15px;padding:0 20px;}
-.sport-tab-inline{display:inline-flex;align-items:center;padding:8px 15px;border-radius:20px;background:var(--secondary);color:var(--text);font-size:0.9rem;font-weight:500;cursor:pointer;transition:background 0.3s, transform 0.2s;}
-.sport-tab-inline i{margin-right:8px;}
-.sport-tab-inline:hover{background:rgba(233, 69, 96, 0.1);color:var(--highlight);}
-.sport-tab-inline.active{background:var(--highlight);color:white;font-weight:600;}
+.mobile-tabs-content{
+    display: inline-flex;
+    gap: 10px;
+    padding: 0 15px;
+}
+.sport-tab-inline{
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: var(--secondary);
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    min-width: fit-content;
+}
+.sport-tab-inline i{
+    margin-right: 8px;
+    font-size: 1rem;
+}
+.sport-tab-inline:hover{
+    background: rgba(233, 69, 96, 0.1);
+    color: var(--highlight);
+}
+.sport-tab-inline.active{
+    background: var(--highlight);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(233, 69, 96, 0.3);
+}
 /* --- MAIN CONTENT & LAYOUT --- */
 .main-content{display:grid;grid-template-columns:1fr;gap:30px;padding:30px 20px;}
 /* --- HERO CAROUSEL --- */
@@ -248,10 +289,45 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 .footer-section ul li a{color:var(--text-secondary);text-decoration:none;font-size:0.9rem;line-height:1.8;transition:color 0.2s;}
 .footer-section ul li a:hover{color:var(--text);}
 /* Mobile Bottom Dock */
-.mobile-bottom-dock{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--secondary);padding:10px 0;box-shadow:0 -2px 10px rgba(0, 0, 0, 0.3);z-index:1000;}
-.dock-item{flex:1;text-align:center;color:var(--text-secondary);font-size:0.8rem;padding:5px 0;}
-.dock-item.active{color:var(--highlight);}
-.dock-item i{display:block;margin-bottom:3px;font-size:1.2rem;}
+.mobile-bottom-dock{
+    display:none;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:var(--secondary);
+    padding:10px 0;
+    box-shadow:0 -2px 10px rgba(0, 0, 0, 0.3);
+    z-index:1000;
+    display: flex;
+    justify-content: space-around;
+}
+.dock-item{
+    flex:1;
+    text-align:center;
+    color:var(--text-secondary);
+    font-size:0.8rem;
+    padding:5px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.dock-item.active{
+    color:var(--highlight);
+    transform: translateY(-5px);
+}
+.dock-item i{
+    display:block;
+    margin-bottom:3px;
+    font-size:1.2rem;
+    transition: all 0.3s ease;
+}
+.dock-item.active i{
+    color: var(--highlight);
+    transform: scale(1.1);
+}
+.dock-item:hover{
+    color: var(--highlight);
+}
 /* Search Results */
 .search-results{position:absolute;top:100%;left:0;right:0;background:var(--secondary);border-radius:0 0 12px 12px;max-height:300px;overflow-y:auto;z-index:1000;box-shadow:0 5px 15px rgba(0, 0, 0, 0.5);display:none;}
 .search-result-item{padding:10px 15px;border-bottom:1px solid rgba(255, 255, 255, 0.1);cursor:pointer;transition:background 0.2s;}
@@ -349,9 +425,6 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     }
     .mobile-tabs-bar {
         display: block;
-        position: sticky;
-        top: 70px;
-        z-index: 99;
     }
     .sport-tabs {
         display: none;
@@ -394,6 +467,13 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     .modal-cross-references {
         flex-direction: column;
     }
+    /* Add bottom padding to account for dock */
+    body {
+        padding-bottom: 70px;
+    }
+    .main-content {
+        padding-bottom: 30px;
+    }
 }
 
 /* Small mobile phones */
@@ -426,6 +506,15 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     .match-info p:nth-of-type(2) {
         font-size: 0.7rem;
     }
+    .mobile-bottom-dock {
+        padding: 8px 0;
+    }
+    .dock-item {
+        font-size: 0.7rem;
+    }
+    .dock-item i {
+        font-size: 1rem;
+    }
 }
 
 /* Desktop only */
@@ -438,6 +527,10 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     }
     .mobile-bottom-dock {
         display: none;
+    }
+    /* Remove bottom padding on desktop */
+    body {
+        padding-bottom: 0;
     }
 }
 </style>
@@ -536,17 +629,17 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </div>
 
-<div class="mobile-bottom-dock">
-<div class="dock-item active">
+<div class="mobile-bottom-dock" id="mobileBottomDock">
+<div class="dock-item active" data-page="home">
 <i class="fas fa-home"></i> Home
 </div>
-<div class="dock-item">
+<div class="dock-item" data-page="live">
 <i class="fas fa-tv"></i> Live
 </div>
-<div class="dock-item">
+<div class="dock-item" data-page="schedule">
 <i class="fas fa-calendar-alt"></i> Schedule
 </div>
-<div class="dock-item">
+<div class="dock-item" data-page="account">
 <i class="fas fa-user-circle"></i> Account
 </div>
 </div>
@@ -791,6 +884,8 @@ const notificationList = document.getElementById('notificationList');
 const toastNotification = document.getElementById('toastNotification');
 const toastMatch = document.getElementById('toastMatch');
 const toastTime = document.getElementById('toastTime');
+const mobileBottomDock = document.getElementById('mobileBottomDock');
+const dockItems = document.querySelectorAll('.dock-item');
 
 // Utility Functions
 function navigateToSchedule(matchContext) {
@@ -846,7 +941,7 @@ function adjustTimezoneOffset(fixtures, offsetHours) {
     });
 }
 
-// Event Listeners
+// Event Listeners - FIXED VERSION with Bottom Dock
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     switchSport(currentSport);
@@ -856,28 +951,96 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function setupEventListeners() {
-    // Sport tabs
+    // Desktop Sport tabs
     desktopSportTabs.forEach(tab => {
         tab.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
             switchSport(sport);
             desktopSportTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
+            
+            // Also update mobile tabs to stay in sync
+            inlineSportTabs.forEach(t => {
+                t.classList.remove('active');
+                if (t.getAttribute('data-sport') === sport) {
+                    t.classList.add('active');
+                }
+            });
         });
     });
 
+    // Mobile inline sport tabs
     inlineSportTabs.forEach(tab => {
         tab.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
+            console.log('Mobile tab clicked:', sport);
+            
             switchSport(sport);
+            
+            // Update mobile tabs
             inlineSportTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
+            
+            // Also update desktop tabs to stay in sync
             desktopSportTabs.forEach(t => {
                 t.classList.remove('active');
                 if (t.getAttribute('data-sport') === sport) {
                     t.classList.add('active');
                 }
             });
+        });
+    });
+
+    // Mobile Bottom Dock Navigation
+    dockItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const page = this.getAttribute('data-page');
+            console.log('Bottom dock clicked:', page);
+            
+            // Update active state
+            dockItems.forEach(dock => dock.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Handle navigation based on page
+            switch(page) {
+                case 'home':
+                    // Already on home page, just scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    break;
+                    
+                case 'live':
+                    // Switch to Live sport if not already
+                    if (currentSport !== 'live') {
+                        switchSport('live');
+                        desktopSportTabs.forEach(t => {
+                            t.classList.remove('active');
+                            if (t.getAttribute('data-sport') === 'live') {
+                                t.classList.add('active');
+                            }
+                        });
+                        inlineSportTabs.forEach(t => {
+                            t.classList.remove('active');
+                            if (t.getAttribute('data-sport') === 'live') {
+                                t.classList.add('active');
+                            }
+                        });
+                    }
+                    // Scroll to live section
+                    document.querySelector('.featured-matches').scrollIntoView({ 
+                        behavior: 'smooth' 
+                    });
+                    break;
+                    
+                case 'schedule':
+                    // Navigate to schedule page
+                    window.location.href = 'schedule.html?sport=live&filter=all';
+                    break;
+                    
+                case 'account':
+                    // Open account modal or navigate to account page
+                    alert('Account page would open here. This is a demo.');
+                    break;
+            }
         });
     });
 
@@ -1290,7 +1453,7 @@ window.switchSport = async function(sport) {
         featuredContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Featured Matches...</p>`;
         upcomingContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Upcoming Matches...</p>`;
     } else {
-        othersContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Other Sports...</p>`;
+        othersContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color:var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Other Sports...</p>`;
     }
 
     footerLeagueLinks.innerHTML = `<p style="flex: 1 1 100%; color: var(--text-secondary); text-align: center;">Loading featured leagues...</p>`;
@@ -1340,7 +1503,7 @@ window.switchSport = async function(sport) {
     await renderFooterLeagues(sport);
 }
 
-// Notification and Modal Functions (unchanged)
+// Notification and Modal Functions
 function toggleNotificationPanel() {
     notificationPanel.classList.toggle('active');
 }
