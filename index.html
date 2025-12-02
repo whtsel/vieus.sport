@@ -412,6 +412,32 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     .modal-cross-references {
         flex-direction: column;
     }
+    /* Mobile filter section */
+    .mobile-filter-section {
+        display: block;
+        margin: 20px 0;
+        padding: 15px;
+        background: var(--accent);
+        border-radius: 12px;
+        text-align: center;
+    }
+    .mobile-filter-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: var(--highlight);
+        font-weight: 600;
+    }
+    /* Hide desktop sections on mobile */
+    #liveSection, #featuredSection, #upcomingSection, #othersSection {
+        display: none !important;
+    }
+    .football-section-header {
+        display: none !important;
+    }
+    /* Show mobile sections */
+    .mobile-active-section {
+        display: block !important;
+    }
     /* Toast on mobile - position above bottom dock */
     .toast-notification {
         bottom: 80px; /* Above the bottom dock */
@@ -470,6 +496,16 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     .mobile-bottom-dock {
         display: none;
     }
+    .mobile-filter-section {
+        display: none;
+    }
+    /* Show all sections on desktop */
+    #liveSection, #featuredSection, #upcomingSection, #othersSection {
+        display: block !important;
+    }
+    .football-section-header {
+        display: flex !important;
+    }
 }
 </style>
 </head>
@@ -496,6 +532,7 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </header>
 
+<!-- Desktop Sport Tabs - Keep Live and Others -->
 <div class="container">
 <div class="sport-tabs" id="desktopSportTabs">
 <div class="sport-tab active" data-sport="live">
@@ -509,13 +546,14 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </div>
 
+<!-- Mobile Filter Tabs - Live/Scheduled -->
 <div class="mobile-tabs-bar" id="mobileTabsBar">
 <div class="mobile-tabs-content">
-<div class="sport-tab-inline active" data-sport="live">
+<div class="sport-tab-inline active" data-filter="live">
 <i class="fas fa-broadcast-tower"></i> Live
 </div>
-<div class="sport-tab-inline" data-sport="others">
-<i class="fas fa-ellipsis-h"></i> Others
+<div class="sport-tab-inline" data-filter="scheduled">
+<i class="far fa-clock"></i> Scheduled
 </div>
 </div>
 </div>
@@ -529,11 +567,19 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 <div class="hero-carousel-dots" id="heroCarouselDots"></div>
 </section>
 
+<!-- Mobile Filter Section -->
+<div class="mobile-filter-section" id="mobileFilterSection">
+<div class="mobile-filter-title">
+<i class="fas fa-filter"></i> Showing: <span id="mobileFilterTitle">Live Matches</span>
+</div>
+</div>
+
 <section class="featured-matches">
 <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 20px;">
 <i class="fas fa-fire"></i> <span id="sportTitle">Live</span> Matches
 </h2>
 
+<!-- Desktop Sections -->
 <div id="liveSection" style="display: block;">
 <div class="football-section-header">
 <i class="fas fa-broadcast-tower"></i> Live Matches
@@ -562,6 +608,18 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 <div class="matches-grid" id="othersContainer">
 </div>
 </div>
+
+<!-- Mobile Sections -->
+<div id="mobileLiveSection" style="display: none;">
+<div class="matches-grid" id="mobileLiveContainer">
+</div>
+</div>
+
+<div id="mobileScheduledSection" style="display: none;">
+<div class="matches-grid" id="mobileScheduledContainer">
+</div>
+</div>
+
 </section>
 </div>
 </div>
@@ -786,7 +844,7 @@ let autoSlideInterval;
 let fixtureIndexHistory = []; 
 let currentModalFixture = null;
 let userReminders = JSON.parse(localStorage.getItem('vieusReminders')) || [];
-// Removed: let notificationInterval; // No longer needed
+let currentMobileFilter = 'live'; // Track mobile filter state
 
 // DOM elements
 const desktopSportTabs = document.querySelectorAll('.sport-tab');
@@ -823,6 +881,13 @@ const notificationList = document.getElementById('notificationList');
 const toastNotification = document.getElementById('toastNotification');
 const toastMatch = document.getElementById('toastMatch');
 const toastTime = document.getElementById('toastTime');
+
+// Mobile filter elements
+const mobileFilterTitle = document.getElementById('mobileFilterTitle');
+const mobileLiveContainer = document.getElementById('mobileLiveContainer');
+const mobileScheduledContainer = document.getElementById('mobileScheduledContainer');
+const mobileLiveSection = document.getElementById('mobileLiveSection');
+const mobileScheduledSection = document.getElementById('mobileScheduledSection');
 
 // Utility Functions
 function navigateToSchedule(matchContext) {
@@ -878,17 +943,48 @@ function adjustTimezoneOffset(fixtures, offsetHours) {
     });
 }
 
+// NEW: Function to switch mobile filter
+function switchMobileFilter(filter) {
+    currentMobileFilter = filter;
+    
+    // Update active tab
+    document.querySelectorAll('.sport-tab-inline').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('data-filter') === filter) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // Update filter title
+    if (filter === 'live') {
+        mobileFilterTitle.textContent = 'Live Matches';
+        // Show live section, hide scheduled
+        mobileLiveSection.style.display = 'block';
+        mobileScheduledSection.style.display = 'none';
+        
+        // Render all live games
+        renderMatches(mobileLiveContainer, liveFixtures, true);
+    } else if (filter === 'scheduled') {
+        mobileFilterTitle.textContent = 'Scheduled Matches';
+        // Show scheduled section, hide live
+        mobileLiveSection.style.display = 'none';
+        mobileScheduledSection.style.display = 'block';
+        
+        // Render all upcoming fixtures
+        renderMatches(mobileScheduledContainer, upcomingFixtures, false);
+    }
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     switchSport(currentSport);
     updateNotificationBadge();
     renderNotificationList();
-    // REMOVED: startNotificationChecker(); - This was causing the automatic toast
 });
 
 function setupEventListeners() {
-    // Sport tabs
+    // Sport tabs (desktop)
     desktopSportTabs.forEach(tab => {
         tab.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
@@ -898,18 +994,11 @@ function setupEventListeners() {
         });
     });
 
+    // Mobile filter tabs
     inlineSportTabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            const sport = this.getAttribute('data-sport');
-            switchSport(sport);
-            inlineSportTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            desktopSportTabs.forEach(t => {
-                t.classList.remove('active');
-                if (t.getAttribute('data-sport') === sport) {
-                    t.classList.add('active');
-                }
-            });
+            const filter = this.getAttribute('data-filter');
+            switchMobileFilter(filter);
         });
     });
 
@@ -1300,6 +1389,12 @@ window.switchSport = async function(sport) {
         showLiveSections();
     } else {
         showOthersSection();
+        // Hide mobile filter when in 'others' sport
+        document.querySelector('.mobile-filter-section').style.display = 'none';
+        mobileLiveSection.style.display = 'none';
+        mobileScheduledSection.style.display = 'none';
+        sportTitleElement.textContent = 'Other Sports';
+        return; // Skip rest for 'others' sport
     }
 
     // Show loading states
@@ -1340,7 +1435,7 @@ window.switchSport = async function(sport) {
         const liveData = adjustTimezoneOffset(fetchedLive, -1);
         const upcomingData = adjustTimezoneOffset(fetchedUpcoming, -1);
 
-        // Store for search
+        // Store for search and mobile filtering
         liveFixtures = liveData;
         upcomingFixtures = upcomingData;
 
@@ -1351,6 +1446,16 @@ window.switchSport = async function(sport) {
         renderMatches(liveContainer, liveData, true);
         renderMatches(featuredContainer, featuredMatches, false);
         renderMatches(upcomingContainer, upcomingData, false);
+        
+        // Also render for mobile tabs
+        renderMatches(mobileLiveContainer, liveData, true);
+        renderMatches(mobileScheduledContainer, upcomingData, false);
+        
+        // Set up initial mobile filter state
+        if (window.innerWidth < 768) {
+            switchMobileFilter('live');
+            document.querySelector('.mobile-filter-section').style.display = 'block';
+        }
     } else {
         const [fetchedHeroFixtures, fetchedUpcoming] = await Promise.all([
             fetchHeroFixtures(sport),
@@ -1436,9 +1541,6 @@ function removeReminder(index) {
     updateNotificationBadge();
     renderNotificationList();
 }
-
-// REMOVED: startNotificationChecker function - This was causing automatic toast notifications
-// REMOVED: checkUpcomingMatches function - This was checking and showing random toasts
 
 // Toast notification function - Keep it for manual use if needed
 function showToastNotification(reminder) {
