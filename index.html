@@ -293,9 +293,27 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 .notification-btn{padding:5px 10px;border-radius:5px;border:none;font-size:0.8rem;cursor:pointer;}
 .notification-btn.watch{background:var(--highlight);color:white;}
 .notification-btn.remove{background:var(--accent);color:white;}
-/* Toast Notification */
-.toast-notification{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--highlight);color:white;padding:15px 25px;border-radius:8px;box-shadow:0 5px 15px rgba(0, 0, 0, 0.3);z-index:2000;transition:transform 0.3s ease;max-width:400px;text-align:center;}
-.toast-notification.active{transform:translateX(-50%) translateY(0);}
+/* Toast Notification - HIDDEN BY DEFAULT */
+.toast-notification{
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--highlight);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    transition: transform 0.3s ease;
+    max-width: 400px;
+    text-align: center;
+    display: none; /* HIDDEN BY DEFAULT */
+}
+.toast-notification.active{
+    transform: translateX(-50%) translateY(0);
+    display: block; /* SHOW WHEN ACTIVE */
+}
 .toast-match{font-weight:600;margin-bottom:5px;}
 .toast-time{font-size:0.9rem;opacity:0.9;}
 /* ===== RESPONSIVE DESIGN IMPROVEMENTS ===== */
@@ -394,6 +412,12 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     .modal-cross-references {
         flex-direction: column;
     }
+    /* Toast on mobile - position above bottom dock */
+    .toast-notification {
+        bottom: 80px; /* Above the bottom dock */
+        width: 90%;
+        max-width: 350px;
+    }
 }
 
 /* Small mobile phones */
@@ -425,6 +449,13 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     }
     .match-info p:nth-of-type(2) {
         font-size: 0.7rem;
+    }
+    /* Toast on small mobile */
+    .toast-notification {
+        bottom: 70px;
+        width: 85%;
+        max-width: 300px;
+        padding: 12px 20px;
     }
 }
 
@@ -600,6 +631,7 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </div>
 
+<!-- Toast Notification - Hidden by default, will only show when manually triggered -->
 <div class="toast-notification" id="toastNotification">
 <div class="toast-match" id="toastMatch">Match Starting Soon!</div>
 <div class="toast-time" id="toastTime">Your reminder match is about to begin</div>
@@ -754,7 +786,7 @@ let autoSlideInterval;
 let fixtureIndexHistory = []; 
 let currentModalFixture = null;
 let userReminders = JSON.parse(localStorage.getItem('vieusReminders')) || [];
-let notificationInterval;
+// Removed: let notificationInterval; // No longer needed
 
 // DOM elements
 const desktopSportTabs = document.querySelectorAll('.sport-tab');
@@ -852,7 +884,7 @@ document.addEventListener('DOMContentLoaded', function() {
     switchSport(currentSport);
     updateNotificationBadge();
     renderNotificationList();
-    startNotificationChecker();
+    // REMOVED: startNotificationChecker(); - This was causing the automatic toast
 });
 
 function setupEventListeners() {
@@ -1340,7 +1372,7 @@ window.switchSport = async function(sport) {
     await renderFooterLeagues(sport);
 }
 
-// Notification and Modal Functions (unchanged)
+// Notification and Modal Functions 
 function toggleNotificationPanel() {
     notificationPanel.classList.toggle('active');
 }
@@ -1405,21 +1437,10 @@ function removeReminder(index) {
     renderNotificationList();
 }
 
-function startNotificationChecker() {
-    notificationInterval = setInterval(() => {
-        checkUpcomingMatches();
-    }, 30000);
-}
+// REMOVED: startNotificationChecker function - This was causing automatic toast notifications
+// REMOVED: checkUpcomingMatches function - This was checking and showing random toasts
 
-function checkUpcomingMatches() {
-    const now = new Date();
-    userReminders.forEach(reminder => {
-        if (Math.random() > 0.7) {
-            showToastNotification(reminder);
-        }
-    });
-}
-
+// Toast notification function - Keep it for manual use if needed
 function showToastNotification(reminder) {
     toastMatch.textContent = reminder.fixture;
     toastTime.textContent = `Starts at ${reminder.time}`;
