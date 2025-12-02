@@ -66,8 +66,14 @@ header{background-color:var(--secondary);padding:15px 0;position:sticky;top:0;z-
 .hero-league-info{display:flex;align-items:center;margin-bottom:10px;}
 .hero-league-logo{width:30px;height:30px;border-radius:50%;margin-right:10px;border:2px solid white;}
 .hero-league-name{font-size:1.1rem;font-weight:600;color:var(--highlight);}
-/* --- Match Card Styles --- */
-.matches-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:25px;margin-bottom:40px;}
+/* --- Match Card Styles FIXES --- */
+.matches-grid{
+    /* Adjusted for better desktop spacing and fewer columns */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Default 3 columns on desktop */
+    gap: 20px; /* Reduced gap */
+    margin-bottom: 30px;
+}
 /* Section headers */
 .football-section-header {
     font-size: 1.3rem;
@@ -102,24 +108,66 @@ header{background-color:var(--secondary);padding:15px 0;position:sticky;top:0;z-
 .scheduled-match .match-info p:nth-of-type(1) {
     color: var(--highlight) !important;
 }
-/* Media query for mobile */
-@media (max-width: 768px){
-.matches-grid{grid-template-columns:1fr;}
-.mobile-tabs-bar{display:block;}
-.sport-tabs{display:none;}
-}
+
 /* Match card container */
 .match-card-link{text-decoration:none;color:var(--text);display:block;cursor:pointer;transition:transform 0.3s ease, box-shadow 0.3s ease;}
-.match-card-link:hover{transform:translateY(-8px);box-shadow:0 15px 30px rgba(0, 0, 0, 0.5), 0 0 15px var(--highlight);}
-.match-card{background:var(--secondary);border-radius:12px;overflow:hidden;position:relative;padding:20px;box-shadow:0 5px 15px rgba(0, 0, 0, 0.3);height:100%;}
+/* Reduced card hover lift for a cleaner effect */
+.match-card-link:hover{
+    transform: translateY(-5px); 
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 10px var(--highlight); 
+}
+.match-card{
+    background:var(--secondary);
+    border-radius:12px;
+    overflow:hidden;
+    position:relative;
+    padding: 15px; /* Reduced padding to shrink card size */
+    box-shadow:0 5px 15px rgba(0, 0, 0, 0.3);
+    height:100%;
+}
 .match-card::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg, rgba(26, 26, 46, 0.8) 0%, rgba(22, 33, 62, 0.9) 100%);opacity:0.8;z-index:1;border-radius:12px;}
 .match-info{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;}
-.match-logo{width:60px;height:60px;margin-bottom:10px;border-radius:50%;overflow:hidden;border:3px solid var(--accent);box-shadow:0 0 10px rgba(0, 0, 0, 0.5);}
-.match-logo img{width:100%;height:100%;object-fit:cover;}
-.match-info h3{font-size:1.3rem;font-weight:700;line-height:1.2;margin-bottom:5px;color:white;}
+/* FIX: Logo size and handling */
+.match-logo{
+    width: 45px; /* Reduced logo size */
+    height: 45px;
+    margin-bottom: 8px; /* Reduced margin */
+    border-radius:50%;
+    overflow:hidden;
+    border:3px solid var(--accent);
+    box-shadow:0 0 8px rgba(0, 0, 0, 0.4);
+}
+.match-logo img{
+    width:100%;
+    height:100%;
+    object-fit: cover; /* Ensures image covers the circle without distortion */
+}
+.match-info h3{
+    font-size: 1.1rem; /* Reduced font size for better fit */
+    font-weight:700;
+    line-height:1.2;
+    margin-bottom: 3px;
+    color:white;
+}
 .match-info p:nth-of-type(1){font-size:0.9rem;font-weight:500;color:var(--highlight);margin-top:0;}
-.match-info p:nth-of-type(2){font-size:0.8rem;font-weight:300;color:var(--text-secondary);margin-bottom:20px;}
-.stream-btn-visual{position:relative;z-index:2;display:block;width:80%;margin:10px auto 0;text-align:center;padding:8px 20px;border-radius:20px;border:none;color:white;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.match-info p:nth-of-type(2){font-size:0.8rem;font-weight:300;color:var(--text-secondary);margin-bottom:15px;}
+/* FIX: Button size */
+.stream-btn-visual{
+    position:relative;
+    z-index:2;
+    display:block;
+    width: 90%; 
+    margin: 10px auto 0;
+    text-align:center;
+    padding: 6px 15px; /* Reduced padding */
+    border-radius:20px;
+    border:none;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s;
+    font-size: 0.9rem; /* Reduced font size */
+}
 .match-card .stream-btn{display:none!important;}
 /* --- FOOTER STYLES --- */
 footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px solid var(--accent);}
@@ -180,7 +228,21 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 .toast-notification.active{transform:translateX(-50%) translateY(0);}
 .toast-match{font-weight:600;margin-bottom:5px;}
 .toast-time{font-size:0.9rem;opacity:0.9;}
-/* Responsive adjustments */
+/* Responsive adjustments FIXES */
+@media (max-width: 1000px){
+    /* 2 columns for medium-sized tablets/laptops */
+    .matches-grid{grid-template-columns: repeat(2, 1fr);} 
+}
+
+@media (max-width: 768px){
+    /* 1 column for mobile phones */
+    .matches-grid{grid-template-columns: 1fr;} 
+    /* Reduced padding for mobile header/tabs */
+    .sport-tabs, .mobile-tabs-bar{padding: 8px 0;}
+    .mobile-tabs-bar{display:block;}
+    .sport-tabs{display:none;}
+}
+
 @media (max-width: 600px){
 .footer-content{gap:20px;flex-direction:column;}
 .footer-section{min-width:100%;}
@@ -189,10 +251,10 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 .modal-actions{flex-direction:column;}
 .notification-panel{width:100%;right:-100%;}
 .modal-cross-references{flex-direction:column;}
+.hero-title{font-size:1.8rem;}
+.hero-card{padding:25px;}
 }
-@media (max-width: 1000px){
-.main-content{grid-template-columns:1fr;}
-}
+
 @media (min-width: 769px){
 .sport-tabs{display:flex;}
 }
@@ -371,10 +433,10 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 
 <script>
 // --- Configuration ---
-const API_BASE_URL = 'https://vieus-sport-api.onrender.com/api'; // UPDATED TO RENDER API URL
+const API_BASE_URL = 'https://vieus-sport-api.onrender.com/api'; // CONFIRMED RENDER API URL
 const API_LIVE_FIXTURES = `${API_BASE_URL}/live_fixtures`;
 const API_UPCOMING_FIXTURES = `${API_BASE_URL}/upcoming_fixtures`;
-const API_HERO_BASE_URL = 'https://vieus-sport-api.onrender.com/api/hero-fixtures'; // UPDATED TO RENDER API URL
+const API_HERO_BASE_URL = 'https://vieus-sport-api.onrender.com/api/hero-fixtures'; // CONFIRMED RENDER API URL
 
 // Add request caching
 let requestCache = {
@@ -840,7 +902,8 @@ function renderMatches(container, fixtures, isLive = false) {
         const buttonBackground = isActuallyLive ? 'var(--highlight)' : 'var(--accent)';
         const timeColor = isActuallyLive ? 'var(--highlight)' : 'var(--text-secondary)';
         const icon = isActuallyLive ? 'fas fa-eye' : 'fas fa-info-circle';
-        const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/60/0f3460/ffffff?text=LOGO';
+        // UPDATED LOGO FALLBACK TO USE HIGHLIGHT COLOR
+        const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/45/e94560/ffffff?text=L';
 
         const cardLink = document.createElement('div');
         cardLink.classList.add('match-card-link');
@@ -857,7 +920,7 @@ function renderMatches(container, fixtures, isLive = false) {
             <div class="match-card">
                 <div class="match-info">
                     <div class="match-logo">
-                        <img src="${logoSrc}" alt="${match.league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/60/0f3460/ffffff?text=LOGO';">
+                        <img src="${logoSrc}" alt="${match.league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/45/e94560/ffffff?text=L';">
                     </div>
                     <h3>${match.fixture}</h3>
                     <p style="color: ${timeColor};">
