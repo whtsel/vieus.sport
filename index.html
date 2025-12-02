@@ -848,7 +848,6 @@ let currentMobileFilter = 'live'; // Track mobile filter state
 
 // DOM elements
 const desktopSportTabs = document.querySelectorAll('.sport-tab');
-const inlineSportTabs = document.querySelectorAll('.sport-tab-inline');
 const sportTitleElement = document.getElementById('sportTitle');
 const footerLeagueLinks = document.getElementById('footerLeagueLinks');
 const liveSection = document.getElementById('liveSection');
@@ -943,8 +942,9 @@ function adjustTimezoneOffset(fixtures, offsetHours) {
     });
 }
 
-// NEW: Function to switch mobile filter
+// Function to switch mobile filter
 function switchMobileFilter(filter) {
+    console.log('switchMobileFilter called with:', filter);
     currentMobileFilter = filter;
     
     // Update active tab
@@ -957,6 +957,7 @@ function switchMobileFilter(filter) {
     
     // Update filter title
     if (filter === 'live') {
+        console.log('Showing live matches');
         mobileFilterTitle.textContent = 'Live Matches';
         // Show live section, hide scheduled
         mobileLiveSection.style.display = 'block';
@@ -965,6 +966,7 @@ function switchMobileFilter(filter) {
         // Render all live games
         renderMatches(mobileLiveContainer, liveFixtures, true);
     } else if (filter === 'scheduled') {
+        console.log('Showing scheduled matches');
         mobileFilterTitle.textContent = 'Scheduled Matches';
         // Show scheduled section, hide live
         mobileLiveSection.style.display = 'none';
@@ -975,12 +977,25 @@ function switchMobileFilter(filter) {
     }
 }
 
+// Setup mobile filter tabs
+function setupMobileFilterTabs() {
+    const mobileTabs = document.querySelectorAll('.sport-tab-inline');
+    mobileTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const filter = this.getAttribute('data-filter');
+            console.log('Mobile filter clicked:', filter);
+            switchMobileFilter(filter);
+        });
+    });
+}
+
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     switchSport(currentSport);
     updateNotificationBadge();
     renderNotificationList();
+    setupMobileFilterTabs(); // Initialize mobile tabs
 });
 
 function setupEventListeners() {
@@ -991,14 +1006,6 @@ function setupEventListeners() {
             switchSport(sport);
             desktopSportTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
-        });
-    });
-
-    // Mobile filter tabs
-    inlineSportTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const filter = this.getAttribute('data-filter');
-            switchMobileFilter(filter);
         });
     });
 
@@ -1042,6 +1049,17 @@ function setupEventListeners() {
     // Notification functionality
     notificationBtn.addEventListener('click', toggleNotificationPanel);
     notificationPanelClose.addEventListener('click', closeNotificationPanel);
+    
+    // Backup click handler for mobile tabs
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.sport-tab-inline')) {
+            const tab = e.target.closest('.sport-tab-inline');
+            const filter = tab.getAttribute('data-filter');
+            if (filter) {
+                switchMobileFilter(filter);
+            }
+        }
+    });
 }
 
 // Section Visibility Management
@@ -1174,7 +1192,7 @@ function startAutoSlide(fixtures) {
     }
 }
 
-// UPDATED: Match Grid Renderers with white cards for live matches
+// Match Grid Renderers with white cards for live matches
 function renderMatches(container, fixtures, isLive = false) {
     container.innerHTML = ''; 
 
@@ -1204,7 +1222,6 @@ function renderMatches(container, fixtures, isLive = false) {
         const buttonText = isActuallyLive ? 'Watch Live' : 'View Details';
         const buttonBackground = isActuallyLive ? 'var(--highlight)' : 'var(--accent)';
         const icon = isActuallyLive ? 'fas fa-eye' : 'fas fa-info-circle';
-        // UPDATED LOGO FALLBACK TO USE HIGHLIGHT COLOR
         const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/40/e94560/ffffff?text=L';
 
         const cardLink = document.createElement('div');
@@ -1455,6 +1472,9 @@ window.switchSport = async function(sport) {
         if (window.innerWidth < 768) {
             switchMobileFilter('live');
             document.querySelector('.mobile-filter-section').style.display = 'block';
+            // Make sure mobile sections are visible
+            mobileLiveSection.style.display = 'block';
+            mobileScheduledSection.style.display = 'none';
         }
     } else {
         const [fetchedHeroFixtures, fetchedUpcoming] = await Promise.all([
@@ -1542,7 +1562,7 @@ function removeReminder(index) {
     renderNotificationList();
 }
 
-// Toast notification function - Keep it for manual use if needed
+// Toast notification function
 function showToastNotification(reminder) {
     toastMatch.textContent = reminder.fixture;
     toastTime.textContent = `Starts at ${reminder.time}`;
