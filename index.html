@@ -70,37 +70,37 @@ header{background-color:var(--secondary);padding:15px 0;position:sticky;top:0;z-
 .matches-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:25px;margin-bottom:40px;}
 /* Section headers */
 .football-section-header {
-    font-size: 1.3rem;
-    margin: 25px 0 15px 0;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent);
-    color: var(--highlight);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-size: 1.3rem;
+    margin: 25px 0 15px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--accent);
+    color: var(--highlight);
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 .football-section-header i {
-    font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 /* Light gray background for scheduled matches */
 .scheduled-match .match-card {
-    background: var(--scheduled-bg) !important;
+    background: var(--scheduled-bg) !important;
 }
 
 .scheduled-match .match-card::before {
-    background: linear-gradient(135deg, rgba(245, 245, 245, 0.9) 0%, rgba(230, 230, 230, 0.95) 100%) !important;
+    background: linear-gradient(135deg, rgba(245, 245, 245, 0.9) 0%, rgba(230, 230, 230, 0.95) 100%) !important;
 }
 
 .scheduled-match .match-info h3 {
-    color: var(--scheduled-text) !important;
+    color: var(--scheduled-text) !important;
 }
 
 .scheduled-match .match-info p {
-    color: var(--scheduled-secondary) !important;
+    color: var(--scheduled-secondary) !important;
 }
 
 .scheduled-match .match-info p:nth-of-type(1) {
-    color: var(--highlight) !important;
+    color: var(--highlight) !important;
 }
 /* Media query for mobile */
 @media (max-width: 768px){
@@ -259,7 +259,6 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 <i class="fas fa-fire"></i> <span id="sportTitle">Live</span> Matches
 </h2>
 
-<!-- Live Section -->
 <div id="liveSection" style="display: block;">
 <div class="football-section-header">
 <i class="fas fa-broadcast-tower"></i> Live Matches
@@ -268,7 +267,6 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </div>
 
-<!-- Featured Matches Section -->
 <div id="featuredSection" style="display: block;">
 <div class="football-section-header">
 <i class="fas fa-star"></i> Featured Matches
@@ -277,7 +275,6 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </div>
 
-<!-- Upcoming Section -->
 <div id="upcomingSection" style="display: block;">
 <div class="football-section-header">
 <i class="far fa-clock"></i> Upcoming Matches
@@ -286,7 +283,6 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </div>
 
-<!-- Others Section -->
 <div id="othersSection" style="display: none;">
 <div class="matches-grid" id="othersContainer">
 </div>
@@ -375,134 +371,134 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 
 <script>
 // --- Configuration ---
-const API_BASE_URL = 'http://127.0.0.1:5000/api';
+const API_BASE_URL = 'https://vieus-sport-api.onrender.com/api'; // UPDATED TO RENDER API URL
 const API_LIVE_FIXTURES = `${API_BASE_URL}/live_fixtures`;
 const API_UPCOMING_FIXTURES = `${API_BASE_URL}/upcoming_fixtures`;
-const API_HERO_BASE_URL = 'http://127.0.0.1:5000/api/hero-fixtures';
+const API_HERO_BASE_URL = 'https://vieus-sport-api.onrender.com/api/hero-fixtures'; // UPDATED TO RENDER API URL
 
 // Add request caching
 let requestCache = {
-    live_fixtures: { data: null, timestamp: 0 },
-    upcoming_fixtures: { data: null, timestamp: 0 },
-    hero_football: { data: null, timestamp: 0 },
-    hero_others: { data: null, timestamp: 0 }
+    live_fixtures: { data: null, timestamp: 0 },
+    upcoming_fixtures: { data: null, timestamp: 0 },
+    hero_football: { data: null, timestamp: 0 },
+    hero_others: { data: null, timestamp: 0 }
 };
 
 const CACHE_DURATION = 420000; // 7 minutes
 
 // Cached fetch functions
 async function fetchWithCache(url, cacheKey) {
-    const now = Date.now();
-    if (requestCache[cacheKey] && (now - requestCache[cacheKey].timestamp) < CACHE_DURATION) {
-        console.log(`Using cached data for ${cacheKey}`);
-        return requestCache[cacheKey].data;
-    }
-    
-    try {
-        console.log(`Fetching fresh data for ${cacheKey}`);
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        requestCache[cacheKey] = {
-            data: data.data || data,
-            timestamp: now
-        };
-        return requestCache[cacheKey].data;
-    } catch (error) {
-        console.error(`Fetch failed for ${cacheKey}:`, error);
-        return requestCache[cacheKey] ? requestCache[cacheKey].data : [];
-    }
+    const now = Date.now();
+    if (requestCache[cacheKey] && (now - requestCache[cacheKey].timestamp) < CACHE_DURATION) {
+        console.log(`Using cached data for ${cacheKey}`);
+        return requestCache[cacheKey].data;
+    }
+    
+    try {
+        console.log(`Fetching fresh data for ${cacheKey}`);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        requestCache[cacheKey] = {
+            data: data.data || data,
+            timestamp: now
+        };
+        return requestCache[cacheKey].data;
+    } catch (error) {
+        console.error(`Fetch failed for ${cacheKey}:`, error);
+        return requestCache[cacheKey] ? requestCache[cacheKey].data : [];
+    }
 }
 
 // Updated fetch functions
 async function fetchLiveFixtures() {
-    return await fetchWithCache(API_LIVE_FIXTURES, 'live_fixtures');
+    return await fetchWithCache(API_LIVE_FIXTURES, 'live_fixtures');
 }
 
 async function fetchUpcomingFixtures() {
-    return await fetchWithCache(API_UPCOMING_FIXTURES, 'upcoming_fixtures');
+    return await fetchWithCache(API_UPCOMING_FIXTURES, 'upcoming_fixtures');
 }
 
 async function fetchHeroFixtures(sport) {
-    const cacheKey = sport === 'live' ? 'hero_football' : 'hero_others';
-    return await fetchWithCache(`${API_HERO_BASE_URL}/${sport}`, cacheKey);
+    const cacheKey = sport === 'live' ? 'hero_football' : 'hero_others';
+    return await fetchWithCache(`${API_HERO_BASE_URL}/${sport}`, cacheKey);
 }
 
 // Intelligent League Prioritization
 const LEAGUE_PRIORITY = {
-    // Champions League gets highest priority on match days
-    'champions league': 100,
-    'europa league': 90,
-    'conference league': 85,
-    
-    // Major domestic leagues
-    'premier league': 80,
-    'laliga': 75,
-    'bundesliga': 70,
-    'serie a': 65,
-    'ligue 1': 60,
-    
-    // Major tournaments
-    'world cup': 95,
-    'euro': 85,
-    'copa libertadores': 70,
-    
-    // Other important competitions
-    'fa cup': 55,
-    'uefa nations league': 50,
-    'eredivisie': 45,
-    
-    // Default priority for other leagues
-    'default': 10
+    // Champions League gets highest priority on match days
+    'champions league': 100,
+    'europa league': 90,
+    'conference league': 85,
+    
+    // Major domestic leagues
+    'premier league': 80,
+    'laliga': 75,
+    'bundesliga': 70,
+    'serie a': 65,
+    'ligue 1': 60,
+    
+    // Major tournaments
+    'world cup': 95,
+    'euro': 85,
+    'copa libertadores': 70,
+    
+    // Other important competitions
+    'fa cup': 55,
+    'uefa nations league': 50,
+    'eredivisie': 45,
+    
+    // Default priority for other leagues
+    'default': 10
 };
 
 // Get current day to determine if it's Champions League day
 function getCurrentDayPriority() {
-    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const isChampionsLeagueDay = today === 2 || today === 3; // Tuesday or Wednesday
-    
-    return {
-        isChampionsLeagueDay,
-        dayBonus: isChampionsLeagueDay ? 50 : 0 // Extra priority boost on CL days
-    };
+    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const isChampionsLeagueDay = today === 2 || today === 3; // Tuesday or Wednesday
+    
+    return {
+        isChampionsLeagueDay,
+        dayBonus: isChampionsLeagueDay ? 50 : 0 // Extra priority boost on CL days
+    };
 }
 
 // Smart fixture sorting based on league importance and current day
 function sortFixturesByPriority(fixtures) {
-    const dayInfo = getCurrentDayPriority();
-    
-    return fixtures.sort((a, b) => {
-        const leagueA = (a.league || '').toLowerCase();
-        const leagueB = (b.league || '').toLowerCase();
-        
-        // Get priority scores
-        const priorityA = LEAGUE_PRIORITY[leagueA] || LEAGUE_PRIORITY.default;
-        const priorityB = LEAGUE_PRIORITY[leagueB] || LEAGUE_PRIORITY.default;
-        
-        // Apply day-based bonus (Champions League gets extra boost on match days)
-        const finalPriorityA = priorityA + (leagueA.includes('champions') ? dayInfo.dayBonus : 0);
-        const finalPriorityB = priorityB + (leagueB.includes('champions') ? dayInfo.dayBonus : 0);
-        
-        // Higher priority first
-        return finalPriorityB - finalPriorityA;
-    });
+    const dayInfo = getCurrentDayPriority();
+    
+    return fixtures.sort((a, b) => {
+        const leagueA = (a.league || '').toLowerCase();
+        const leagueB = (b.league || '').toLowerCase();
+        
+        // Get priority scores
+        const priorityA = LEAGUE_PRIORITY[leagueA] || LEAGUE_PRIORITY.default;
+        const priorityB = LEAGUE_PRIORITY[leagueB] || LEAGUE_PRIORITY.default;
+        
+        // Apply day-based bonus (Champions League gets extra boost on match days)
+        const finalPriorityA = priorityA + (leagueA.includes('champions') ? dayInfo.dayBonus : 0);
+        const finalPriorityB = priorityB + (leagueB.includes('champions') ? dayInfo.dayBonus : 0);
+        
+        // Higher priority first
+        return finalPriorityB - finalPriorityA;
+    });
 }
 
 // Filter featured matches (top 6 most important upcoming matches)
 function getFeaturedMatches(upcomingFixtures) {
-    const sorted = sortFixturesByPriority(upcomingFixtures);
-    return sorted.slice(0, 6); // Top 6 most important matches
+    const sorted = sortFixturesByPriority(upcomingFixtures);
+    return sorted.slice(0, 6); // Top 6 most important matches
 }
 
 // Sport configurations
 const SPORT_BACKGROUNDS = {
-    'live': 'url(https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=2500&h=300&fit=crop&crop=top&auto=format&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', 
-    'others': 'url(https://images.unsplash.com/photo-1456524314798-8c1d533519ec?q=80&w=2500&h=300&fit=crop&crop=top&auto=format&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'
+    'live': 'url(https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=2500&h=300&fit=crop&crop=top&auto=format&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)', 
+    'others': 'url(https://images.unsplash.com/photo-1456524314798-8c1d533519ec?q=80&w=2500&h=300&fit=crop&crop=top&auto=format&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)'
 };
 
 const SPORTS = {
-    'live': { name: 'Live', icon: 'fas fa-broadcast-tower' },
-    'others': { name: 'Other Sports', icon: 'fas fa-ellipsis-h' }
+    'live': { name: 'Live', icon: 'fas fa-broadcast-tower' },
+    'others': { name: 'Other Sports', icon: 'fas fa-ellipsis-h' }
 };
 
 // Global variables
@@ -511,7 +507,7 @@ let allFixtures = [];
 let liveFixtures = [];
 let upcomingFixtures = [];
 let autoSlideInterval;
-let fixtureIndexHistory = []; 
+let fixtureIndexHistory = []; 
 let currentModalFixture = null;
 let userReminders = JSON.parse(localStorage.getItem('vieusReminders')) || [];
 let notificationInterval;
@@ -554,701 +550,701 @@ const toastTime = document.getElementById('toastTime');
 
 // Utility Functions
 function navigateToSchedule(matchContext) {
-    const sport = matchContext?.sport || currentSport;
-    const filter = matchContext?.filter || 'all';
-    const league = matchContext?.league ? `&league=${encodeURIComponent(matchContext.league)}` : '';
-    window.location.href = `schedule.html?sport=${sport}&filter=${filter}${league}`;
+    const sport = matchContext?.sport || currentSport;
+    const filter = matchContext?.filter || 'all';
+    const league = matchContext?.league ? `&league=${encodeURIComponent(matchContext.league)}` : '';
+    window.location.href = `schedule.html?sport=${sport}&filter=${filter}${league}`;
 }
 
 function getMatchStatus(fixture) {
-    if (fixture.stream_url && fixture.stream_url !== 'N/A' && fixture.stream_url !== '#') {
-        return 'live';
-    } else if (fixture.status && fixture.status.toLowerCase().includes('finished')) {
-        return 'finished';
-    } else {
-        return 'upcoming';
-    }
+    if (fixture.stream_url && fixture.stream_url !== 'N/A' && fixture.stream_url !== '#') {
+        return 'live';
+    } else if (fixture.status && fixture.status.toLowerCase().includes('finished')) {
+        return 'finished';
+    } else {
+        return 'upcoming';
+    }
 }
 
 function adjustTimezoneOffset(fixtures, offsetHours) {
-    if (!fixtures || fixtures.length === 0) return [];
+    if (!fixtures || fixtures.length === 0) return [];
 
-    return fixtures.map(fixture => {
-        if (!fixture.time || !/^\d{2}:\d{2}$/.test(fixture.time)) {
-            return fixture;
-        }
-        
-        try {
-            const now = new Date();
-            const dateString = now.toISOString().split('T')[0];
-            const dateTimeString = `${dateString}T${fixture.time}:00`;
-            let fixtureDate = new Date(dateTimeString);
+    return fixtures.map(fixture => {
+        if (!fixture.time || !/^\d{2}:\d{2}$/.test(fixture.time)) {
+            return fixture;
+        }
+        
+        try {
+            const now = new Date();
+            const dateString = now.toISOString().split('T')[0];
+            const dateTimeString = `${dateString}T${fixture.time}:00`;
+            let fixtureDate = new Date(dateTimeString);
 
-            if (isNaN(fixtureDate.getTime())) {
-                return fixture;
-            }
+            if (isNaN(fixtureDate.getTime())) {
+                return fixture;
+            }
 
-            fixtureDate.setHours(fixtureDate.getHours() + offsetHours);
-            const adjustedTime = fixtureDate.toLocaleTimeString('en-GB', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: false
-            });
+            fixtureDate.setHours(fixtureDate.getHours() + offsetHours);
+            const adjustedTime = fixtureDate.toLocaleTimeString('en-GB', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false
+            });
 
-            return {
-                ...fixture,
-                time: adjustedTime
-            };
-        } catch (e) {
-            console.error('Error adjusting timezone offset:', e);
-            return fixture;
-        }
-    });
+            return {
+                ...fixture,
+                time: adjustedTime
+            };
+        } catch (e) {
+            console.error('Error adjusting timezone offset:', e);
+            return fixture;
+        }
+    });
 }
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
-    setupEventListeners();
-    switchSport(currentSport);
-    updateNotificationBadge();
-    renderNotificationList();
-    startNotificationChecker();
+    setupEventListeners();
+    switchSport(currentSport);
+    updateNotificationBadge();
+    renderNotificationList();
+    startNotificationChecker();
 });
 
 function setupEventListeners() {
-    // Sport tabs
-    desktopSportTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const sport = this.getAttribute('data-sport');
-            switchSport(sport);
-            desktopSportTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+    // Sport tabs
+    desktopSportTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const sport = this.getAttribute('data-sport');
+            switchSport(sport);
+            desktopSportTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
 
-    inlineSportTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
-            const sport = this.getAttribute('data-sport');
-            switchSport(sport);
-            inlineSportTabs.forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-            desktopSportTabs.forEach(t => {
-                t.classList.remove('active');
-                if (t.getAttribute('data-sport') === sport) {
-                    t.classList.add('active');
-                }
-            });
-        });
-    });
+    inlineSportTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const sport = this.getAttribute('data-sport');
+            switchSport(sport);
+            inlineSportTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            desktopSportTabs.forEach(t => {
+                t.classList.remove('active');
+                if (t.getAttribute('data-sport') === sport) {
+                    t.classList.add('active');
+                }
+            });
+        });
+    });
 
-    // Search functionality
-    searchInput.addEventListener('input', handleSearch);
-    searchInput.addEventListener('focus', function() {
-        if (searchInput.value.length > 0) {
-            searchResults.style.display = 'block';
-        }
-    });
+    // Search functionality
+    searchInput.addEventListener('input', handleSearch);
+    searchInput.addEventListener('focus', function() {
+        if (searchInput.value.length > 0) {
+            searchResults.style.display = 'block';
+        }
+    });
+    
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-box')) {
+            searchResults.style.display = 'none';
+        }
+    });
 
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-box')) {
-            searchResults.style.display = 'none';
-        }
-    });
+    // Modal functionality
+    modalClose.addEventListener('click', closeModal);
+    matchModal.addEventListener('click', function(e) {
+        if (e.target === matchModal) {
+            closeModal();
+        }
+    });
 
-    // Modal functionality
-    modalClose.addEventListener('click', closeModal);
-    matchModal.addEventListener('click', function(e) {
-        if (e.target === matchModal) {
-            closeModal();
-        }
-    });
+    modalWatchBtn.addEventListener('click', function() {
+        if (currentModalFixture && currentModalFixture.stream_url && 
+            currentModalFixture.stream_url !== 'N/A' && currentModalFixture.stream_url !== '#') {
+            window.open(currentModalFixture.stream_url, '_blank');
+        } else {
+            alert('No stream available for this match yet.');
+        }
+    });
 
-    modalWatchBtn.addEventListener('click', function() {
-        if (currentModalFixture && currentModalFixture.stream_url && 
-            currentModalFixture.stream_url !== 'N/A' && currentModalFixture.stream_url !== '#') {
-            window.open(currentModalFixture.stream_url, '_blank');
-        } else {
-            alert('No stream available for this match yet.');
-        }
-    });
+    modalReminderBtn.addEventListener('click', function() {
+        if (currentModalFixture) {
+            setReminder(currentModalFixture);
+        }
+    });
 
-    modalReminderBtn.addEventListener('click', function() {
-        if (currentModalFixture) {
-            setReminder(currentModalFixture);
-        }
-    });
-
-    // Notification functionality
-    notificationBtn.addEventListener('click', toggleNotificationPanel);
-    notificationPanelClose.addEventListener('click', closeNotificationPanel);
+    // Notification functionality
+    notificationBtn.addEventListener('click', toggleNotificationPanel);
+    notificationPanelClose.addEventListener('click', closeNotificationPanel);
 }
 
 // Section Visibility Management
 function showLiveSections() {
-    liveSection.style.display = 'block';
-    featuredSection.style.display = 'block';
-    upcomingSection.style.display = 'block';
-    othersSection.style.display = 'none';
-    sportTitleElement.textContent = 'Live';
+    liveSection.style.display = 'block';
+    featuredSection.style.display = 'block';
+    upcomingSection.style.display = 'block';
+    othersSection.style.display = 'none';
+    sportTitleElement.textContent = 'Live';
 }
 
 function showOthersSection() {
-    liveSection.style.display = 'none';
-    featuredSection.style.display = 'none';
-    upcomingSection.style.display = 'none';
-    othersSection.style.display = 'block';
-    sportTitleElement.textContent = 'Other Sports';
+    liveSection.style.display = 'none';
+    featuredSection.style.display = 'none';
+    upcomingSection.style.display = 'none';
+    othersSection.style.display = 'block';
+    sportTitleElement.textContent = 'Other Sports';
 }
 
 // Carousel Logic
 function renderHeroCarousel(fixtures) {
-    heroCarouselContainer.innerHTML = '';
-    allFixtures = fixtures;
+    heroCarouselContainer.innerHTML = '';
+    allFixtures = fixtures;
 
-    const sportKey = currentSport || 'live';
-    const backgroundUrl = SPORT_BACKGROUNDS[sportKey] || SPORT_BACKGROUNDS['live'];
+    const sportKey = currentSport || 'live';
+    const backgroundUrl = SPORT_BACKGROUNDS[sportKey] || SPORT_BACKGROUNDS['live'];
 
-    let fixtureToDisplay = fixtures.length > 0 ? fixtures[0] : null;
+    let fixtureToDisplay = fixtures.length > 0 ? fixtures[0] : null;
 
-    heroCarouselContainer.innerHTML = `
-        <div class="hero-card" id="dynamicHeroCard" style="background-image: ${backgroundUrl};">
-        </div>
-    `;
+    heroCarouselContainer.innerHTML = `
+        <div class="hero-card" id="dynamicHeroCard" style="background-image: ${backgroundUrl};">
+        </div>
+    `;
 
-    const dynamicCard = document.getElementById('dynamicHeroCard');
+    const dynamicCard = document.getElementById('dynamicHeroCard');
 
-    if (!fixtureToDisplay) {
-        dynamicCard.innerHTML = `
-            <div class="hero-content">
-                <div class="hero-league-info">
-                    <span class="hero-league-name">Upcoming Matches</span>
-                </div>
-                <h1 class="hero-title">No Events Available</h1>
-                <p class="hero-subtitle">Check back soon for exciting upcoming ${SPORTS[currentSport].name} events.</p>
-            </div>
-        `;
-        return;
-    }
+    if (!fixtureToDisplay) {
+        dynamicCard.innerHTML = `
+            <div class="hero-content">
+                <div class="hero-league-info">
+                    <span class="hero-league-name">Upcoming Matches</span>
+            </div>
+                <h1 class="hero-title">No Events Available</h1>
+                <p class="hero-subtitle">Check back soon for exciting upcoming ${SPORTS[currentSport].name} events.</p>
+            </div>
+        `;
+        return;
+    }
 
-    const match = fixtureToDisplay;
-    const leagueLogo = match.logo_url || 'https://via.placeholder.com/30/0f3460/ffffff?text=L';
-    const leagueName = match.league || 'Unknown League';
+    const match = fixtureToDisplay;
+    const leagueLogo = match.logo_url || 'https://via.placeholder.com/30/0f3460/ffffff?text=L';
+    const leagueName = match.league || 'Unknown League';
 
-    heroCarouselSection.style.backgroundImage = backgroundUrl;
-    dynamicCard.innerHTML = `
-        <div class="hero-content">
-            <div class="hero-league-info">
-                <img src="${leagueLogo}" alt="${leagueName} Logo" class="hero-league-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/30/0f3460/ffffff?text=L';">
-                <span class="hero-league-name">${leagueName} - ${match.time}</span>
-            </div>
-            <h1 class="hero-title">${match.fixture}</h1>
-            <p class="hero-subtitle">Highest Priority Match (${leagueName})</p>
-            <button class="btn btn-primary hero-btn view-details-btn" data-fixture='${JSON.stringify(match).replace(/'/g, "&#39;")}'>
-                <i class="fas fa-eye"></i> View Details
-            </button>
-        </div>
-    `;
+    heroCarouselSection.style.backgroundImage = backgroundUrl;
+    dynamicCard.innerHTML = `
+        <div class="hero-content">
+            <div class="hero-league-info">
+                <img src="${leagueLogo}" alt="${leagueName} Logo" class="hero-league-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/30/0f3460/ffffff?text=L';">
+                <span class="hero-league-name">${leagueName} - ${match.time}</span>
+            </div>
+            <h1 class="hero-title">${match.fixture}</h1>
+            <p class="hero-subtitle">Highest Priority Match (${leagueName})</p>
+            <button class="btn btn-primary hero-btn view-details-btn" data-fixture='${JSON.stringify(match).replace(/'/g, "&#39;")}'>
+                <i class="fas fa-eye"></i> View Details
+            </button>
+        </div>
+    `;
 
-    document.querySelector('.view-details-btn').addEventListener('click', function() {
-        const fixtureData = this.getAttribute('data-fixture');
-        const fixture = JSON.parse(fixtureData.replace(/&#39;/g, "'"));
-        openModal(fixture);
-    });
+    document.querySelector('.view-details-btn').addEventListener('click', function() {
+        const fixtureData = this.getAttribute('data-fixture');
+        const fixture = JSON.parse(fixtureData.replace(/&#39;/g, "'"));
+        openModal(fixture);
+    });
 
-    if (fixtures.length > 1) {
-        fixtureIndexHistory = [0];
-        startAutoSlide(fixtures); 
-    } else {
-        clearInterval(autoSlideInterval); 
-    }
+    if (fixtures.length > 1) {
+        fixtureIndexHistory = [0];
+        startAutoSlide(fixtures); 
+    } else {
+        clearInterval(autoSlideInterval); 
+    }
 }
 
 function goToRandomSlide(fixtures) {
-    if (fixtures.length === 0) return;
-    let nextIndex;
+    if (fixtures.length === 0) return;
+    let nextIndex;
 
-    if (fixtureIndexHistory.length === fixtures.length) {
-        fixtureIndexHistory = [];
-    }
+    if (fixtureIndexHistory.length === fixtures.length) {
+        fixtureIndexHistory = [];
+    }
 
-    do {
-        nextIndex = Math.floor(Math.random() * fixtures.length);
-    } while (fixtureIndexHistory.includes(nextIndex)); 
+    do {
+        nextIndex = Math.floor(Math.random() * fixtures.length);
+    } while (fixtureIndexHistory.includes(nextIndex)); 
 
-    fixtureIndexHistory.push(nextIndex);
-    const match = fixtures[nextIndex];
+    fixtureIndexHistory.push(nextIndex);
+    const match = fixtures[nextIndex];
 
-    const dynamicCard = document.getElementById('dynamicHeroCard');
-    const sportKey = currentSport || 'live';
-    const backgroundUrl = SPORT_BACKGROUNDS[sportKey] || SPORT_BACKGROUNDS['live'];
-    const leagueLogo = match.logo_url || 'https://via.placeholder.com/30/0f3460/ffffff?text=L';
-    const leagueName = match.league || 'Unknown League';
+    const dynamicCard = document.getElementById('dynamicHeroCard');
+    const sportKey = currentSport || 'live';
+    const backgroundUrl = SPORT_BACKGROUNDS[sportKey] || SPORT_BACKGROUNDS['live'];
+    const leagueLogo = match.logo_url || 'https://via.placeholder.com/30/0f3460/ffffff?text=L';
+    const leagueName = match.league || 'Unknown League';
 
-    heroCarouselSection.style.backgroundImage = backgroundUrl;
-    dynamicCard.innerHTML = `
-        <div class="hero-content">
-            <div class="hero-league-info">
-                <img src="${leagueLogo}" alt="${leagueName} Logo" class="hero-league-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/30/0f3460/ffffff?text=L';">
-                <span class="hero-league-name">${leagueName} - ${match.time}</span>
-            </div>
-            <h1 class="hero-title">${match.fixture}</h1>
-            <p class="hero-subtitle">Upcoming Match</p>
-            <button class="btn btn-primary hero-btn view-details-btn" data-fixture='${JSON.stringify(match).replace(/'/g, "&#39;")}'>
-                <i class="fas fa-eye"></i> View Details
-            </button>
-        </div>
-    `;
+    heroCarouselSection.style.backgroundImage = backgroundUrl;
+    dynamicCard.innerHTML = `
+        <div class="hero-content">
+            <div class="hero-league-info">
+                <img src="${leagueLogo}" alt="${leagueName} Logo" class="hero-league-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/30/0f3460/ffffff?text=L';">
+                <span class="hero-league-name">${leagueName} - ${match.time}</span>
+            </div>
+            <h1 class="hero-title">${match.fixture}</h1>
+            <p class="hero-subtitle">Upcoming Match</p>
+            <button class="btn btn-primary hero-btn view-details-btn" data-fixture='${JSON.stringify(match).replace(/'/g, "&#39;")}'>
+                <i class="fas fa-eye"></i> View Details
+            </button>
+        </div>
+    `;
 
-    document.querySelector('.view-details-btn').addEventListener('click', function() {
-        const fixtureData = this.getAttribute('data-fixture');
-        const fixture = JSON.parse(fixtureData.replace(/&#39;/g, "'"));
-        openModal(fixture);
-    });
+    document.querySelector('.view-details-btn').addEventListener('click', function() {
+        const fixtureData = this.getAttribute('data-fixture');
+        const fixture = JSON.parse(fixtureData.replace(/&#39;/g, "'"));
+        openModal(fixture);
+    });
 }
 
 function startAutoSlide(fixtures) {
-    clearInterval(autoSlideInterval); 
-    if (fixtures.length > 1) {
-        autoSlideInterval = setInterval(() => goToRandomSlide(fixtures), 6000); 
-    }
+    clearInterval(autoSlideInterval); 
+    if (fixtures.length > 1) {
+        autoSlideInterval = setInterval(() => goToRandomSlide(fixtures), 6000); 
+    }
 }
 
 // Match Grid Renderers
 function renderMatches(container, fixtures, isLive = false) {
-    container.innerHTML = ''; 
+    container.innerHTML = ''; 
 
-    if (fixtures.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);">
-                <i class="fas fa-search-minus"></i> No ${isLive ? 'live' : 'scheduled'} matches available right now.
-            </div>
-        `;
-        return;
-    }
+    if (fixtures.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);">
+                <i class="fas fa-search-minus"></i> No ${isLive ? 'live' : 'scheduled'} matches available right now.
+            </div>
+        `;
+        return;
+    }
 
-    const uniqueFixtures = [];
-    const seenFixtures = new Set();
+    const uniqueFixtures = [];
+    const seenFixtures = new Set();
 
-    fixtures.forEach(match => {
-        const key = `${match.fixture}-${match.time}-${match.league}`;
-        if (!seenFixtures.has(key)) {
-            seenFixtures.add(key);
-            uniqueFixtures.push(match);
-        }
-    });
+    fixtures.forEach(match => {
+        const key = `${match.fixture}-${match.time}-${match.league}`;
+        if (!seenFixtures.has(key)) {
+            seenFixtures.add(key);
+            uniqueFixtures.push(match);
+        }
+    });
 
-    uniqueFixtures.forEach(match => {
-        const streamUrl = match.stream_url && match.stream_url !== 'N/A' ? match.stream_url : '#';
-        const isActuallyLive = isLive && streamUrl !== '#';
-        const buttonText = isActuallyLive ? 'Watch Live' : 'View Details';
-        const buttonBackground = isActuallyLive ? 'var(--highlight)' : 'var(--accent)';
-        const timeColor = isActuallyLive ? 'var(--highlight)' : 'var(--text-secondary)';
-        const icon = isActuallyLive ? 'fas fa-eye' : 'fas fa-info-circle';
-        const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/60/0f3460/ffffff?text=LOGO';
+    uniqueFixtures.forEach(match => {
+        const streamUrl = match.stream_url && match.stream_url !== 'N/A' ? match.stream_url : '#';
+        const isActuallyLive = isLive && streamUrl !== '#';
+        const buttonText = isActuallyLive ? 'Watch Live' : 'View Details';
+        const buttonBackground = isActuallyLive ? 'var(--highlight)' : 'var(--accent)';
+        const timeColor = isActuallyLive ? 'var(--highlight)' : 'var(--text-secondary)';
+        const icon = isActuallyLive ? 'fas fa-eye' : 'fas fa-info-circle';
+        const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/60/0f3460/ffffff?text=LOGO';
 
-        const cardLink = document.createElement('div');
-        cardLink.classList.add('match-card-link');
-        
-        if (!isLive && currentSport === 'live') {
-            cardLink.classList.add('scheduled-match');
-        }
-        
-        cardLink.addEventListener('click', function() {
-            openModal(match);
-        });
+        const cardLink = document.createElement('div');
+        cardLink.classList.add('match-card-link');
+        
+        if (!isLive && currentSport === 'live') {
+            cardLink.classList.add('scheduled-match');
+        }
+        
+        cardLink.addEventListener('click', function() {
+            openModal(match);
+        });
 
-        cardLink.innerHTML = `
-            <div class="match-card">
-                <div class="match-info">
-                    <div class="match-logo">
-                        <img src="${logoSrc}" alt="${match.league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/60/0f3460/ffffff?text=LOGO';">
-                    </div>
-                    <h3>${match.fixture}</h3>
-                    <p style="color: ${timeColor};">
-                        ${match.league}
-                    </p>
-                    <p>
-                        ${match.time}
-                    </p>
-                </div>
-                <button class="btn btn-primary stream-btn-visual" 
-                        style="background-color: ${buttonBackground};">
-                    <i class="${icon}"></i> ${buttonText}
-                </button>
-            </div>
-        `;
-        container.appendChild(cardLink);
-    });
+        cardLink.innerHTML = `
+            <div class="match-card">
+                <div class="match-info">
+                    <div class="match-logo">
+                        <img src="${logoSrc}" alt="${match.league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/60/0f3460/ffffff?text=LOGO';">
+                    </div>
+                    <h3>${match.fixture}</h3>
+                    <p style="color: ${timeColor};">
+                        ${match.league}
+                    </p>
+                    <p>
+                        ${match.time}
+                    </p>
+                </div>
+                <button class="btn btn-primary stream-btn-visual" 
+                        style="background-color: ${buttonBackground};">
+                    <i class="${icon}"></i> ${buttonText}
+                </button>
+            </div>
+        `;
+        container.appendChild(cardLink);
+    });
 }
 
 // Footer Renderer
 async function renderFooterLeagues(sport) {
-    const fixtures = await fetchHeroFixtures(sport);
-    const uniqueLeagues = new Map();
+    const fixtures = await fetchHeroFixtures(sport);
+    const uniqueLeagues = new Map();
 
-    fixtures.forEach(match => {
-        const league = match.league;
-        if (league && league !== 'N/A') {
-            uniqueLeagues.set(league.toLowerCase(), league); 
-        }
-    });
+    fixtures.forEach(match => {
+        const league = match.league;
+        if (league && league !== 'N/A') {
+            uniqueLeagues.set(league.toLowerCase(), league); 
+        }
+    });
 
-    // Sort leagues by priority
-    const sortedLeagues = Array.from(uniqueLeagues.values()).sort((a, b) => {
-        const priorityA = LEAGUE_PRIORITY[a.toLowerCase()] || LEAGUE_PRIORITY.default;
-        const priorityB = LEAGUE_PRIORITY[b.toLowerCase()] || LEAGUE_PRIORITY.default;
-        return priorityB - priorityA;
-    });
+    // Sort leagues by priority
+    const sortedLeagues = Array.from(uniqueLeagues.values()).sort((a, b) => {
+        const priorityA = LEAGUE_PRIORITY[a.toLowerCase()] || LEAGUE_PRIORITY.default;
+        const priorityB = LEAGUE_PRIORITY[b.toLowerCase()] || LEAGUE_PRIORITY.default;
+        return priorityB - priorityA;
+    });
 
-    footerLeagueLinks.innerHTML = '';
+    footerLeagueLinks.innerHTML = '';
 
-    if (sortedLeagues.length === 0) {
-        footerLeagueLinks.innerHTML = `
-            <div class="footer-section" style="flex: 1 1 100%;">
-                <p style="color: var(--text-secondary); text-align: center;">No featured leagues found for ${SPORTS[sport].name}.</p>
-            </div>
-        `;
-        return;
-    }
+    if (sortedLeagues.length === 0) {
+        footerLeagueLinks.innerHTML = `
+            <div class="footer-section" style="flex: 1 1 100%;">
+                <p style="color: var(--text-secondary); text-align: center;">No featured leagues found for ${SPORTS[sport].name}.</p>
+            </div>
+        `;
+        return;
+    }
 
-    const numLeagues = sortedLeagues.length;
-    const colSize = Math.ceil(numLeagues / 3); 
+    const numLeagues = sortedLeagues.length;
+    const colSize = Math.ceil(numLeagues / 3); 
 
-    for (let i = 0; i < 3; i++) {
-        const start = i * colSize;
-        const end = start + colSize;
-        const leaguesSlice = sortedLeagues.slice(start, end);
-        if (leaguesSlice.length > 0) {
-            const section = document.createElement('div');
-            section.classList.add('footer-section');
-            section.innerHTML = `
-                <h4>${SPORTS[sport].name} Leagues</h4>
-                <ul>
-                    ${leaguesSlice.map(league => `
-                        <li>
-                            <a href="#" onclick="navigateToSchedule({sport: '${sport}', league: '${league}'}); return false;">
-                                ${league}
-                            </a>
-                        </li>
-                    `).join('')}
-                </ul>
-            `;
-            footerLeagueLinks.appendChild(section);
-        }
-    }
+    for (let i = 0; i < 3; i++) {
+        const start = i * colSize;
+        const end = start + colSize;
+        const leaguesSlice = sortedLeagues.slice(start, end);
+        if (leaguesSlice.length > 0) {
+            const section = document.createElement('div');
+            section.classList.add('footer-section');
+            section.innerHTML = `
+                <h4>${SPORTS[sport].name} Leagues</h4>
+                <ul>
+                    ${leaguesSlice.map(league => `
+                        <li>
+                            <a href="#" onclick="navigateToSchedule({sport: '${sport}', league: '${league}'}); return false;">
+                                ${league}
+                            </a>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+            footerLeagueLinks.appendChild(section);
+        }
+    }
 }
 
 // Search Functionality
 function handleSearch() {
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    if (searchTerm.length === 0) {
-        searchResults.style.display = 'none';
-        return;
-    }
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    if (searchTerm.length === 0) {
+        searchResults.style.display = 'none';
+        return;
+    }
 
-    // Combine all fixtures for search based on current sport
-    let searchFixtures = [];
-    if (currentSport === 'live') {
-        searchFixtures = [...liveFixtures, ...upcomingFixtures];
-    } else {
-        searchFixtures = allFixtures;
-    }
+    // Combine all fixtures for search based on current sport
+    let searchFixtures = [];
+    if (currentSport === 'live') {
+        searchFixtures = [...liveFixtures, ...upcomingFixtures];
+    } else {
+        searchFixtures = allFixtures;
+    }
 
-    // Filter fixtures based on search term
-    const filteredFixtures = searchFixtures.filter(fixture => {
-        const fixtureName = fixture.fixture ? fixture.fixture.toLowerCase() : '';
-        const leagueName = fixture.league ? fixture.league.toLowerCase() : '';
-        const teamHome = fixture.team_home ? fixture.team_home.toLowerCase() : '';
-        const teamAway = fixture.team_away ? fixture.team_away.toLowerCase() : '';
-        return fixtureName.includes(searchTerm) || 
-               leagueName.includes(searchTerm) || 
-               teamHome.includes(searchTerm) || 
-               teamAway.includes(searchTerm);
-    });
+    // Filter fixtures based on search term
+    const filteredFixtures = searchFixtures.filter(fixture => {
+        const fixtureName = fixture.fixture ? fixture.fixture.toLowerCase() : '';
+        const leagueName = fixture.league ? fixture.league.toLowerCase() : '';
+        const teamHome = fixture.team_home ? fixture.team_home.toLowerCase() : '';
+        const teamAway = fixture.team_away ? fixture.team_away.toLowerCase() : '';
+        return fixtureName.includes(searchTerm) || 
+               leagueName.includes(searchTerm) || 
+               teamHome.includes(searchTerm) || 
+               teamAway.includes(searchTerm);
+    });
 
-    // Remove duplicates
-    const uniqueFixtures = [];
-    const seenFixtures = new Set();
-    filteredFixtures.forEach(fixture => {
-        const key = `${fixture.fixture}-${fixture.time}-${fixture.league}`;
-        if (!seenFixtures.has(key)) {
-            seenFixtures.add(key);
-            uniqueFixtures.push(fixture);
-        }
-    });
+    // Remove duplicates
+    const uniqueFixtures = [];
+    const seenFixtures = new Set();
+    filteredFixtures.forEach(fixture => {
+        const key = `${fixture.fixture}-${fixture.time}-${fixture.league}`;
+        if (!seenFixtures.has(key)) {
+            seenFixtures.add(key);
+            uniqueFixtures.push(fixture);
+        }
+    });
 
-    displaySearchResults(uniqueFixtures);
+    displaySearchResults(uniqueFixtures);
 }
 
 function displaySearchResults(results) {
-    if (results.length === 0) {
-        searchResults.innerHTML = '<div class="search-result-item">No matches found</div>';
-    } else {
-        searchResults.innerHTML = results.map(fixture => {
-            let sportCategory = 'Live';
-            if (currentSport === 'others') {
-                sportCategory = 'Other Sports';
-            }
+    if (results.length === 0) {
+        searchResults.innerHTML = '<div class="search-result-item">No matches found</div>';
+    } else {
+        searchResults.innerHTML = results.map(fixture => {
+            let sportCategory = 'Live';
+            if (currentSport === 'others') {
+                sportCategory = 'Other Sports';
+            }
 
-            const matchStatus = getMatchStatus(fixture);
-            const isLive = matchStatus === 'live';
-            const pageContext = isLive ? 'Live' : 'Scheduled';
+            const matchStatus = getMatchStatus(fixture);
+            const isLive = matchStatus === 'live';
+            const pageContext = isLive ? 'Live' : 'Scheduled';
 
-            return `
-                <div class="search-result-item" data-fixture='${JSON.stringify(fixture).replace(/'/g, "&#39;")}'>
-                    <div class="match-name">${fixture.fixture} <span class="match-sport">${sportCategory}</span></div>
-                    <div class="match-league">${fixture.league} • ${fixture.time} • ${pageContext}</div>
-                </div>
-            `;
-        }).join('');
+            return `
+                <div class="search-result-item" data-fixture='${JSON.stringify(fixture).replace(/'/g, "&#39;")}'>
+                    <div class="match-name">${fixture.fixture} <span class="match-sport">${sportCategory}</span></div>
+                    <div class="match-league">${fixture.league} • ${fixture.time} • ${pageContext}</div>
+                </div>
+            `;
+        }).join('');
 
-        document.querySelectorAll('.search-result-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const fixtureData = this.getAttribute('data-fixture');
-                const fixture = JSON.parse(fixtureData.replace(/&#39;/g, "'"));
-                openModal(fixture);
-                searchResults.style.display = 'none';
-                searchInput.value = '';
-            });
-        });
-    }
-    searchResults.style.display = 'block';
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const fixtureData = this.getAttribute('data-fixture');
+                const fixture = JSON.parse(fixtureData.replace(/&#39;/g, "'"));
+                openModal(fixture);
+                searchResults.style.display = 'none';
+                searchInput.value = '';
+            });
+        });
+    }
+    searchResults.style.display = 'block';
 }
 
 // Main Sport Switching Function
 window.switchSport = async function(sport) {
-    currentSport = sport;
-    sportTitleElement.textContent = SPORTS[sport].name;
+    currentSport = sport;
+    sportTitleElement.textContent = SPORTS[sport].name;
 
-    // Update section visibility
-    if (sport === 'live') {
-        showLiveSections();
-    } else {
-        showOthersSection();
-    }
+    // Update section visibility
+    if (sport === 'live') {
+        showLiveSections();
+    } else {
+        showOthersSection();
+    }
 
-    // Show loading states
-    const backgroundUrl = SPORT_BACKGROUNDS[sport] || SPORT_BACKGROUNDS['live'];
-    heroCarouselSection.style.backgroundImage = backgroundUrl;
-    heroCarouselSection.style.backgroundSize = 'cover';
-    heroCarouselSection.style.backgroundPosition = 'center';
+    // Show loading states
+    const backgroundUrl = SPORT_BACKGROUNDS[sport] || SPORT_BACKGROUNDS['live'];
+    heroCarouselSection.style.backgroundImage = backgroundUrl;
+    heroCarouselSection.style.backgroundSize = 'cover';
+    heroCarouselSection.style.backgroundPosition = 'center';
 
-    heroCarouselContainer.innerHTML = `
-        <div class="hero-card" style="background-image: ${backgroundUrl};">
-            <div class="hero-content" style="text-align: center;">
-                <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--highlight);"></i>
-                <h1 class="hero-title" style="margin-top: 15px;">Loading Upcoming Events...</h1>
-            </div>
-        </div>
-    `;
+    heroCarouselContainer.innerHTML = `
+        <div class="hero-card" style="background-image: ${backgroundUrl};">
+            <div class="hero-content" style="text-align: center;">
+                <i class="fas fa-spinner fa-spin fa-2x" style="color: var(--highlight);"></i>
+                <h1 class="hero-title" style="margin-top: 15px;">Loading Upcoming Events...</h1>
+            </div>
+        </div>
+    `;
 
-    if (sport === 'live') {
-        liveContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Live Matches...</p>`;
-        featuredContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Featured Matches...</p>`;
-        upcomingContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Upcoming Matches...</p>`;
-    } else {
-        othersContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Other Sports...</p>`;
-    }
+    if (sport === 'live') {
+        liveContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Live Matches...</p>`;
+        featuredContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Featured Matches...</p>`;
+        upcomingContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Upcoming Matches...</p>`;
+    } else {
+        othersContainer.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Loading Other Sports...</p>`;
+    }
 
-    footerLeagueLinks.innerHTML = `<p style="flex: 1 1 100%; color: var(--text-secondary); text-align: center;">Loading featured leagues...</p>`;
+    footerLeagueLinks.innerHTML = `<p style="flex: 1 1 100%; color: var(--text-secondary); text-align: center;">Loading featured leagues...</p>`;
 
-    // Fetch and render data based on sport
-    if (sport === 'live') {
-        const [fetchedHeroFixtures, fetchedLive, fetchedUpcoming] = await Promise.all([
-            fetchHeroFixtures(sport),
-            fetchLiveFixtures(),
-            fetchUpcomingFixtures()
-        ]);
+    // Fetch and render data based on sport
+    if (sport === 'live') {
+        const [fetchedHeroFixtures, fetchedLive, fetchedUpcoming] = await Promise.all([
+            fetchHeroFixtures(sport),
+            fetchLiveFixtures(),
+            fetchUpcomingFixtures()
+        ]);
 
-        // Adjust timezone
-        const heroFixtures = adjustTimezoneOffset(fetchedHeroFixtures, -1);
-        const liveData = adjustTimezoneOffset(fetchedLive, -1);
-        const upcomingData = adjustTimezoneOffset(fetchedUpcoming, -1);
+        // Adjust timezone
+        const heroFixtures = adjustTimezoneOffset(fetchedHeroFixtures, -1);
+        const liveData = adjustTimezoneOffset(fetchedLive, -1);
+        const upcomingData = adjustTimezoneOffset(fetchedUpcoming, -1);
 
-        // Store for search
-        liveFixtures = liveData;
-        upcomingFixtures = upcomingData;
+        // Store for search
+        liveFixtures = liveData;
+        upcomingFixtures = upcomingData;
 
-        // Get featured matches (intelligently prioritized)
-        const featuredMatches = getFeaturedMatches(upcomingData);
+        // Get featured matches (intelligently prioritized)
+        const featuredMatches = getFeaturedMatches(upcomingData);
 
-        renderHeroCarousel(heroFixtures);
-        renderMatches(liveContainer, liveData, true);
-        renderMatches(featuredContainer, featuredMatches, false);
-        renderMatches(upcomingContainer, upcomingData, false);
-    } else {
-        const [fetchedHeroFixtures, fetchedUpcoming] = await Promise.all([
-            fetchHeroFixtures(sport),
-            fetchUpcomingFixtures()
-        ]);
+        renderHeroCarousel(heroFixtures);
+        renderMatches(liveContainer, liveData, true);
+        renderMatches(featuredContainer, featuredMatches, false);
+        renderMatches(upcomingContainer, upcomingData, false);
+    } else {
+        const [fetchedHeroFixtures, fetchedUpcoming] = await Promise.all([
+            fetchHeroFixtures(sport),
+            fetchUpcomingFixtures()
+        ]);
 
-        // Adjust timezone
-        const heroFixtures = adjustTimezoneOffset(fetchedHeroFixtures, -1);
-        const upcomingData = adjustTimezoneOffset(fetchedUpcoming, -1);
+        // Adjust timezone
+        const heroFixtures = adjustTimezoneOffset(fetchedHeroFixtures, -1);
+        const upcomingData = adjustTimezoneOffset(fetchedUpcoming, -1);
 
-        // Store for search
-        allFixtures = upcomingData;
+        // Store for search
+        allFixtures = upcomingData;
 
-        renderHeroCarousel(heroFixtures);
-        renderMatches(othersContainer, upcomingData, false);
-    }
+        renderHeroCarousel(heroFixtures);
+        renderMatches(othersContainer, upcomingData, false);
+    }
 
-    // Render footer leagues
-    await renderFooterLeagues(sport);
+    // Render footer leagues
+    await renderFooterLeagues(sport);
 }
 
 // Notification and Modal Functions (unchanged)
 function toggleNotificationPanel() {
-    notificationPanel.classList.toggle('active');
+    notificationPanel.classList.toggle('active');
 }
 
 function closeNotificationPanel() {
-    notificationPanel.classList.remove('active');
+    notificationPanel.classList.remove('active');
 }
 
 function updateNotificationBadge() {
-    const count = userReminders.length;
-    notificationBadge.textContent = count;
-    if (count > 0) {
-        notificationBadge.style.display = 'flex';
-    } else {
-        notificationBadge.style.display = 'none';
-    }
+    const count = userReminders.length;
+    notificationBadge.textContent = count;
+    if (count > 0) {
+        notificationBadge.style.display = 'flex';
+    } else {
+        notificationBadge.style.display = 'none';
+    }
 }
 
 function renderNotificationList() {
-    if (userReminders.length === 0) {
-        notificationList.innerHTML = `
-            <div class="notification-item">
-                <p>No reminders set yet. Set reminders for matches you don't want to miss!</p>
-            </div>
-        `;
-        return;
-    }
-    notificationList.innerHTML = userReminders.map((reminder, index) => {
-        const matchStatus = getMatchStatus(reminder);
-        const isLive = matchStatus === 'live';
-        return `
-            <div class="notification-item">
-                <div class="notification-match">${reminder.fixture}</div>
-                <div class="notification-time">${reminder.time} • ${reminder.league}</div>
-                <div class="notification-actions">
-                    ${isLive ? `
-                    <button class="notification-btn watch" onclick="watchReminder('${reminder.stream_url}')">
-                        <i class="fas fa-eye"></i> Watch Live
-                    </button>
-                    ` : ''}
-                    <button class="notification-btn remove" onclick="removeReminder(${index})">
-                        <i class="fas fa-trash"></i> Remove
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
+    if (userReminders.length === 0) {
+        notificationList.innerHTML = `
+            <div class="notification-item">
+                <p>No reminders set yet. Set reminders for matches you don't want to miss!</p>
+            </div>
+        `;
+        return;
+    }
+    notificationList.innerHTML = userReminders.map((reminder, index) => {
+        const matchStatus = getMatchStatus(reminder);
+        const isLive = matchStatus === 'live';
+        return `
+            <div class="notification-item">
+                <div class="notification-match">${reminder.fixture}</div>
+                <div class="notification-time">${reminder.time} • ${reminder.league}</div>
+                <div class="notification-actions">
+                    ${isLive ? `
+                    <button class="notification-btn watch" onclick="watchReminder('${reminder.stream_url}')">
+                        <i class="fas fa-eye"></i> Watch Live
+                    </button>
+                    ` : ''}
+                    <button class="notification-btn remove" onclick="removeReminder(${index})">
+                        <i class="fas fa-trash"></i> Remove
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 function watchReminder(streamUrl) {
-    if (streamUrl && streamUrl !== 'N/A' && streamUrl !== '#') {
-        window.open(streamUrl, '_blank');
-    } else {
-        alert('No stream available for this match yet.');
-    }
+    if (streamUrl && streamUrl !== 'N/A' && streamUrl !== '#') {
+        window.open(streamUrl, '_blank');
+    } else {
+        alert('No stream available for this match yet.');
+    }
 }
 
 function removeReminder(index) {
-    userReminders.splice(index, 1);
-    localStorage.setItem('vieusReminders', JSON.stringify(userReminders));
-    updateNotificationBadge();
-    renderNotificationList();
+    userReminders.splice(index, 1);
+    localStorage.setItem('vieusReminders', JSON.stringify(userReminders));
+    updateNotificationBadge();
+    renderNotificationList();
 }
 
 function startNotificationChecker() {
-    notificationInterval = setInterval(() => {
-        checkUpcomingMatches();
-    }, 30000);
+    notificationInterval = setInterval(() => {
+        checkUpcomingMatches();
+    }, 30000);
 }
 
 function checkUpcomingMatches() {
-    const now = new Date();
-    userReminders.forEach(reminder => {
-        if (Math.random() > 0.7) {
-            showToastNotification(reminder);
-        }
-    });
+    const now = new Date();
+    userReminders.forEach(reminder => {
+        if (Math.random() > 0.7) {
+            showToastNotification(reminder);
+        }
+    });
 }
 
 function showToastNotification(reminder) {
-    toastMatch.textContent = reminder.fixture;
-    toastTime.textContent = `Starts at ${reminder.time}`;
-    toastNotification.classList.add('active');
-    setTimeout(() => {
-        toastNotification.classList.remove('active');
-    }, 5000);
+    toastMatch.textContent = reminder.fixture;
+    toastTime.textContent = `Starts at ${reminder.time}`;
+    toastNotification.classList.add('active');
+    setTimeout(() => {
+        toastNotification.classList.remove('active');
+    }, 5000);
 }
 
 function openModal(fixture) {
-    currentModalFixture = fixture;
-    modalMatchTitle.textContent = fixture.fixture || 'Match Details';
-    modalMatchLeague.textContent = fixture.league || 'Unknown League';
-    modalMatchTime.textContent = fixture.time || 'Time not specified';
-    modalMatchVenue.textContent = fixture.venue || 'Venue not specified';
-    modalMatchStatus.textContent = fixture.status || 'Scheduled';
-    modalMatchBroadcast.textContent = fixture.broadcast || 'Check schedule for broadcast details';
+    currentModalFixture = fixture;
+    modalMatchTitle.textContent = fixture.fixture || 'Match Details';
+    modalMatchLeague.textContent = fixture.league || 'Unknown League';
+    modalMatchTime.textContent = fixture.time || 'Time not specified';
+    modalMatchVenue.textContent = fixture.venue || 'Venue not specified';
+    modalMatchStatus.textContent = fixture.status || 'Scheduled';
+    modalMatchBroadcast.textContent = fixture.broadcast || 'Check schedule for broadcast details';
 
-    if (fixture.stream_url && fixture.stream_url !== 'N/A' && fixture.stream_url !== '#') {
-        modalWatchBtn.disabled = false;
-        modalWatchBtn.innerHTML = '<i class="fas fa-eye"></i> Watch Now';
-    } else {
-        modalWatchBtn.disabled = true;
-        modalWatchBtn.innerHTML = '<i class="fas fa-eye-slash"></i> No Stream Available';
-    }
+    if (fixture.stream_url && fixture.stream_url !== 'N/A' && fixture.stream_url !== '#') {
+        modalWatchBtn.disabled = false;
+        modalWatchBtn.innerHTML = '<i class="fas fa-eye"></i> Watch Now';
+    } else {
+        modalWatchBtn.disabled = true;
+        modalWatchBtn.innerHTML = '<i class="fas fa-eye-slash"></i> No Stream Available';
+    }
 
-    const isAlreadyReminded = userReminders.some(r => 
-        r.fixture === fixture.fixture && r.time === fixture.time
-    );
-    if (isAlreadyReminded) {
-        modalReminderBtn.disabled = true;
-        modalReminderBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Already Reminded';
-    } else {
-        modalReminderBtn.disabled = false;
-        modalReminderBtn.innerHTML = '<i class="far fa-bell"></i> Set Reminder';
-    }
+    const isAlreadyReminded = userReminders.some(r => 
+        r.fixture === fixture.fixture && r.time === fixture.time
+    );
+    if (isAlreadyReminded) {
+        modalReminderBtn.disabled = true;
+        modalReminderBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Already Reminded';
+    } else {
+        modalReminderBtn.disabled = false;
+        modalReminderBtn.innerHTML = '<i class="far fa-bell"></i> Set Reminder';
+    }
 
-    modalCrossReferences.innerHTML = '';
-    matchModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    modalCrossReferences.innerHTML = '';
+    matchModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 function closeModal() {
-    matchModal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    currentModalFixture = null;
+    matchModal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    currentModalFixture = null;
 }
 
 function setReminder(fixture) {
-    const isAlreadyReminded = userReminders.some(r => 
-        r.fixture === fixture.fixture && r.time === fixture.time
-    );
-    if (isAlreadyReminded) {
-        alert('You already have a reminder for this match!');
-        return;
-    }
+    const isAlreadyReminded = userReminders.some(r => 
+        r.fixture === fixture.fixture && r.time === fixture.time
+    );
+    if (isAlreadyReminded) {
+        alert('You already have a reminder for this match!');
+        return;
+    }
 
-    userReminders.push({
-        fixture: fixture.fixture,
-        league: fixture.league,
-        time: fixture.time,
-        stream_url: fixture.stream_url,
-        sport: currentSport,
-        added: new Date().toISOString()
-    });
+    userReminders.push({
+        fixture: fixture.fixture,
+        league: fixture.league,
+        time: fixture.time,
+        stream_url: fixture.stream_url,
+        sport: currentSport,
+        added: new Date().toISOString()
+    });
 
-    localStorage.setItem('vieusReminders', JSON.stringify(userReminders));
-    updateNotificationBadge();
-    renderNotificationList();
-    alert(`Reminder set for: ${fixture.fixture} at ${fixture.time}`);
-    modalReminderBtn.disabled = true;
-    modalReminderBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Already Reminded';
+    localStorage.setItem('vieusReminders', JSON.stringify(userReminders));
+    updateNotificationBadge();
+    renderNotificationList();
+    alert(`Reminder set for: ${fixture.fixture} at ${fixture.time}`);
+    modalReminderBtn.disabled = true;
+    modalReminderBtn.innerHTML = '<i class="fas fa-bell-slash"></i> Already Reminded';
 }
 
 // Initialize with live
