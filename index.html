@@ -22,6 +22,7 @@
 --live-card-text:#333; /* Dark text for live cards */
 --scheduled-text:#333;
 --scheduled-secondary:#666;
+--pinned-color:#FFD700;
 }
 body{background-color:var(--primary);color:var(--text);min-height:100vh;overflow-x:hidden;}
 .container{max-width:1400px;margin:0 auto;padding:0 20px;}
@@ -109,6 +110,67 @@ header{background-color:var(--secondary);padding:15px 0;position:sticky;top:0;z-
 .hero-league-info{display:flex;align-items:center;margin-bottom:10px;}
 .hero-league-logo{width:30px;height:30px;border-radius:50%;margin-right:10px;border:2px solid white;}
 .hero-league-name{font-size:1.1rem;font-weight:600;color:var(--highlight);}
+/* --- League Headers --- */
+.league-header {
+    background: var(--accent);
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin: 15px 0 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid var(--highlight);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+.league-header.pinned {
+    border-left: 4px solid var(--pinned-color);
+    background: linear-gradient(135deg, var(--accent) 0%, rgba(15, 52, 96, 0.9) 100%);
+}
+.league-header-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.league-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--highlight);
+}
+.league-icon.pinned {
+    border-color: var(--pinned-color);
+}
+.league-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.league-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+}
+.league-name.pinned {
+    color: var(--pinned-color);
+}
+.pin-indicator {
+    color: var(--pinned-color);
+    font-size: 1rem;
+    margin-right: 5px;
+}
+.match-count {
+    background: var(--highlight);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+.match-count.pinned {
+    background: var(--pinned-color);
+    color: var(--primary);
+}
 /* --- Match Card Styles FIXES --- */
 .matches-grid{
     display: grid;
@@ -369,11 +431,10 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 .notification-btn{padding:5px 10px;border-radius:5px;border:none;font-size:0.8rem;cursor:pointer;}
 .notification-btn.watch{background:var(--highlight);color:white;}
 .notification-btn.remove{background:var(--accent);color:white;}
-/* Toast Notification */
-.toast-notification{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--highlight);color:white;padding:15px 25px;border-radius:8px;box-shadow:0 5px 15px rgba(0, 0, 0, 0.3);z-index:2000;transition:transform 0.3s ease;max-width:400px;text-align:center;}
-.toast-notification.active{transform:translateX(-50%) translateY(0);}
-.toast-match{font-weight:600;margin-bottom:5px;}
-.toast-time{font-size:0.9rem;opacity:0.9;}
+/* Toast Notification - REMOVED FEATURE (keeping for potential future use) */
+.toast-notification{
+    display: none; /* Hidden as per request */
+}
 /* ===== RESPONSIVE DESIGN IMPROVEMENTS ===== */
 /* Desktop large screens */
 @media (min-width: 1200px) {
@@ -414,6 +475,12 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     }
     .container {
         padding: 0 15px;
+    }
+    .league-header {
+        padding: 10px 12px;
+    }
+    .league-name {
+        font-size: 1rem;
     }
 }
 
@@ -467,6 +534,21 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     .modal-cross-references {
         flex-direction: column;
     }
+    .league-header {
+        padding: 10px 12px;
+        margin: 12px 0 8px 0;
+    }
+    .league-name {
+        font-size: 1rem;
+    }
+    .league-icon {
+        width: 25px;
+        height: 25px;
+    }
+    .match-count {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+    }
     /* Add bottom padding to account for dock */
     body {
         padding-bottom: 70px;
@@ -514,6 +596,15 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
     }
     .dock-item i {
         font-size: 1rem;
+    }
+    .league-header {
+        padding: 8px 10px;
+    }
+    .league-name {
+        font-size: 0.95rem;
+    }
+    .pin-indicator {
+        font-size: 0.9rem;
     }
 }
 
@@ -693,10 +784,7 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 </div>
 </div>
 
-<div class="toast-notification" id="toastNotification">
-<div class="toast-match" id="toastMatch">Match Starting Soon!</div>
-<div class="toast-time" id="toastTime">Your reminder match is about to begin</div>
-</div>
+<!-- Toast notification removed as per request -->
 
 <footer>
 <div class="container">
@@ -708,10 +796,10 @@ footer{background-color:var(--secondary);padding:40px 0 20px;border-top:1px soli
 
 <script>
 // --- Configuration ---
-const API_BASE_URL = 'https://vieus-sport-api.onrender.com/api'; // CONFIRMED RENDER API URL
+const API_BASE_URL = 'https://vieus-sport-api.onrender.com/api';
 const API_LIVE_FIXTURES = `${API_BASE_URL}/live_fixtures`;
 const API_UPCOMING_FIXTURES = `${API_BASE_URL}/upcoming_fixtures`;
-const API_HERO_BASE_URL = 'https://vieus-sport-api.onrender.com/api/hero-fixtures'; // CONFIRMED RENDER API URL
+const API_HERO_BASE_URL = 'https://vieus-sport-api.onrender.com/api/hero-fixtures';
 
 // Add request caching
 let requestCache = {
@@ -761,70 +849,366 @@ async function fetchHeroFixtures(sport) {
     return await fetchWithCache(`${API_HERO_BASE_URL}/${sport}`, cacheKey);
 }
 
-// Intelligent League Prioritization
-const LEAGUE_PRIORITY = {
-    // Champions League gets highest priority on match days
-    'champions league': 100,
-    'europa league': 90,
-    'conference league': 85,
-    
-    // Major domestic leagues
-    'premier league': 80,
-    'laliga': 75,
-    'bundesliga': 70,
-    'serie a': 65,
-    'ligue 1': 60,
-    
-    // Major tournaments
-    'world cup': 95,
-    'euro': 85,
-    'copa libertadores': 70,
-    
-    // Other important competitions
-    'fa cup': 55,
-    'uefa nations league': 50,
-    'eredivisie': 45,
-    
-    // Default priority for other leagues
-    'default': 10
+// =============================================
+// UPDATED: PINNED LEAGUES ORDER (EXACT ORDER AS REQUESTED)
+// =============================================
+
+// PINNED LEAGUES - Exact order as requested (Football leagues only)
+const PINNED_LEAGUES = [
+    'Premier League',
+    'LaLiga',
+    'Bundesliga',
+    'Serie A',
+    'Eredivisie',
+    'Ligue 1',
+    'Champions League',
+    'Europa League',
+    'World Cup',
+    'World Cup U17',
+    'World Cup Women U17'
+];
+
+// Check if a league is pinned
+function isPinnedLeague(leagueName) {
+    if (!leagueName) return false;
+    return PINNED_LEAGUES.some(pinnedLeague => 
+        leagueName.toLowerCase().includes(pinnedLeague.toLowerCase()) ||
+        pinnedLeague.toLowerCase().includes(leagueName.toLowerCase())
+    );
+}
+
+// Get the order index of a pinned league
+function getPinnedLeagueOrder(leagueName) {
+    if (!leagueName) return Infinity;
+    for (let i = 0; i < PINNED_LEAGUES.length; i++) {
+        const pinnedLeague = PINNED_LEAGUES[i];
+        if (leagueName.toLowerCase().includes(pinnedLeague.toLowerCase()) ||
+            pinnedLeague.toLowerCase().includes(leagueName.toLowerCase())) {
+            return i; // Return the index position
+        }
+    }
+    return Infinity; // Not pinned, goes after all pinned leagues
+}
+
+// Sport priority order: Football first, then other sports
+const SPORT_PRIORITY = {
+    'football': 100,
+    'soccer': 99, // Alternative name
+    'default': 0
 };
 
-// Get current day to determine if it's Champions League day
-function getCurrentDayPriority() {
-    const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-    const isChampionsLeagueDay = today === 2 || today === 3; // Tuesday or Wednesday
+// Check if a fixture is football (for strict football-only sorting in Live section)
+function isFootballFixture(fixture) {
+    if (!fixture || !fixture.league) return false;
     
+    const leagueName = fixture.league.toLowerCase();
+    
+    // Check if it's a football league based on known football league names
+    const footballKeywords = [
+        'premier league', 'laliga', 'bundesliga', 'serie a', 'eredivisie', 'ligue 1',
+        'champions league', 'europa league', 'world cup', 'fa cup', 'copa', 'league',
+        'premier', 'division', 'serie', 'bundes', 'liga', 'cup', 'championship'
+    ];
+    
+    return footballKeywords.some(keyword => leagueName.includes(keyword)) || 
+           isPinnedLeague(fixture.league);
+}
+
+// Smart fixture sorting with grouping - STRICT for football fixtures
+function sortAndGroupFixtures(fixtures, isLive = false) {
+    if (!fixtures || fixtures.length === 0) {
+        return { grouped: {}, sortedLeagues: [] };
+    }
+
+    // Step 1: Separate football and non-football fixtures for Live section
+    let footballFixtures = [];
+    let otherFixtures = [];
+    
+    if (isLive) {
+        // For Live section: Strictly show football fixtures first
+        fixtures.forEach(fixture => {
+            if (isFootballFixture(fixture)) {
+                footballFixtures.push(fixture);
+            } else {
+                otherFixtures.push(fixture);
+            }
+        });
+    } else {
+        // For other sections: Use all fixtures
+        footballFixtures = fixtures;
+    }
+
+    // Step 2: Group fixtures by league (starting with football fixtures)
+    const groupedByLeague = {};
+    
+    // First, add football fixtures
+    footballFixtures.forEach(fixture => {
+        const league = fixture.league || 'Other Football Leagues';
+        if (!groupedByLeague[league]) {
+            groupedByLeague[league] = [];
+        }
+        groupedByLeague[league].push(fixture);
+    });
+    
+    // Then, add other fixtures (for Live section only)
+    if (isLive) {
+        otherFixtures.forEach(fixture => {
+            const league = fixture.league || 'Other Sports';
+            if (!groupedByLeague[league]) {
+                groupedByLeague[league] = [];
+            }
+            groupedByLeague[league].push(fixture);
+        });
+    }
+
+    // Step 3: Sort fixtures within each league by time
+    Object.keys(groupedByLeague).forEach(league => {
+        groupedByLeague[league].sort((a, b) => {
+            // First sort by time
+            const timeA = a.time || '23:59';
+            const timeB = b.time || '23:59';
+            
+            // Convert time to minutes for comparison
+            const timeToMinutes = (timeStr) => {
+                const [hours, minutes] = timeStr.split(':').map(Number);
+                return hours * 60 + minutes;
+            };
+            
+            return timeToMinutes(timeA) - timeToMinutes(timeB);
+        });
+    });
+
+    // Step 4: Sort leagues by priority (STRICT ORDER for pinned leagues)
+    const sortedLeagues = Object.keys(groupedByLeague).sort((a, b) => {
+        const leagueA = a.toLowerCase();
+        const leagueB = b.toLowerCase();
+        
+        // 1. Check if pinned (FOOTBALL LEAGUES ONLY in exact order)
+        const isPinnedA = isPinnedLeague(a);
+        const isPinnedB = isPinnedLeague(b);
+        
+        if (isPinnedA && !isPinnedB) return -1;
+        if (!isPinnedA && isPinnedB) return 1;
+        
+        // 2. If both pinned, use the EXACT order from PINNED_LEAGUES
+        if (isPinnedA && isPinnedB) {
+            const orderA = getPinnedLeagueOrder(a);
+            const orderB = getPinnedLeagueOrder(b);
+            return orderA - orderB;
+        }
+        
+        // 3. Check if football league (for Live section)
+        const isFootballA = isFootballFixture({ league: a });
+        const isFootballB = isFootballFixture({ league: b });
+        
+        if (isFootballA && !isFootballB) return -1;
+        if (!isFootballA && isFootballB) return 1;
+        
+        // 4. Alphabetical for non-pinned leagues
+        return a.localeCompare(b);
+    });
+
     return {
-        isChampionsLeagueDay,
-        dayBonus: isChampionsLeagueDay ? 50 : 0 // Extra priority boost on CL days
+        grouped: groupedByLeague,
+        sortedLeagues: sortedLeagues
     };
 }
 
-// Smart fixture sorting based on league importance and current day
-function sortFixturesByPriority(fixtures) {
-    const dayInfo = getCurrentDayPriority();
+// =============================================
+// IMPROVED RENDER MATCHES WITH LEAGUE GROUPING
+// =============================================
+
+// UPDATED: Match Grid Renderers with league grouping
+function renderMatches(container, fixtures, isLive = false) {
+    container.innerHTML = ''; 
+
+    if (fixtures.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);">
+                <i class="fas fa-search-minus"></i> No ${isLive ? 'live' : 'scheduled'} matches available right now.
+            </div>
+        `;
+        return;
+    }
+
+    // Sort and group fixtures
+    const { grouped: groupedFixtures, sortedLeagues: sortedLeagues } = sortAndGroupFixtures(fixtures, isLive);
     
-    return fixtures.sort((a, b) => {
-        const leagueA = (a.league || '').toLowerCase();
-        const leagueB = (b.league || '').toLowerCase();
+    // If only one league or empty, use simple rendering
+    if (sortedLeagues.length <= 1) {
+        renderMatchesSimple(container, fixtures, isLive);
+        return;
+    }
+    
+    // Create league groups
+    sortedLeagues.forEach(league => {
+        const leagueFixtures = groupedFixtures[league];
+        const isPinned = isPinnedLeague(league);
+        const isFootball = isFootballFixture({ league: league });
         
-        // Get priority scores
-        const priorityA = LEAGUE_PRIORITY[leagueA] || LEAGUE_PRIORITY.default;
-        const priorityB = LEAGUE_PRIORITY[leagueB] || LEAGUE_PRIORITY.default;
+        // Create league header
+        const leagueHeader = document.createElement('div');
+        leagueHeader.className = `league-header ${isPinned ? 'pinned' : ''}`;
         
-        // Apply day-based bonus (Champions League gets extra boost on match days)
-        const finalPriorityA = priorityA + (leagueA.includes('champions') ? dayInfo.dayBonus : 0);
-        const finalPriorityB = priorityB + (leagueB.includes('champions') ? dayInfo.dayBonus : 0);
+        // Try to get league logo from first fixture
+        const firstFixture = leagueFixtures[0];
+        const leagueLogo = firstFixture?.logo_url || 'https://via.placeholder.com/40/e94560/ffffff?text=L';
         
-        // Higher priority first
-        return finalPriorityB - finalPriorityA;
+        leagueHeader.innerHTML = `
+            <div class="league-header-content">
+                <div class="league-icon ${isPinned ? 'pinned' : ''}">
+                    <img src="${leagueLogo}" alt="${league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/e94560/ffffff?text=L';">
+                </div>
+                <div class="league-name ${isPinned ? 'pinned' : ''}">
+                    ${isPinned ? '<span class="pin-indicator">📌</span>' : ''}
+                    ${league}
+                    ${!isPinned && isFootball && isLive ? ' <span style="color: var(--highlight); font-size: 0.8rem;">⚽</span>' : ''}
+                </div>
+            </div>
+            <div class="match-count ${isPinned ? 'pinned' : ''}">
+                ${leagueFixtures.length} match${leagueFixtures.length > 1 ? 'es' : ''}
+            </div>
+        `;
+        
+        container.appendChild(leagueHeader);
+        
+        // Create matches grid for this league
+        const leagueGrid = document.createElement('div');
+        leagueGrid.className = 'matches-grid';
+        leagueGrid.style.marginTop = '0';
+        leagueGrid.style.marginBottom = '20px';
+        
+        // Add fixtures to grid
+        leagueFixtures.forEach(match => {
+            const streamUrl = match.stream_url && match.stream_url !== 'N/A' ? match.stream_url : '#';
+            const isActuallyLive = isLive && streamUrl !== '#';
+            const buttonText = isActuallyLive ? 'Watch Live' : 'View Details';
+            const buttonBackground = isActuallyLive ? 'var(--highlight)' : 'var(--accent)';
+            const icon = isActuallyLive ? 'fas fa-eye' : 'fas fa-info-circle';
+            const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/40/e94560/ffffff?text=L';
+
+            const cardLink = document.createElement('div');
+            cardLink.classList.add('match-card-link');
+            
+            // Add class for white background if it's a live match
+            if (isActuallyLive) {
+                cardLink.classList.add('live-match');
+            } else if (!isLive && currentSport === 'live') {
+                cardLink.classList.add('scheduled-match');
+            }
+            
+            cardLink.addEventListener('click', function() {
+                openModal(match);
+            });
+
+            cardLink.innerHTML = `
+                <div class="match-card">
+                    <div class="match-info">
+                        <div class="match-logo">
+                            <img src="${logoSrc}" alt="${match.league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/e94560/ffffff?text=L';">
+                        </div>
+                        <h3>${match.fixture}</h3>
+                        <p style="color: ${isActuallyLive ? 'var(--scheduled-secondary)' : 'var(--highlight)'};">
+                            ${match.league}
+                        </p>
+                        <p style="color: ${isActuallyLive ? 'var(--scheduled-secondary)' : 'var(--text-secondary)'};">
+                            ${match.time}
+                        </p>
+                    </div>
+                    <button class="stream-btn-visual" 
+                            style="background-color: ${buttonBackground};">
+                        <i class="${icon}"></i> ${buttonText}
+                    </button>
+                </div>
+            `;
+            leagueGrid.appendChild(cardLink);
+        });
+        
+        container.appendChild(leagueGrid);
     });
 }
 
-// Filter featured matches (top 6 most important upcoming matches)
-function getFeaturedMatches(upcomingFixtures) {
-    const sorted = sortFixturesByPriority(upcomingFixtures);
-    return sorted.slice(0, 6); // Top 6 most important matches
+// Simple renderer for single league or few matches
+function renderMatchesSimple(container, fixtures, isLive = false) {
+    const uniqueFixtures = [];
+    const seenFixtures = new Set();
+
+    fixtures.forEach(match => {
+        const key = `${match.fixture}-${match.time}-${match.league}`;
+        if (!seenFixtures.has(key)) {
+            seenFixtures.add(key);
+            uniqueFixtures.push(match);
+        }
+    });
+
+    // Sort fixtures by priority even in simple view
+    const sortedFixtures = uniqueFixtures.sort((a, b) => {
+        const isPinnedA = isPinnedLeague(a.league);
+        const isPinnedB = isPinnedLeague(b.league);
+        
+        if (isPinnedA && !isPinnedB) return -1;
+        if (!isPinnedA && isPinnedB) return 1;
+        
+        if (isPinnedA && isPinnedB) {
+            const orderA = getPinnedLeagueOrder(a.league);
+            const orderB = getPinnedLeagueOrder(b.league);
+            return orderA - orderB;
+        }
+        
+        // Sort by time for remaining fixtures
+        const timeA = a.time || '23:59';
+        const timeB = b.time || '23:59';
+        const timeToMinutes = (timeStr) => {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        };
+        
+        return timeToMinutes(timeA) - timeToMinutes(timeB);
+    });
+
+    sortedFixtures.forEach(match => {
+        const streamUrl = match.stream_url && match.stream_url !== 'N/A' ? match.stream_url : '#';
+        const isActuallyLive = isLive && streamUrl !== '#';
+        const buttonText = isActuallyLive ? 'Watch Live' : 'View Details';
+        const buttonBackground = isActuallyLive ? 'var(--highlight)' : 'var(--accent)';
+        const icon = isActuallyLive ? 'fas fa-eye' : 'fas fa-info-circle';
+        const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/40/e94560/ffffff?text=L';
+
+        const cardLink = document.createElement('div');
+        cardLink.classList.add('match-card-link');
+        
+        if (isActuallyLive) {
+            cardLink.classList.add('live-match');
+        } else if (!isLive && currentSport === 'live') {
+            cardLink.classList.add('scheduled-match');
+        }
+        
+        cardLink.addEventListener('click', function() {
+            openModal(match);
+        });
+
+        cardLink.innerHTML = `
+            <div class="match-card">
+                <div class="match-info">
+                    <div class="match-logo">
+                        <img src="${logoSrc}" alt="${match.league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/e94560/ffffff?text=L';">
+                    </div>
+                    <h3>${match.fixture}</h3>
+                    <p style="color: ${isActuallyLive ? 'var(--scheduled-secondary)' : 'var(--highlight)'};">
+                        ${match.league}
+                    </p>
+                    <p style="color: ${isActuallyLive ? 'var(--scheduled-secondary)' : 'var(--text-secondary)'};">
+                        ${match.time}
+                    </p>
+                </div>
+                <button class="stream-btn-visual" 
+                        style="background-color: ${buttonBackground};">
+                    <i class="${icon}"></i> ${buttonText}
+                </button>
+            </div>
+        `;
+        container.appendChild(cardLink);
+    });
 }
 
 // Sport configurations
@@ -848,7 +1232,7 @@ let fixtureIndexHistory = [];
 let currentModalFixture = null;
 let userReminders = JSON.parse(localStorage.getItem('vieusReminders')) || [];
 let notificationInterval;
-let currentDockPage = 'home'; // Track current dock page
+let currentDockPage = 'home';
 
 // DOM elements
 const desktopSportTabs = document.querySelectorAll('.sport-tab');
@@ -882,9 +1266,6 @@ const notificationBadge = document.getElementById('notificationBadge');
 const notificationPanel = document.getElementById('notificationPanel');
 const notificationPanelClose = document.getElementById('notificationPanelClose');
 const notificationList = document.getElementById('notificationList');
-const toastNotification = document.getElementById('toastNotification');
-const toastMatch = document.getElementById('toastMatch');
-const toastTime = document.getElementById('toastTime');
 const mobileBottomDock = document.getElementById('mobileBottomDock');
 const dockItems = document.querySelectorAll('.dock-item');
 
@@ -960,13 +1341,17 @@ function filterFixturesWithoutStreams(fixtures) {
     );
 }
 
-// Event Listeners - FIXED VERSION with Bottom Dock
+// =============================================
+// REMOVED: Match starting soon notification checker
+// =============================================
+
+// Event Listeners
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     switchSport(currentSport);
     updateNotificationBadge();
     renderNotificationList();
-    startNotificationChecker();
+    // Removed: startNotificationChecker();
 });
 
 function setupEventListeners() {
@@ -974,17 +1359,19 @@ function setupEventListeners() {
     desktopSportTabs.forEach(tab => {
         tab.addEventListener('click', function() {
             const sport = this.getAttribute('data-sport');
+            console.log('Desktop tab clicked:', sport);
             switchSport(sport);
             desktopSportTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             
-            // Also update mobile tabs to stay in sync
             inlineSportTabs.forEach(t => {
                 t.classList.remove('active');
                 if (t.getAttribute('data-sport') === sport) {
                     t.classList.add('active');
                 }
             });
+            
+            switchToHomeView();
         });
     });
 
@@ -996,11 +1383,9 @@ function setupEventListeners() {
             
             switchSport(sport);
             
-            // Update mobile tabs
             inlineSportTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
             
-            // Also update desktop tabs to stay in sync
             desktopSportTabs.forEach(t => {
                 t.classList.remove('active');
                 if (t.getAttribute('data-sport') === sport) {
@@ -1008,7 +1393,6 @@ function setupEventListeners() {
                 }
             });
             
-            // Reset to home view when switching sport tabs
             switchToHomeView();
         });
     });
@@ -1019,12 +1403,10 @@ function setupEventListeners() {
             const page = this.getAttribute('data-page');
             console.log('Bottom dock clicked:', page);
             
-            // Update active state
             dockItems.forEach(dock => dock.classList.remove('active'));
             this.classList.add('active');
             currentDockPage = page;
             
-            // Handle navigation based on page
             switch(page) {
                 case 'home':
                     switchToHomeView();
@@ -1039,7 +1421,6 @@ function setupEventListeners() {
                     break;
                     
                 case 'account':
-                    // Open account modal or navigate to account page
                     alert('Account page would open here. This is a demo.');
                     break;
             }
@@ -1093,7 +1474,6 @@ function switchToHomeView() {
     if (currentSport === 'live') {
         showLiveSections();
         updateSectionTitle('Live Matches');
-        // Re-render all sections
         renderMatches(liveContainer, liveFixtures, true);
         renderMatches(featuredContainer, getFeaturedMatches(upcomingFixtures), false);
         renderMatches(upcomingContainer, upcomingFixtures, false);
@@ -1105,49 +1485,70 @@ function switchToHomeView() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// Filter featured matches (top 6 most important upcoming matches)
+function getFeaturedMatches(upcomingFixtures) {
+    // Use the new sorting logic for featured matches too
+    const { grouped: groupedFixtures, sortedLeagues: sortedLeagues } = sortAndGroupFixtures(upcomingFixtures, false);
+    
+    // Get matches from pinned leagues first
+    let featured = [];
+    
+    // First add from pinned leagues in exact order
+    PINNED_LEAGUES.forEach(pinnedLeague => {
+        if (groupedFixtures[pinnedLeague]) {
+            const leagueMatches = groupedFixtures[pinnedLeague];
+            const matchesToAdd = Math.min(2, leagueMatches.length); // Max 2 per pinned league
+            featured = [...featured, ...leagueMatches.slice(0, matchesToAdd)];
+        }
+    });
+    
+    // If we need more, add from other football leagues
+    if (featured.length < 6) {
+        sortedLeagues.forEach(league => {
+            if (!isPinnedLeague(league) && isFootballFixture({ league: league }) && groupedFixtures[league] && featured.length < 6) {
+                const leagueMatches = groupedFixtures[league];
+                const remainingSlots = 6 - featured.length;
+                const matchesToAdd = Math.min(1, remainingSlots, leagueMatches.length);
+                featured = [...featured, ...leagueMatches.slice(0, matchesToAdd)];
+            }
+        });
+    }
+    
+    return featured.slice(0, 6);
+}
+
 // Show only matches with stream links (Live)
 function showLiveOnlyView() {
-    // Hide all sections
     liveSection.style.display = 'none';
     featuredSection.style.display = 'none';
     upcomingSection.style.display = 'none';
     othersSection.style.display = 'none';
     
-    // Clear and prepare for live-only view
     liveContainer.innerHTML = '';
     featuredContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
     othersContainer.innerHTML = '';
     
-    // Update title
     updateSectionTitle('Live Streams');
     
-    // Filter and display only matches with stream links
     let fixturesWithStreams = [];
     
     if (currentSport === 'live') {
-        // Get live fixtures with streams
         fixturesWithStreams = filterFixturesWithStreams(liveFixtures);
         
-        // If no live fixtures with streams, check upcoming fixtures too
         if (fixturesWithStreams.length === 0) {
             fixturesWithStreams = filterFixturesWithStreams(upcomingFixtures);
         }
     } else {
-        // For other sports, check all fixtures
         fixturesWithStreams = filterFixturesWithStreams(allFixtures);
     }
     
-    // Sort by priority
-    const sortedFixtures = sortFixturesByPriority(fixturesWithStreams);
+    // Use the new renderMatches function which includes strict football-first grouping
+    renderMatches(liveContainer, fixturesWithStreams, true);
     
-    // Display in live container
-    renderMatches(liveContainer, sortedFixtures, true);
-    
-    // Show the live section
     liveSection.style.display = 'block';
     liveSection.querySelector('.football-section-header').innerHTML = `
-        <i class="fas fa-broadcast-tower"></i> Live Streams (${sortedFixtures.length})
+        <i class="fas fa-broadcast-tower"></i> Live Streams (${fixturesWithStreams.length})
     `;
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1155,46 +1556,34 @@ function showLiveOnlyView() {
 
 // Show only matches without stream links (Schedule)
 function showScheduleOnlyView() {
-    // Hide all sections
     liveSection.style.display = 'none';
     featuredSection.style.display = 'none';
     upcomingSection.style.display = 'none';
     othersSection.style.display = 'none';
     
-    // Clear and prepare for schedule-only view
     liveContainer.innerHTML = '';
     featuredContainer.innerHTML = '';
     upcomingContainer.innerHTML = '';
     othersContainer.innerHTML = '';
     
-    // Update title
     updateSectionTitle('Scheduled Matches');
     
-    // Filter and display only matches without stream links
     let fixturesWithoutStreams = [];
     
     if (currentSport === 'live') {
-        // Get upcoming fixtures without streams
         fixturesWithoutStreams = filterFixturesWithoutStreams(upcomingFixtures);
-        
-        // Also add live fixtures without streams (if any)
         const liveWithoutStreams = filterFixturesWithoutStreams(liveFixtures);
         fixturesWithoutStreams = [...liveWithoutStreams, ...fixturesWithoutStreams];
     } else {
-        // For other sports, check all fixtures
         fixturesWithoutStreams = filterFixturesWithoutStreams(allFixtures);
     }
     
-    // Sort by priority
-    const sortedFixtures = sortFixturesByPriority(fixturesWithoutStreams);
+    // Use the new renderMatches function which includes grouping
+    renderMatches(upcomingContainer, fixturesWithoutStreams, false);
     
-    // Display in upcoming container
-    renderMatches(upcomingContainer, sortedFixtures, false);
-    
-    // Show the upcoming section
     upcomingSection.style.display = 'block';
     upcomingSection.querySelector('.football-section-header').innerHTML = `
-        <i class="far fa-clock"></i> Scheduled Matches (${sortedFixtures.length})
+        <i class="far fa-clock"></i> Scheduled Matches (${fixturesWithoutStreams.length})
     `;
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1222,7 +1611,7 @@ function showOthersSection() {
     updateSectionTitle('Other Sports');
 }
 
-// Carousel Logic
+// Carousel Logic - Always prioritize pinned football leagues
 function renderHeroCarousel(fixtures) {
     heroCarouselContainer.innerHTML = '';
     allFixtures = fixtures;
@@ -1230,7 +1619,34 @@ function renderHeroCarousel(fixtures) {
     const sportKey = currentSport || 'live';
     const backgroundUrl = SPORT_BACKGROUNDS[sportKey] || SPORT_BACKGROUNDS['live'];
 
-    let fixtureToDisplay = fixtures.length > 0 ? fixtures[0] : null;
+    // Try to find a pinned league match first for the hero (in exact order)
+    let fixtureToDisplay = null;
+    
+    // First, try to find a match from pinned leagues in exact order
+    for (const pinnedLeague of PINNED_LEAGUES) {
+        for (const fixture of fixtures) {
+            if (fixture.league && fixture.league.toLowerCase().includes(pinnedLeague.toLowerCase())) {
+                fixtureToDisplay = fixture;
+                break;
+            }
+        }
+        if (fixtureToDisplay) break;
+    }
+    
+    // If no pinned league match, use the first football fixture
+    if (!fixtureToDisplay) {
+        for (const fixture of fixtures) {
+            if (isFootballFixture(fixture)) {
+                fixtureToDisplay = fixture;
+                break;
+            }
+        }
+    }
+    
+    // If still no match, use the first one
+    if (!fixtureToDisplay && fixtures.length > 0) {
+        fixtureToDisplay = fixtures[0];
+    }
 
     heroCarouselContainer.innerHTML = `
         <div class="hero-card" id="dynamicHeroCard" style="background-image: ${backgroundUrl};">
@@ -1255,16 +1671,17 @@ function renderHeroCarousel(fixtures) {
     const match = fixtureToDisplay;
     const leagueLogo = match.logo_url || 'https://via.placeholder.com/30/0f3460/ffffff?text=L';
     const leagueName = match.league || 'Unknown League';
+    const isPinned = isPinnedLeague(leagueName);
 
     heroCarouselSection.style.backgroundImage = backgroundUrl;
     dynamicCard.innerHTML = `
         <div class="hero-content">
             <div class="hero-league-info">
                 <img src="${leagueLogo}" alt="${leagueName} Logo" class="hero-league-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/30/0f3460/ffffff?text=L';">
-                <span class="hero-league-name">${leagueName} - ${match.time}</span>
+                <span class="hero-league-name">${isPinned ? '📌 ' : ''}${leagueName} - ${match.time}</span>
             </div>
             <h1 class="hero-title">${match.fixture}</h1>
-            <p class="hero-subtitle">Highest Priority Match (${leagueName})</p>
+            <p class="hero-subtitle">${isPinned ? 'Pinned League Match' : 'Upcoming Match'} (${leagueName})</p>
             <button class="btn btn-primary hero-btn view-details-btn" data-fixture='${JSON.stringify(match).replace(/'/g, "&#39;")}'>
                 <i class="fas fa-eye"></i> View Details
             </button>
@@ -1305,16 +1722,17 @@ function goToRandomSlide(fixtures) {
     const backgroundUrl = SPORT_BACKGROUNDS[sportKey] || SPORT_BACKGROUNDS['live'];
     const leagueLogo = match.logo_url || 'https://via.placeholder.com/30/0f3460/ffffff?text=L';
     const leagueName = match.league || 'Unknown League';
+    const isPinned = isPinnedLeague(leagueName);
 
     heroCarouselSection.style.backgroundImage = backgroundUrl;
     dynamicCard.innerHTML = `
         <div class="hero-content">
             <div class="hero-league-info">
                 <img src="${leagueLogo}" alt="${leagueName} Logo" class="hero-league-logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/30/0f3460/ffffff?text=L';">
-                <span class="hero-league-name">${leagueName} - ${match.time}</span>
+                <span class="hero-league-name">${isPinned ? '📌 ' : ''}${leagueName} - ${match.time}</span>
             </div>
             <h1 class="hero-title">${match.fixture}</h1>
-            <p class="hero-subtitle">Upcoming Match</p>
+            <p class="hero-subtitle">${isPinned ? 'Pinned League Match' : 'Upcoming Match'}</p>
             <button class="btn btn-primary hero-btn view-details-btn" data-fixture='${JSON.stringify(match).replace(/'/g, "&#39;")}'>
                 <i class="fas fa-eye"></i> View Details
             </button>
@@ -1335,94 +1753,33 @@ function startAutoSlide(fixtures) {
     }
 }
 
-// UPDATED: Match Grid Renderers with white cards for live matches
-function renderMatches(container, fixtures, isLive = false) {
-    container.innerHTML = ''; 
-
-    if (fixtures.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--text-secondary);">
-                <i class="fas fa-search-minus"></i> No ${isLive ? 'live' : 'scheduled'} matches available right now.
-            </div>
-        `;
-        return;
-    }
-
-    const uniqueFixtures = [];
-    const seenFixtures = new Set();
-
-    fixtures.forEach(match => {
-        const key = `${match.fixture}-${match.time}-${match.league}`;
-        if (!seenFixtures.has(key)) {
-            seenFixtures.add(key);
-            uniqueFixtures.push(match);
-        }
-    });
-
-    uniqueFixtures.forEach(match => {
-        const streamUrl = match.stream_url && match.stream_url !== 'N/A' ? match.stream_url : '#';
-        const isActuallyLive = isLive && streamUrl !== '#';
-        const buttonText = isActuallyLive ? 'Watch Live' : 'View Details';
-        const buttonBackground = isActuallyLive ? 'var(--highlight)' : 'var(--accent)';
-        const icon = isActuallyLive ? 'fas fa-eye' : 'fas fa-info-circle';
-        // UPDATED LOGO FALLBACK TO USE HIGHLIGHT COLOR
-        const logoSrc = (match.logo_url && match.logo_url !== 'N/A') ? match.logo_url : 'https://via.placeholder.com/40/e94560/ffffff?text=L';
-
-        const cardLink = document.createElement('div');
-        cardLink.classList.add('match-card-link');
-        
-        // Add class for white background if it's a live match
-        if (isActuallyLive) {
-            cardLink.classList.add('live-match');
-        } else if (!isLive && currentSport === 'live') {
-            cardLink.classList.add('scheduled-match');
-        }
-        
-        cardLink.addEventListener('click', function() {
-            openModal(match);
-        });
-
-        cardLink.innerHTML = `
-            <div class="match-card">
-                <div class="match-info">
-                    <div class="match-logo">
-                        <img src="${logoSrc}" alt="${match.league} Logo" onerror="this.onerror=null; this.src='https://via.placeholder.com/40/e94560/ffffff?text=L';">
-                    </div>
-                    <h3>${match.fixture}</h3>
-                    <p style="color: ${isActuallyLive ? 'var(--scheduled-secondary)' : 'var(--highlight)'};">
-                        ${match.league}
-                    </p>
-                    <p style="color: ${isActuallyLive ? 'var(--scheduled-secondary)' : 'var(--text-secondary)'};">
-                        ${match.time}
-                    </p>
-                </div>
-                <button class="stream-btn-visual" 
-                        style="background-color: ${buttonBackground};">
-                    <i class="${icon}"></i> ${buttonText}
-                </button>
-            </div>
-        `;
-        container.appendChild(cardLink);
-    });
-}
-
-// Footer Renderer
+// Footer Renderer with pinned league priority in exact order
 async function renderFooterLeagues(sport) {
     const fixtures = await fetchHeroFixtures(sport);
-    const uniqueLeagues = new Map();
+    const leagueMap = new Map();
 
     fixtures.forEach(match => {
-        const league = match.league;
+        const league = match.league || 'Other Leagues';
         if (league && league !== 'N/A') {
-            uniqueLeagues.set(league.toLowerCase(), league); 
+            leagueMap.set(league, {
+                name: league,
+                isPinned: isPinnedLeague(league),
+                pinnedOrder: getPinnedLeagueOrder(league),
+                isFootball: isFootballFixture(match)
+            });
         }
     });
 
-    // Sort leagues by priority
-    const sortedLeagues = Array.from(uniqueLeagues.values()).sort((a, b) => {
-        const priorityA = LEAGUE_PRIORITY[a.toLowerCase()] || LEAGUE_PRIORITY.default;
-        const priorityB = LEAGUE_PRIORITY[b.toLowerCase()] || LEAGUE_PRIORITY.default;
-        return priorityB - priorityA;
+    // Sort leagues: pinned first (in EXACT order), then other football, then others
+    const sortedLeagues = Array.from(leagueMap.values()).sort((a, b) => {
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+        if (a.isPinned && b.isPinned) {
+            return a.pinnedOrder - b.pinnedOrder;
+        }
+        if (a.isFootball && !b.isFootball) return -1;
+        if (!a.isFootball && b.isFootball) return 1;
+        return a.name.localeCompare(b.name);
     });
 
     footerLeagueLinks.innerHTML = '';
@@ -1451,8 +1808,9 @@ async function renderFooterLeagues(sport) {
                 <ul>
                     ${leaguesSlice.map(league => `
                         <li>
-                            <a href="#" onclick="navigateToSchedule({sport: '${sport}', league: '${league}'}); return false;">
-                                ${league}
+                            <a href="#" onclick="navigateToSchedule({sport: '${sport}', league: '${league.name}'}); return false;">
+                                ${league.isPinned ? '📌 ' : ''}${league.name}
+                                ${!league.isPinned && league.isFootball ? ' <span style="color: var(--highlight);">⚽</span>' : ''}
                             </a>
                         </li>
                     `).join('')}
@@ -1471,7 +1829,6 @@ function handleSearch() {
         return;
     }
 
-    // Combine all fixtures for search based on current sport
     let searchFixtures = [];
     if (currentSport === 'live') {
         searchFixtures = [...liveFixtures, ...upcomingFixtures];
@@ -1479,7 +1836,6 @@ function handleSearch() {
         searchFixtures = allFixtures;
     }
 
-    // Filter fixtures based on search term
     const filteredFixtures = searchFixtures.filter(fixture => {
         const fixtureName = fixture.fixture ? fixture.fixture.toLowerCase() : '';
         const leagueName = fixture.league ? fixture.league.toLowerCase() : '';
@@ -1491,7 +1847,6 @@ function handleSearch() {
                teamAway.includes(searchTerm);
     });
 
-    // Remove duplicates
     const uniqueFixtures = [];
     const seenFixtures = new Set();
     filteredFixtures.forEach(fixture => {
@@ -1518,10 +1873,16 @@ function displaySearchResults(results) {
             const matchStatus = getMatchStatus(fixture);
             const isLive = matchStatus === 'live';
             const pageContext = isLive ? 'Live' : 'Scheduled';
+            const isPinned = isPinnedLeague(fixture.league);
+            const isFootball = isFootballFixture(fixture);
 
             return `
                 <div class="search-result-item" data-fixture='${JSON.stringify(fixture).replace(/'/g, "&#39;")}'>
-                    <div class="match-name">${fixture.fixture} <span class="match-sport">${sportCategory}</span></div>
+                    <div class="match-name">${fixture.fixture} 
+                        <span class="match-sport">${sportCategory}</span>
+                        ${isPinned ? '<span style="color: var(--pinned-color); margin-left: 5px;">📌</span>' : ''}
+                        ${!isPinned && isFootball ? ' <span style="color: var(--highlight);">⚽</span>' : ''}
+                    </div>
                     <div class="match-league">${fixture.league} • ${fixture.time} • ${pageContext}</div>
                 </div>
             `;
@@ -1544,7 +1905,6 @@ function displaySearchResults(results) {
 window.switchSport = async function(sport) {
     currentSport = sport;
     
-    // Show loading states
     const backgroundUrl = SPORT_BACKGROUNDS[sport] || SPORT_BACKGROUNDS['live'];
     heroCarouselSection.style.backgroundImage = backgroundUrl;
     heroCarouselSection.style.backgroundSize = 'cover';
@@ -1569,7 +1929,6 @@ window.switchSport = async function(sport) {
 
     footerLeagueLinks.innerHTML = `<p style="flex: 1 1 100%; color: var(--text-secondary); text-align: center;">Loading featured leagues...</p>`;
 
-    // Fetch and render data based on sport
     if (sport === 'live') {
         const [fetchedHeroFixtures, fetchedLive, fetchedUpcoming] = await Promise.all([
             fetchHeroFixtures(sport),
@@ -1577,21 +1936,17 @@ window.switchSport = async function(sport) {
             fetchUpcomingFixtures()
         ]);
 
-        // Adjust timezone
         const heroFixtures = adjustTimezoneOffset(fetchedHeroFixtures, -1);
         const liveData = adjustTimezoneOffset(fetchedLive, -1);
         const upcomingData = adjustTimezoneOffset(fetchedUpcoming, -1);
 
-        // Store for search
         liveFixtures = liveData;
         upcomingFixtures = upcomingData;
 
-        // Get featured matches (intelligently prioritized)
         const featuredMatches = getFeaturedMatches(upcomingData);
 
         renderHeroCarousel(heroFixtures);
         
-        // Apply current dock page view
         if (currentDockPage === 'live-only') {
             showLiveOnlyView();
         } else if (currentDockPage === 'schedule-only') {
@@ -1608,16 +1963,13 @@ window.switchSport = async function(sport) {
             fetchUpcomingFixtures()
         ]);
 
-        // Adjust timezone
         const heroFixtures = adjustTimezoneOffset(fetchedHeroFixtures, -1);
         const upcomingData = adjustTimezoneOffset(fetchedUpcoming, -1);
 
-        // Store for search
         allFixtures = upcomingData;
 
         renderHeroCarousel(heroFixtures);
         
-        // Apply current dock page view
         if (currentDockPage === 'live-only') {
             showLiveOnlyView();
         } else if (currentDockPage === 'schedule-only') {
@@ -1628,7 +1980,6 @@ window.switchSport = async function(sport) {
         }
     }
 
-    // Render footer leagues
     await renderFooterLeagues(sport);
 }
 
@@ -1663,9 +2014,12 @@ function renderNotificationList() {
     notificationList.innerHTML = userReminders.map((reminder, index) => {
         const matchStatus = getMatchStatus(reminder);
         const isLive = matchStatus === 'live';
+        const isPinned = isPinnedLeague(reminder.league);
         return `
             <div class="notification-item">
-                <div class="notification-match">${reminder.fixture}</div>
+                <div class="notification-match">
+                    ${isPinned ? '📌 ' : ''}${reminder.fixture}
+                </div>
                 <div class="notification-time">${reminder.time} • ${reminder.league}</div>
                 <div class="notification-actions">
                     ${isLive ? `
@@ -1697,29 +2051,9 @@ function removeReminder(index) {
     renderNotificationList();
 }
 
-function startNotificationChecker() {
-    notificationInterval = setInterval(() => {
-        checkUpcomingMatches();
-    }, 30000);
-}
-
-function checkUpcomingMatches() {
-    const now = new Date();
-    userReminders.forEach(reminder => {
-        if (Math.random() > 0.7) {
-            showToastNotification(reminder);
-        }
-    });
-}
-
-function showToastNotification(reminder) {
-    toastMatch.textContent = reminder.fixture;
-    toastTime.textContent = `Starts at ${reminder.time}`;
-    toastNotification.classList.add('active');
-    setTimeout(() => {
-        toastNotification.classList.remove('active');
-    }, 5000);
-}
+// REMOVED: startNotificationChecker function
+// REMOVED: checkUpcomingMatches function
+// REMOVED: showToastNotification function
 
 function openModal(fixture) {
     currentModalFixture = fixture;
