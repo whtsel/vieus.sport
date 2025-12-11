@@ -1933,18 +1933,50 @@
             return '';
         }
 
+        // ===== FIXED TIME FUNCTION =====
         function formatTime(dateTime) {
             if (!dateTime) return 'TBD';
             
             try {
-                const date = new Date(dateTime);
-                if (isNaN(date.getTime())) return dateTime;
+                // Parse the date - handle various formats
+                let date;
+                if (dateTime instanceof Date) {
+                    date = dateTime;
+                } else if (typeof dateTime === 'string') {
+                    // Check if it's already in ISO format
+                    if (dateTime.includes('T')) {
+                        date = new Date(dateTime);
+                    } else {
+                        // Try to parse as local time
+                        date = new Date(dateTime);
+                        // If that fails, assume it's UTC and convert to local
+                        if (isNaN(date.getTime())) {
+                            date = new Date(dateTime + 'Z');
+                        }
+                    }
+                } else {
+                    return 'TBD';
+                }
+                
+                if (isNaN(date.getTime())) return 'TBD';
                 
                 const now = new Date();
                 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 const matchDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                 
-                const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                // Get user's local timezone offset in minutes
+                const timezoneOffset = date.getTimezoneOffset();
+                
+                // Adjust time for display (convert to local time)
+                const adjustedDate = new Date(date.getTime() - (timezoneOffset * 60000));
+                
+                // Format time in 12-hour format with AM/PM
+                let hours = adjustedDate.getHours();
+                const minutes = adjustedDate.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; // Convert 0 to 12
+                const timeStr = `${hours}:${minutes} ${ampm}`;
                 
                 if (matchDate.getTime() === today.getTime()) {
                     return `${timeStr} Today`;
@@ -1952,10 +1984,11 @@
                     return `${timeStr} Tomorrow`;
                 } else {
                     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    return `${monthNames[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
+                    return `${monthNames[adjustedDate.getMonth()]} ${adjustedDate.getDate()}, ${timeStr}`;
                 }
             } catch (e) {
-                return dateTime;
+                console.error('Error formatting time:', e, dateTime);
+                return 'TBD';
             }
         }
 
