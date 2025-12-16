@@ -1546,68 +1546,321 @@
             "wolves"
         ];
 
-        // ===== ENHANCED COMPETITION RANKING =====
-        const COMPETITION_RANKING = {
-            // Premier League - Only show matches with actual Premier League teams
+        // ===== ENHANCED LEAGUE CLASSIFICATION SYSTEM =====
+        const LEAGUE_CLASSIFICATION = {
+            // TIER 1: TOP MEN'S LEAGUES
             "premier league": { 
                 rank: 1, 
+                tier: 1,
+                type: "club_men", 
                 icon: "fas fa-crown", 
                 color: "#3d195b", 
                 hot: true, 
                 displayName: "English Premier League",
-                filterTeams: true // Flag to filter by teams
+                filterTeams: true
+            },
+            "la liga": { 
+                rank: 2, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-futbol", 
+                color: "#ff0000", 
+                hot: true, 
+                displayName: "La Liga"
+            },
+            "bundesliga": { 
+                rank: 3, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-shield-alt", 
+                color: "#dd0000", 
+                hot: true, 
+                displayName: "Bundesliga"
+            },
+            "serie a": { 
+                rank: 4, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-flag", 
+                color: "#008c45", 
+                hot: true, 
+                displayName: "Serie A"
+            },
+            "ligue 1": { 
+                rank: 5, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-star", 
+                color: "#0d5eaf", 
+                hot: true, 
+                displayName: "Ligue 1"
             },
             
-            // Top Tier Competitions - HOT
-            "uefa champions league": { rank: 2, icon: "fas fa-trophy", color: "#ffd700", hot: true, displayName: "UEFA Champions League" },
-            "la liga": { rank: 3, icon: "fas fa-futbol", color: "#ff0000", hot: true, displayName: "La Liga" },
-            "bundesliga": { rank: 4, icon: "fas fa-shield-alt", color: "#dd0000", hot: true, displayName: "Bundesliga" },
-            "serie a": { rank: 5, icon: "fas fa-flag", color: "#008c45", hot: true, displayName: "Serie A" },
-            "ligue 1": { rank: 6, icon: "fas fa-star", color: "#0d5eaf", hot: true, displayName: "Ligue 1" },
-            "europa league": { rank: 7, icon: "fas fa-trophy", color: "#ff6b00", hot: true, displayName: "UEFA Europa League" },
+            // TIER 1: EUROPEAN COMPETITIONS
+            "uefa champions league": { 
+                rank: 6, 
+                tier: 1,
+                type: "european", 
+                icon: "fas fa-trophy", 
+                color: "#ffd700", 
+                hot: true, 
+                displayName: "UEFA Champions League"
+            },
+            "europa league": { 
+                rank: 7, 
+                tier: 1,
+                type: "european", 
+                icon: "fas fa-trophy", 
+                color: "#ff6b00", 
+                hot: true, 
+                displayName: "UEFA Europa League"
+            },
             
-            // Second Tier - Major International Competitions
-            "europa conference league": { rank: 8, icon: "fas fa-medal", color: "#00a8e0", displayName: "UEFA Conference League" },
-            "world cup": { rank: 9, icon: "fas fa-globe", color: "#1e90ff", displayName: "FIFA World Cup" },
-            "euro": { rank: 10, icon: "fas fa-globe-europe", color: "#0047ab", displayName: "UEFA European Championship" },
-            "copa america": { rank: 11, icon: "fas fa-globe-americas", color: "#ffcc00", displayName: "Copa America" },
-            "african cup of nations": { rank: 12, icon: "fas fa-globe-africa", color: "#008000", displayName: "Africa Cup of Nations" },
-            "asian cup": { rank: 13, icon: "fas fa-globe-asia", color: "#ff0000", displayName: "AFC Asian Cup" },
+            // TIER 1: OTHER TOP LEAGUES
+            "primeira liga": { 
+                rank: 8, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-futbol", 
+                color: "#006600", 
+                displayName: "Primeira Liga"
+            },
+            "eredivisie": { 
+                rank: 9, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-futbol", 
+                color: "#ff6b35", 
+                displayName: "Eredivisie"
+            },
+            "scottish premiership": { 
+                rank: 10, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-futbol", 
+                color: "#003399", 
+                displayName: "Scottish Premiership"
+            },
+            "belgian pro league": { 
+                rank: 11, 
+                tier: 1,
+                type: "club_men", 
+                icon: "fas fa-futbol", 
+                color: "#ff0000", 
+                displayName: "Belgian Pro League"
+            },
             
-            // Third Tier - Domestic Cups & Important Leagues
-            "fa cup": { rank: 14, icon: "fas fa-cup", color: "#ff0000", displayName: "FA Cup" },
-            "copa del rey": { rank: 15, icon: "fas fa-crown", color: "#ffcc00", displayName: "Copa del Rey" },
-            "dfb-pokal": { rank: 16, icon: "fas fa-trophy", color: "#000000", displayName: "DFB-Pokal" },
-            "coppa italia": { rank: 17, icon: "fas fa-flag", color: "#008c45", displayName: "Coppa Italia" },
-            "coupe de france": { rank: 18, icon: "fas fa-wine-glass-alt", color: "#0055a4", displayName: "Coupe de France" },
-            "carabao cup": { rank: 19, icon: "fas fa-mug-hot", color: "#f4a300", displayName: "Carabao Cup" },
-            "community shield": { rank: 20, icon: "fas fa-shield", color: "#ff6b6b", displayName: "Community Shield" },
+            // TIER 2: SECOND DIVISION LEAGUES
+            "championship": { 
+                rank: 20, 
+                tier: 2,
+                type: "club_men", 
+                icon: "fas fa-arrow-up", 
+                color: "#0d5eaf", 
+                displayName: "EFL Championship"
+            },
+            "segunda division": { 
+                rank: 21, 
+                tier: 2,
+                type: "club_men", 
+                icon: "fas fa-arrow-down", 
+                color: "#ff0000", 
+                displayName: "La Liga 2"
+            },
+            "2. bundesliga": { 
+                rank: 22, 
+                tier: 2,
+                type: "club_men", 
+                icon: "fas fa-arrow-down", 
+                color: "#990000", 
+                displayName: "2. Bundesliga"
+            },
+            "serie b": { 
+                rank: 23, 
+                tier: 2,
+                type: "club_men", 
+                icon: "fas fa-arrow-down", 
+                color: "#006600", 
+                displayName: "Serie B"
+            },
+            "league one": { 
+                rank: 24, 
+                tier: 3,
+                type: "club_men", 
+                icon: "fas fa-chevron-up", 
+                color: "#ff6b00", 
+                displayName: "EFL League One"
+            },
+            "league two": { 
+                rank: 25, 
+                tier: 4,
+                type: "club_men", 
+                icon: "fas fa-chevron-double-up", 
+                color: "#800080", 
+                displayName: "EFL League Two"
+            },
             
-            // Other Major European Leagues
-            "eredivisie": { rank: 21, icon: "fas fa-futbol", color: "#ff6b35", displayName: "Eredivisie" },
-            "primeira liga": { rank: 22, icon: "fas fa-futbol", color: "#006600", displayName: "Primeira Liga" },
-            "scottish premiership": { rank: 23, icon: "fas fa-futbol", color: "#003399", displayName: "Scottish Premiership" },
-            "belgian pro league": { rank: 24, icon: "fas fa-futbol", color: "#ff0000", displayName: "Belgian Pro League" },
+            // WOMEN'S LEAGUES (SEPARATE CATEGORY)
+            "women": { 
+                rank: 30, 
+                tier: 1,
+                type: "club_women", 
+                icon: "fas fa-venus", 
+                color: "#ff66b2", 
+                displayName: "Women's Football",
+                keywords: ["women", "womens", "female", "frauen", "femminile"]
+            },
+            "women's super league": { 
+                rank: 31, 
+                tier: 1,
+                type: "club_women", 
+                icon: "fas fa-venus", 
+                color: "#ff3399", 
+                displayName: "Women's Super League"
+            },
+            "nwsl": { 
+                rank: 32, 
+                tier: 1,
+                type: "club_women", 
+                icon: "fas fa-venus", 
+                color: "#ff66cc", 
+                displayName: "NWSL"
+            },
             
-            // Second Division Leagues
-            "championship": { rank: 30, icon: "fas fa-arrow-up", color: "#0d5eaf", displayName: "EFL Championship" },
-            "league one": { rank: 31, icon: "fas fa-chevron-up", color: "#ff6b00", displayName: "EFL League One" },
-            "league two": { rank: 32, icon: "fas fa-chevron-double-up", color: "#800080", displayName: "EFL League Two" },
-            "segunda division": { rank: 33, icon: "fas fa-arrow-down", color: "#ff0000", displayName: "La Liga 2" },
-            "2. bundesliga": { rank: 34, icon: "fas fa-arrow-down", color: "#990000", displayName: "2. Bundesliga" },
-            "serie b": { rank: 35, icon: "fas fa-arrow-down", color: "#006600", displayName: "Serie B" },
+            // YOUTH/ACADEMY LEAGUES (SEPARATE CATEGORY)
+            "u21": { 
+                rank: 40, 
+                tier: 1,
+                type: "youth", 
+                icon: "fas fa-user-friends", 
+                color: "#00cc99", 
+                displayName: "U21 Matches",
+                keywords: ["u21", "under-21", "under 21", "reserves"]
+            },
+            "u19": { 
+                rank: 41, 
+                tier: 1,
+                type: "youth", 
+                icon: "fas fa-user-friends", 
+                color: "#00aa77", 
+                displayName: "U19 Matches",
+                keywords: ["u19", "under-19", "under 19", "junior"]
+            },
+            "u23": { 
+                rank: 42, 
+                tier: 1,
+                type: "youth", 
+                icon: "fas fa-user-friends", 
+                color: "#008855", 
+                displayName: "U23 Matches",
+                keywords: ["u23", "under-23", "under 23"]
+            },
             
-            // Youth & Women's Competitions
-            "u21": { rank: 40, icon: "fas fa-user-friends", color: "#00cc99", displayName: "U21 Matches" },
-            "u19": { rank: 41, icon: "fas fa-user-friends", color: "#00aa77", displayName: "U19 Matches" },
-            "u23": { rank: 42, icon: "fas fa-user-friends", color: "#008855", displayName: "U23 Matches" },
-            "women": { rank: 43, icon: "fas fa-venus", color: "#ff66b2", displayName: "Women's Football" },
+            // INTERNATIONAL COMPETITIONS
+            "world cup": { 
+                rank: 50, 
+                tier: 1,
+                type: "national", 
+                icon: "fas fa-globe", 
+                color: "#1e90ff", 
+                hot: true,
+                displayName: "FIFA World Cup"
+            },
+            "euro": { 
+                rank: 51, 
+                tier: 1,
+                type: "national", 
+                icon: "fas fa-globe-europe", 
+                color: "#0047ab", 
+                displayName: "UEFA European Championship"
+            },
+            "copa america": { 
+                rank: 52, 
+                tier: 1,
+                type: "national", 
+                icon: "fas fa-globe-americas", 
+                color: "#ffcc00", 
+                displayName: "Copa America"
+            },
+            "african cup of nations": { 
+                rank: 53, 
+                tier: 1,
+                type: "national", 
+                icon: "fas fa-globe-africa", 
+                color: "#008000", 
+                displayName: "Africa Cup of Nations"
+            },
             
-            // Friendlies & Other
-            "friendly": { rank: 50, icon: "fas fa-handshake", color: "#999999", displayName: "Friendly Matches" },
+            // DOMESTIC CUPS
+            "fa cup": { 
+                rank: 60, 
+                tier: 1,
+                type: "cup", 
+                icon: "fas fa-cup", 
+                color: "#ff0000", 
+                displayName: "FA Cup"
+            },
+            "copa del rey": { 
+                rank: 61, 
+                tier: 1,
+                type: "cup", 
+                icon: "fas fa-crown", 
+                color: "#ffcc00", 
+                displayName: "Copa del Rey"
+            },
+            "dfb-pokal": { 
+                rank: 62, 
+                tier: 1,
+                type: "cup", 
+                icon: "fas fa-trophy", 
+                color: "#000000", 
+                displayName: "DFB-Pokal"
+            },
+            "coppa italia": { 
+                rank: 63, 
+                tier: 1,
+                type: "cup", 
+                icon: "fas fa-flag", 
+                color: "#008c45", 
+                displayName: "Coppa Italia"
+            },
+            "carabao cup": { 
+                rank: 64, 
+                tier: 1,
+                type: "cup", 
+                icon: "fas fa-mug-hot", 
+                color: "#f4a300", 
+                displayName: "Carabao Cup"
+            },
+            "europa conference league": { 
+                rank: 65, 
+                tier: 1,
+                type: "european", 
+                icon: "fas fa-medal", 
+                color: "#00a8e0", 
+                displayName: "UEFA Conference League"
+            },
             
-            // Default for others - SHOW THE ACTUAL LEAGUE NAME
-            "other": { rank: 999, icon: "fas fa-futbol", color: "#cccccc", hot: false }
+            // FRIENDLY MATCHES
+            "friendly": { 
+                rank: 70, 
+                tier: 1,
+                type: "friendly", 
+                icon: "fas fa-handshake", 
+                color: "#999999", 
+                displayName: "Friendly Matches"
+            },
+            
+            // DEFAULT FOR OTHERS
+            "other": { 
+                rank: 999, 
+                tier: 0,
+                type: "other", 
+                icon: "fas fa-futbol", 
+                color: "#cccccc", 
+                hot: false,
+                displayName: "Other Matches"
+            }
         };
 
         // ===== DOM ELEMENTS =====
@@ -1832,14 +2085,24 @@
             renderAllMatches();
         }
 
-        // ===== ENHANCED LEAGUE IMPORTANCE CALCULATION =====
+        // ===== ENHANCED LEAGUE DETECTION FUNCTION =====
         function getCompetitionImportance(match) {
             const competitionName = match.competition || '';
             const homeTeam = getTeamName(match, 0).toLowerCase();
             const awayTeam = getTeamName(match, 1).toLowerCase();
             const nameLower = competitionName.toLowerCase();
             
-            // Special handling for Premier League - only show if teams are actual Premier League teams
+            // 1. FIRST: Check for women's leagues
+            if (containsWomenKeywords(nameLower) || containsWomenKeywords(homeTeam) || containsWomenKeywords(awayTeam)) {
+                return getWomenLeagueClassification(nameLower);
+            }
+            
+            // 2. SECOND: Check for youth leagues
+            if (containsYouthKeywords(nameLower) || containsYouthKeywords(homeTeam) || containsYouthKeywords(awayTeam)) {
+                return getYouthLeagueClassification(nameLower);
+            }
+            
+            // 3. THIRD: Special handling for Premier League
             if (nameLower.includes("premier league")) {
                 const isHomeTeamPremierLeague = PREMIER_LEAGUE_TEAMS.some(team => 
                     homeTeam.includes(team) || team.includes(homeTeam));
@@ -1847,99 +2110,173 @@
                     awayTeam.includes(team) || team.includes(awayTeam));
                 
                 if (isHomeTeamPremierLeague && isAwayTeamPremierLeague) {
-                    return COMPETITION_RANKING["premier league"];
+                    return LEAGUE_CLASSIFICATION["premier league"];
                 } else {
-                    // If not actual Premier League teams, classify based on actual competition name
-                    return getCompetitionByPartialMatch(nameLower);
+                    // If not actual Premier League teams, classify as lower division
+                    return getLeagueByPartialMatch(nameLower, true);
                 }
             }
             
-            // Check for other competitions
-            const competition = getCompetitionByPartialMatch(nameLower);
+            // 4. FOURTH: Check for known leagues with explicit tier separation
+            const league = getLeagueByPartialMatch(nameLower, false);
             
-            // If we found a known competition, return it
-            if (competition.rank < 999) {
-                return competition;
+            // 5. FIFTH: For unknown competitions, show actual name
+            if (league.rank === 999) {
+                return {
+                    rank: 999,
+                    tier: 0,
+                    type: "other",
+                    icon: "fas fa-futbol",
+                    color: "#cccccc",
+                    hot: false,
+                    displayName: competitionName || "Other Matches"
+                };
             }
             
-            // For unknown competitions, show the actual league name
-            return {
-                rank: 999,
-                icon: "fas fa-futbol",
-                color: "#cccccc",
-                hot: false,
-                displayName: competitionName || "Other Matches"
+            return league;
+        }
+
+        // Helper functions for the new classification
+        function containsWomenKeywords(text) {
+            const womenKeywords = ["women", "womens", "female", "frauen", "femminile", "women's", "wsl"];
+            return womenKeywords.some(keyword => text.includes(keyword));
+        }
+
+        function containsYouthKeywords(text) {
+            const youthKeywords = ["u21", "u19", "u23", "u18", "under-21", "under-19", "under-23", 
+                                  "reserves", "academy", "youth", "junior"];
+            return youthKeywords.some(keyword => text.includes(keyword));
+        }
+
+        function getWomenLeagueClassification(nameLower) {
+            if (nameLower.includes("super league") || nameLower.includes("wsl")) {
+                return LEAGUE_CLASSIFICATION["women's super league"];
+            }
+            if (nameLower.includes("nwsl")) {
+                return LEAGUE_CLASSIFICATION["nwsl"];
+            }
+            return LEAGUE_CLASSIFICATION["women"];
+        }
+
+        function getYouthLeagueClassification(nameLower) {
+            if (nameLower.includes("u21") || nameLower.includes("under-21")) {
+                return LEAGUE_CLASSIFICATION["u21"];
+            }
+            if (nameLower.includes("u19") || nameLower.includes("under-19")) {
+                return LEAGUE_CLASSIFICATION["u19"];
+            }
+            if (nameLower.includes("u23") || nameLower.includes("under-23")) {
+                return LEAGUE_CLASSIFICATION["u23"];
+            }
+            return LEAGUE_CLASSIFICATION["u21"]; // Default youth classification
+        }
+
+        function getLeagueByPartialMatch(nameLower, isLowerDivisionCheck = false) {
+            // Check for exact matches first
+            for (const [key, value] of Object.entries(LEAGUE_CLASSIFICATION)) {
+                if (key === "other") continue;
+                
+                // For lower division check, prioritize lower tier leagues
+                if (isLowerDivisionCheck && value.tier > 1) {
+                    if (nameLower.includes(key)) {
+                        return value;
+                    }
+                } else if (!isLowerDivisionCheck) {
+                    if (nameLower.includes(key)) {
+                        return value;
+                    }
+                }
+            }
+            
+            // Check common variations
+            const variations = {
+                "champions league": "uefa champions league",
+                "europa league": "europa league",
+                "conference league": "europa conference league",
+                "fa cup": "fa cup",
+                "carabao": "carabao cup",
+                "community shield": "community shield",
+                "scottish": "scottish premiership",
+                "belgian": "belgian pro league",
+                "championship": "championship",
+                "segunda": "segunda division",
+                "2. bundesliga": "2. bundesliga",
+                "serie b": "serie b",
+                "league 1": "league one",
+                "league one": "league one",
+                "league 2": "league two",
+                "league two": "league two",
+                "copa del rey": "copa del rey",
+                "dfb-pokal": "dfb-pokal",
+                "coppa italia": "coppa italia",
+                "coupe de france": "coupe de france",
+                "friendly": "friendly"
             };
-        }
-
-        function getCompetitionByPartialMatch(nameLower) {
-            // First check for exact keyword matches
-            for (const [key, value] of Object.entries(COMPETITION_RANKING)) {
-                if (key === "premier league" || key === "other") continue; // Skip these as already handled
-                if (nameLower.includes(key)) {
-                    return value;
+            
+            for (const [variation, leagueKey] of Object.entries(variations)) {
+                if (nameLower.includes(variation)) {
+                    return LEAGUE_CLASSIFICATION[leagueKey] || LEAGUE_CLASSIFICATION["other"];
                 }
             }
             
-            // Check for partial matches and common variations
-            if (nameLower.includes("champions league")) return COMPETITION_RANKING["uefa champions league"];
-            if (nameLower.includes("europa league")) return COMPETITION_RANKING["europa league"];
-            if (nameLower.includes("conference league")) return COMPETITION_RANKING["europa conference league"];
-            if (nameLower.includes("fa cup")) return COMPETITION_RANKING["fa cup"];
-            if (nameLower.includes("carabao")) return COMPETITION_RANKING["carabao cup"];
-            if (nameLower.includes("community shield")) return COMPETITION_RANKING["community shield"];
-            if (nameLower.includes("eredivisie")) return COMPETITION_RANKING["eredivisie"];
-            if (nameLower.includes("primeira")) return COMPETITION_RANKING["primeira liga"];
-            if (nameLower.includes("scottish")) return COMPETITION_RANKING["scottish premiership"];
-            if (nameLower.includes("belgian")) return COMPETITION_RANKING["belgian pro league"];
-            if (nameLower.includes("championship")) return COMPETITION_RANKING["championship"];
-            if (nameLower.includes("league 1") || nameLower.includes("league one")) return COMPETITION_RANKING["league one"];
-            if (nameLower.includes("league 2") || nameLower.includes("league two")) return COMPETITION_RANKING["league two"];
-            if (nameLower.includes("segunda")) return COMPETITION_RANKING["segunda division"];
-            if (nameLower.includes("2. bundesliga")) return COMPETITION_RANKING["2. bundesliga"];
-            if (nameLower.includes("serie b")) return COMPETITION_RANKING["serie b"];
-            if (nameLower.includes("u21") || nameLower.includes("under-21")) return COMPETITION_RANKING["u21"];
-            if (nameLower.includes("u19") || nameLower.includes("under-19")) return COMPETITION_RANKING["u19"];
-            if (nameLower.includes("u23") || nameLower.includes("under-23")) return COMPETITION_RANKING["u23"];
-            if (nameLower.includes("women")) return COMPETITION_RANKING["women"];
-            if (nameLower.includes("friendly")) return COMPETITION_RANKING["friendly"];
-            
-            return COMPETITION_RANKING["other"];
+            return LEAGUE_CLASSIFICATION["other"];
         }
 
-        // ===== GROUP MATCHES BY COMPETITION =====
+        // ===== IMPROVED MATCH GROUPING BY LEAGUE TYPE =====
         function groupMatchesByImportance(matches, isLive) {
             const grouped = {};
             
             matches.forEach(match => {
-                const importance = getCompetitionImportance(match);
-                const competitionName = match.competition || "Other Matches";
+                const leagueInfo = getCompetitionImportance(match);
                 
-                // Use the display name from importance or fall back to actual competition name
-                const displayName = importance.displayName || competitionName;
+                // Create group key based on league type and tier
+                let groupKey;
+                if (leagueInfo.type === "club_women") {
+                    groupKey = "Women's Football";
+                } else if (leagueInfo.type === "youth") {
+                    groupKey = "Youth/Academy Matches";
+                } else if (leagueInfo.tier > 1) {
+                    groupKey = `Lower Divisions - ${leagueInfo.displayName}`;
+                } else {
+                    // For top leagues, use their display name
+                    groupKey = leagueInfo.displayName;
+                }
                 
-                // Use competition name as key to ensure unique grouping
-                const key = displayName;
-                
-                if (!grouped[key]) {
-                    grouped[key] = {
-                        competition: competitionName,
-                        displayName: displayName,
+                if (!grouped[groupKey]) {
+                    grouped[groupKey] = {
+                        competition: match.competition || "Other Matches",
+                        displayName: groupKey,
                         matches: [],
-                        importance: importance.rank,
-                        icon: importance.icon,
-                        color: importance.color,
-                        hot: importance.hot || false
+                        importance: leagueInfo.rank,
+                        tier: leagueInfo.tier,
+                        type: leagueInfo.type,
+                        icon: leagueInfo.icon,
+                        color: leagueInfo.color,
+                        hot: leagueInfo.hot || false
                     };
                 }
-                grouped[key].matches.push(match);
+                grouped[groupKey].matches.push(match);
             });
             
-            // Convert to array
+            // Convert to array and sort
             const groupsArray = Object.values(grouped);
             
-            // Sort by importance (lower rank = more important)
-            groupsArray.sort((a, b) => a.importance - b.importance);
+            // Sort: 1) Type (club_men first), 2) Tier (lower first), 3) Rank (lower first)
+            groupsArray.sort((a, b) => {
+                // First, separate categories
+                if (a.type !== b.type) {
+                    const typeOrder = { "club_men": 1, "european": 2, "national": 3, "cup": 4, "club_women": 5, "youth": 6, "other": 7 };
+                    return (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99);
+                }
+                
+                // Then by tier (lower tier numbers first)
+                if (a.tier !== b.tier) {
+                    return a.tier - b.tier;
+                }
+                
+                // Finally by rank (lower rank numbers first)
+                return a.importance - b.importance;
+            });
             
             return groupsArray;
         }
