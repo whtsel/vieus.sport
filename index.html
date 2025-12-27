@@ -31,7 +31,6 @@
             --countdown-red: #ff4444;
             --stream-red: #ff0000;
             --gold: #ffd700;
-            --premium-gold: linear-gradient(45deg, #ffd700, #ffed4e);
         }
 
         body {
@@ -1058,14 +1057,14 @@
             border-top: 1px solid var(--glass-white);
         }
 
-        /* ===== NEW PREMIUM PLAYER MODAL STYLES ===== */
+        /* ===== EXACT PLAYER MODAL FROM FIRST CODE ===== */
         .player-modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.98);
+            background: #000;
             z-index: 3000;
             display: none;
             justify-content: center;
@@ -1075,41 +1074,108 @@
 
         .player-modal.active {
             display: flex;
-            animation: fadeIn 0.3s ease;
         }
 
         .player-container {
             width: 100%;
-            max-width: 1200px;
-            height: 80vh;
+            max-width: 1280px;
             background: #000;
-            border-radius: 12px;
+            border-radius: 0;
             overflow: hidden;
             border: 2px solid gold;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
         }
 
-        .player-header {
-            padding: 15px 20px;
+        /* Responsive Top Bar - From first code */
+        #input-bar { 
+            padding: 15px; 
+            background: #111; 
+            border-bottom: 2px solid gold;
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            align-items: center;
+        }
+        
+        @media (min-width: 768px) { 
+            #input-bar { 
+                flex-direction: row; 
+            } 
+        }
+
+        #alieztv-url { 
+            width: 100%; 
+            max-width: 500px; 
+            background: #000; 
+            border: 1px solid #444; 
+            color: #0f0; 
+            padding: 12px; 
+            border-radius: 5px; 
+            font-size: 16px;
+        }
+        
+        #load-btn { 
+            background: gold; 
+            color: #000; 
+            border: none; 
+            padding: 12px 25px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 5px; 
+            width: 100%; 
+            max-width: 200px;
+        }
+
+        /* Responsive Player Container (16:9 Aspect Ratio) - From first code */
+        .aspect-ratio-box {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 ratio calculation: 9/16 = 0.5625 */
             background: #111;
-            border-bottom: 1px solid #222;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .player-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: gold;
-            display: flex;
+        #stream-frame, #ad-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Ad Overlay - From first code */
+        #ad-overlay {
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
+            text-align: center;
+        }
+        
+        #ad-content h2 { 
+            color: gold; 
+            font-size: clamp(18px, 5vw, 28px); 
+            margin: 10px; 
+        }
+        
+        #skip-btn { 
+            margin-top: 20px; 
+            padding: 12px 30px; 
+            background: #fff; 
+            border: none; 
+            font-weight: bold; 
+            display: none; 
+            border-radius: 50px; 
+            cursor: pointer;
         }
 
         .player-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
             background: #222;
             border: 1px solid #333;
             color: #aaa;
@@ -1121,316 +1187,12 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
+            z-index: 10000;
         }
 
         .player-close:hover {
             background: gold;
             color: #000;
-        }
-
-        .player-frame-container {
-            flex: 1;
-            position: relative;
-            background: #000;
-        }
-
-        .player-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Premium Ad Overlay */
-        .premium-ad-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 20;
-            padding: 30px;
-            text-align: center;
-            background-image: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0.9));
-        }
-
-        .premium-ad-overlay h2 {
-            color: gold;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .premium-ad-overlay p {
-            color: #aaa;
-            font-size: 1.1rem;
-            max-width: 600px;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            font-weight: 300;
-        }
-
-        .premium-ad-btn {
-            background: var(--premium-gold);
-            color: #000;
-            border: none;
-            padding: 15px 50px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-            margin-top: 20px;
-        }
-
-        .premium-ad-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
-            background: linear-gradient(45deg, #ffed4e, #ffd700);
-        }
-
-        .premium-ad-btn:active {
-            transform: translateY(0);
-        }
-
-        .shield-icon {
-            font-size: 1.3rem;
-            animation: pulse-shield 2s infinite;
-        }
-
-        @keyframes pulse-shield {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .encryption-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 30px;
-            color: #0af;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .status-pulse {
-            width: 10px;
-            height: 10px;
-            background: #0af;
-            border-radius: 50%;
-            animation: status-pulse 1.5s infinite;
-        }
-
-        @keyframes status-pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
-        /* Player Controls Bar */
-        .player-controls {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-            transition: opacity 0.3s;
-        }
-
-        .player-controls.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .control-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1.1rem;
-        }
-
-        .control-btn:hover {
-            background: gold;
-            color: #000;
-            transform: scale(1.1);
-        }
-
-        .quality-selector {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .quality-selector:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Stream Quality Indicators */
-        .quality-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            margin-left: 8px;
-        }
-
-        .quality-hd {
-            background: linear-gradient(45deg, #ff3366, #ff6b6b);
-            color: white;
-        }
-
-        .quality-fhd {
-            background: linear-gradient(45deg, #2196f3, #21cbf3);
-            color: white;
-        }
-
-        .quality-uhd {
-            background: linear-gradient(45deg, #9c27b0, #e91e63);
-            color: white;
-        }
-
-        /* Stream Server Selection */
-        .server-selection {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 10;
-            display: none;
-        }
-
-        .server-selector {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid gold;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .server-selector:hover {
-            background: rgba(255, 215, 0, 0.2);
-        }
-
-        /* Loading Spinner */
-        .loading-spinner {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 15;
-            display: none;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid gold;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Error Overlay */
-        .error-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 25;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .error-overlay h3 {
-            color: #ff4444;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .error-overlay p {
-            color: #aaa;
-            font-size: 1rem;
-            margin-bottom: 25px;
-            max-width: 500px;
-        }
-
-        .retry-btn {
-            background: gold;
-            color: #000;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .retry-btn:hover {
-            background: #ffed4e;
-            transform: translateY(-2px);
-        }
-
-        /* Stream Stats */
-        .stream-stats {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            color: #0af;
-            display: none;
-            z-index: 10;
         }
 
         /* ===== RESPONSIVE DESIGN ===== */
@@ -1546,27 +1308,12 @@
                 height: 100vh;
                 border-radius: 0;
                 border: none;
+                max-width: 100%;
             }
             
-            .player-header {
-                padding: 10px 15px;
-            }
-            
-            .player-title {
-                font-size: 1rem;
-            }
-            
-            .premium-ad-overlay h2 {
-                font-size: 1.8rem;
-            }
-            
-            .premium-ad-btn {
-                padding: 12px 30px;
-                font-size: 1rem;
-            }
-            
-            .player-controls {
-                padding: 10px 15px;
+            .aspect-ratio-box {
+                height: 100%;
+                padding-top: 0;
             }
         }
 
@@ -1662,15 +1409,6 @@
             
             .stream-watch-now {
                 font-size: 0.8rem;
-            }
-            
-            .premium-ad-overlay h2 {
-                font-size: 1.5rem;
-            }
-            
-            .premium-ad-btn {
-                padding: 10px 25px;
-                font-size: 0.9rem;
             }
         }
 
@@ -1824,88 +1562,33 @@
         </div>
     </div>
 
-    <!-- NEW: PREMIUM PLAYER MODAL -->
+    <!-- EXACT PLAYER FROM FIRST CODE -->
     <div class="player-modal" id="playerModal">
         <div class="player-container">
-            <div class="player-header">
-                <div class="player-title">
-                    <i class="fas fa-play-circle"></i>
-                    <span id="playerMatchTitle">Premium Stream</span>
-                </div>
-                <button class="player-close" id="playerClose">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
+            <button class="player-close" id="playerClose">
+                <i class="fas fa-times"></i>
+            </button>
             
-            <div class="player-frame-container">
-                <!-- Premium Ad Overlay -->
-                <div class="premium-ad-overlay" id="premiumAdOverlay">
-                    <h2>SIGNAL ENCRYPTED</h2>
-                    <p>Your stream is protected by military-grade encryption. All pop-ups and redirects have been blocked for your security.</p>
-                    <button class="premium-ad-btn" id="premiumAdBtn">
-                        <i class="fas fa-shield-alt shield-icon"></i>
-                        START STREAMING
-                    </button>
-                    <div class="encryption-status">
-                        <div class="status-pulse"></div>
-                        <span>ENCRYPTION ACTIVE • NO POP-UPS • NO REDIRECTS</span>
+            <div id="input-bar">
+                <input type="text" id="alieztv-url" placeholder="Paste Aliez Link here...">
+                <button id="load-btn">LOAD STREAM</button>
+            </div>
+
+            <div class="aspect-ratio-box">
+                <div id="ad-overlay">
+                    <div id="ad-content">
+                        <h2>LINK EXTRACTED</h2>
+                        <p>Stream starts in <span id="timer">10</span>s</p>
                     </div>
+                    <button id="skip-btn">SKIP & WATCH</button>
                 </div>
-                
-                <!-- Loading Spinner -->
-                <div class="loading-spinner" id="loadingSpinner">
-                    <div class="spinner"></div>
-                </div>
-                
-                <!-- Error Overlay -->
-                <div class="error-overlay" id="errorOverlay">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff4444; margin-bottom: 20px;"></i>
-                    <h3>STREAM CONNECTION FAILED</h3>
-                    <p>The stream could not be loaded. Please try another server or check your internet connection.</p>
-                    <button class="retry-btn" id="retryBtn">
-                        <i class="fas fa-redo"></i> RETRY CONNECTION
-                    </button>
-                </div>
-                
-                <!-- Stream Stats -->
-                <div class="stream-stats" id="streamStats">
-                    <i class="fas fa-wifi"></i> <span id="bitrate">0</span> kbps • 
-                    <i class="fas fa-clock"></i> <span id="bufferTime">0</span>s
-                </div>
-                
-                <!-- Server Selection -->
-                <div class="server-selection" id="serverSelection">
-                    <select class="server-selector" id="serverSelector">
-                        <option value="">Select Server</option>
-                    </select>
-                </div>
-                
-                <!-- Player Controls -->
-                <div class="player-controls" id="playerControls">
-                    <div class="control-left">
-                        <button class="control-btn" id="playPauseBtn">
-                            <i class="fas fa-pause"></i>
-                        </button>
-                        <select class="quality-selector" id="qualitySelector">
-                            <option value="auto">Auto Quality</option>
-                            <option value="hd">HD 720p</option>
-                            <option value="fhd">FHD 1080p</option>
-                            <option value="uhd">UHD 4K</option>
-                        </select>
-                    </div>
-                    <div class="control-right">
-                        <button class="control-btn" id="fullscreenBtn">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Player iframe with sandbox and referrer policies -->
-                <iframe id="playerFrame" class="player-frame" 
-                        sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-forms"
-                        allow="autoplay; fullscreen; picture-in-picture"
-                        referrerpolicy="no-referrer"
-                        allowfullscreen></iframe>
+
+                <iframe 
+                    id="stream-frame"
+                    src="" 
+                    sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+                    allowfullscreen>
+                </iframe>
             </div>
         </div>
     </div>
@@ -1914,20 +1597,6 @@
         // ===== CONFIGURATION =====
         const API_BASE_URL = 'https://raw.githubusercontent.com/whtsel/try/main/index.json';
         
-        // Premium Aliez.tv proxy servers (rotated for reliability)
-        const ALIEZ_SERVERS = [
-            'https://emb.apl385.me/player/live.php',
-            'https://cdn.livetv872.me/webplayer2.php',
-            'https://cdn.livetv869.me/webplayer2.php',
-            'https://cdn.livetv865.me/webplayer2.php'
-        ];
-        
-        // Alternative fallback servers
-        const FALLBACK_SERVERS = [
-            'https://sportstreambest.onrender.com/aliez',
-            'https://streamproxy.pages.dev/aliez'
-        ];
-
         // ===== UPDATED PRIORITIZED COMPETITION ORDER - FIXED FOR EPL ONLY =====
         const PRIORITIZED_COMPETITIONS = [
             { 
@@ -2055,43 +1724,120 @@
         const notificationMessage = document.getElementById('notificationMessage');
         const notificationClose = document.getElementById('notificationClose');
         
-        // Player modal elements
+        // Player modal elements (from first code)
         const playerModal = document.getElementById('playerModal');
         const playerClose = document.getElementById('playerClose');
-        const playerFrame = document.getElementById('playerFrame');
-        const playerMatchTitle = document.getElementById('playerMatchTitle');
-        const premiumAdOverlay = document.getElementById('premiumAdOverlay');
-        const premiumAdBtn = document.getElementById('premiumAdBtn');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const errorOverlay = document.getElementById('errorOverlay');
-        const retryBtn = document.getElementById('retryBtn');
-        const streamStats = document.getElementById('streamStats');
-        const serverSelection = document.getElementById('serverSelection');
-        const serverSelector = document.getElementById('serverSelector');
-        const playerControls = document.getElementById('playerControls');
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const qualitySelector = document.getElementById('qualitySelector');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const bitrateElement = document.getElementById('bitrate');
-        const bufferTimeElement = document.getElementById('bufferTime');
+        const aliezInput = document.getElementById('alieztv-url');
+        const loadBtn = document.getElementById('load-btn');
+        const streamFrame = document.getElementById('stream-frame');
+        const adOverlay = document.getElementById('ad-overlay');
+        const timerSpan = document.getElementById('timer');
+        const skipBtn = document.getElementById('skip-btn');
 
         // ===== GLOBAL VARIABLES =====
         let allMatches = [];
         let filteredMatches = [];
         let currentView = 'home';
         let currentModalMatch = null;
-        let userReminders = JSON.parse(localStorage.getItem('vieusReminders')) || [];
         let countdownTimers = {};
-        let currentStreamId = null;
-        let currentStreamUrl = null;
-        let currentServerIndex = 0;
-        let isPlaying = false;
-        let isFullscreen = false;
-        let serverRetryCount = 0;
-        const MAX_RETRIES = 3;
-        
-        // Stream server rotation
-        let availableServers = [...ALIEZ_SERVERS];
+        let timeLeft = 10;
+        let countdown;
+
+        // ===== EXACT PLAYER FUNCTIONS FROM FIRST CODE =====
+        function updatePlayer() {
+            const inputUrl = document.getElementById('alieztv-url').value;
+            
+            // Extract the channel ID (c=) from the pasted URL
+            const match = inputUrl.match(/[?&]c=(\d+)/);
+            
+            if (match && match[1]) {
+                const channelID = match[1];
+                // Build the APL385 destination link
+                streamFrame.src = `https://emb.apl385.me/player/live.php?id=${channelID}&autoplay=1`;
+                startAdSequence();
+            } else {
+                alert("Invalid link! Please ensure it contains 'c=CHANNEL_ID'");
+            }
+        }
+
+        function startAdSequence() {
+            timeLeft = 10;
+            adOverlay.style.display = 'flex';
+            skipBtn.style.display = 'none';
+
+            if(countdown) clearInterval(countdown);
+            countdown = setInterval(() => {
+                timeLeft--;
+                timerSpan.innerText = timeLeft;
+                if (timeLeft <= 5) skipBtn.style.display = 'block';
+                if (timeLeft <= 0) skipAd();
+            }, 1000);
+        }
+
+        function skipAd() {
+            clearInterval(countdown);
+            document.getElementById('ad-overlay').style.display = 'none';
+        }
+
+        function closePlayer() {
+            playerModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            // Reset player
+            streamFrame.src = '';
+            adOverlay.style.display = 'none';
+            if (countdown) {
+                clearInterval(countdown);
+                countdown = null;
+            }
+            
+            // Reset input
+            aliezInput.value = '';
+        }
+
+        // ===== EXTRACT CHANNEL ID FROM STREAM URL =====
+        function extractChannelId(streamUrl) {
+            if (!streamUrl) return null;
+            
+            // Try to extract channel ID from Aliez.tv URL
+            const match = streamUrl.match(/[?&]c=(\d+)/);
+            
+            if (match && match[1]) {
+                return match[1];
+            }
+            
+            // Try alternative pattern
+            const altMatch = streamUrl.match(/id=(\d+)/);
+            if (altMatch && altMatch[1]) {
+                return altMatch[1];
+            }
+            
+            return null;
+        }
+
+        // ===== LOAD STREAM FROM FIXTURE =====
+        function loadStreamFromFixture(streamUrl, matchTitle) {
+            const channelId = extractChannelId(streamUrl);
+            
+            if (!channelId) {
+                alert("Could not extract channel ID from stream URL");
+                return;
+            }
+            
+            // Show player modal
+            playerModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Auto-fill the input with the stream URL
+            aliezInput.value = streamUrl;
+            
+            // Auto-load the stream
+            streamFrame.src = `https://emb.apl385.me/player/live.php?id=${channelId}&autoplay=1`;
+            startAdSequence();
+            
+            // Show notification
+            showNotification('Stream Loading', 'Premium stream is starting...');
+        }
 
         // ===== UPDATED LOGO HANDLING FUNCTION =====
         function getTeamLogo(teamName, logoUrl) {
@@ -2205,15 +1951,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             setupEventListeners();
-            
-            // Initialize server selector
-            updateServerSelector();
-            
-            // Hide controls initially
-            playerControls.classList.add('hidden');
-            
-            // Simulate stream stats
-            simulateStreamStats();
         });
 
         // ===== UPDATED COUNTDOWN TIMER FUNCTION =====
@@ -2431,79 +2168,6 @@
             
             liveContainer.innerHTML = errorHtml;
             upcomingContainer.innerHTML = errorHtml;
-        }
-
-        // ===== EXTRACT ALIEZ.TV STREAM ID =====
-        function extractAliezStreamId(streamUrl) {
-            if (!streamUrl) return null;
-            
-            // Try to extract channel ID from Aliez.tv URL
-            const patterns = [
-                /id=(\d+)/i,  // Extract from id= parameter
-                /c=(\d+)/i,   // Extract from c= parameter
-                /channel.*?(\d+)/i,
-                /(\d+)(?=&|$)/i  // Look for standalone numbers
-            ];
-            
-            for (const pattern of patterns) {
-                const match = streamUrl.match(pattern);
-                if (match && match[1]) {
-                    return match[1];
-                }
-            }
-            
-            // Default fallback ID
-            return "245303";
-        }
-
-        // ===== BUILD SECURE STREAM URL =====
-        function buildSecureStreamUrl(streamId) {
-            // Rotate through available servers for load balancing
-            const server = availableServers[currentServerIndex];
-            
-            // Increment server index for next request
-            currentServerIndex = (currentServerIndex + 1) % availableServers.length;
-            
-            // Determine URL structure based on server
-            if (server.includes('player/live.php')) {
-                // emb.apl385.me format
-                return `${server}?id=${streamId}&autoplay=1&no_popups=1&referrer=${encodeURIComponent(window.location.origin)}`;
-            } else if (server.includes('webplayer2.php')) {
-                // cdn.livetv format
-                return `${server}?t=alieztv&c=${streamId}&lang=en&autoplay=1&no_redirects=1`;
-            } else {
-                // Generic format
-                return `${server}?id=${streamId}&autoplay=1`;
-            }
-        }
-
-        // ===== UPDATE SERVER SELECTOR =====
-        function updateServerSelector() {
-            serverSelector.innerHTML = '<option value="">Select Server</option>';
-            
-            availableServers.forEach((server, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `Server ${index + 1} (${new URL(server).hostname})`;
-                if (index === currentServerIndex) {
-                    option.selected = true;
-                }
-                serverSelector.appendChild(option);
-            });
-        }
-
-        // ===== SIMULATE STREAM STATS =====
-        function simulateStreamStats() {
-            setInterval(() => {
-                if (isPlaying && playerFrame.src) {
-                    // Simulate realistic bitrate (1-5 Mbps)
-                    const bitrate = Math.floor(Math.random() * 4000) + 1000;
-                    const bufferTime = (Math.random() * 2).toFixed(1);
-                    
-                    bitrateElement.textContent = bitrate;
-                    bufferTimeElement.textContent = bufferTime;
-                }
-            }, 2000);
         }
 
         // ===== SEARCH FUNCTIONALITY =====
@@ -2916,26 +2580,15 @@
             streamsList.innerHTML = aliezStreams.map((stream, index) => {
                 const language = stream.language || 'English';
                 const quality = stream.bitrate || stream.stream_type || 'HD';
-                const streamId = extractAliezStreamId(stream.stream_url);
-                
-                // Add quality badge
-                let qualityBadge = '';
-                if (quality.toLowerCase().includes('4k') || quality.toLowerCase().includes('uhd')) {
-                    qualityBadge = '<span class="quality-badge quality-uhd">4K</span>';
-                } else if (quality.toLowerCase().includes('1080') || quality.toLowerCase().includes('fhd')) {
-                    qualityBadge = '<span class="quality-badge quality-fhd">FHD</span>';
-                } else if (quality.toLowerCase().includes('720') || quality.toLowerCase().includes('hd')) {
-                    qualityBadge = '<span class="quality-badge quality-hd">HD</span>';
-                }
                 
                 return `
-                    <div class="stream-item" onclick="playAliezStream('${streamId}', '${currentModalMatch.matchup}', '${language}', '${quality}')">
+                    <div class="stream-item" onclick="loadStreamFromFixture('${stream.stream_url}', '${currentModalMatch.matchup}')">
                         <div class="stream-tv-icon">
                             <i class="fas fa-tv"></i>
                         </div>
                         <div class="stream-watch-now">PREMIUM STREAM</div>
-                        <div class="stream-language">${language} ${qualityBadge}</div>
-                        <div class="stream-quality">Encrypted • No Pop-ups</div>
+                        <div class="stream-language">${language}</div>
+                        <div class="stream-quality">${quality} • No Pop-ups</div>
                     </div>
                 `;
             }).join('');
@@ -2949,186 +2602,37 @@
             currentModalMatch = null;
         }
 
-        // ===== PLAY ALIEZ.TV STREAM =====
-        function playAliezStream(streamId, matchTitle, language = 'English', quality = 'HD') {
-            closeModal();
+        // ===== HELPER FUNCTIONS =====
+        function formatTime(dateTime) {
+            if (!dateTime) return 'TBD';
             
-            currentStreamId = streamId;
-            
-            // Show player modal
-            playerMatchTitle.textContent = matchTitle;
-            playerModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            
-            // Reset state
-            isPlaying = false;
-            serverRetryCount = 0;
-            errorOverlay.style.display = 'none';
-            streamStats.style.display = 'none';
-            serverSelection.style.display = 'none';
-            playerControls.classList.add('hidden');
-            
-            // Show premium ad overlay
-            premiumAdOverlay.style.display = 'flex';
-            
-            // Clear player frame
-            playerFrame.src = '';
-            
-            // Update quality selector based on stream quality
-            if (quality.toLowerCase().includes('4k') || quality.toLowerCase().includes('uhd')) {
-                qualitySelector.value = 'uhd';
-            } else if (quality.toLowerCase().includes('1080') || quality.toLowerCase().includes('fhd')) {
-                qualitySelector.value = 'fhd';
-            } else {
-                qualitySelector.value = 'hd';
-            }
-            
-            // Show notification
-            showNotification('Premium Stream', 'Click START STREAMING to begin');
-        }
-
-        function startPremiumStream() {
-            // Hide ad overlay
-            premiumAdOverlay.style.display = 'none';
-            
-            // Show loading spinner
-            loadingSpinner.style.display = 'block';
-            
-            // Hide error overlay if shown
-            errorOverlay.style.display = 'none';
-            
-            // Build secure stream URL
-            const streamUrl = buildSecureStreamUrl(currentStreamId);
-            currentStreamUrl = streamUrl;
-            
-            console.log('Loading encrypted stream:', streamUrl);
-            
-            // Load player with timeout
-            const loadTimeout = setTimeout(() => {
-                if (!isPlaying) {
-                    handleStreamError();
+            try {
+                // Handle ISO format
+                if (dateTime.includes('T')) {
+                    const date = new Date(dateTime);
+                    if (isNaN(date.getTime())) return dateTime;
+                    
+                    const now = new Date();
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    const matchDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                    
+                    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    if (matchDate.getTime() === today.getTime()) {
+                        return `${timeStr} Today`;
+                    } else if (matchDate.getTime() === today.getTime() + 86400000) {
+                        return `${timeStr} Tomorrow`;
+                    } else {
+                        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        return `${monthNames[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
+                    }
+                } else {
+                    // Handle "27 December at 13:30" format
+                    return dateTime.replace(' at ', ' ');
                 }
-            }, 10000);
-            
-            // Set up player frame
-            playerFrame.onload = function() {
-                clearTimeout(loadTimeout);
-                loadingSpinner.style.display = 'none';
-                isPlaying = true;
-                serverSelection.style.display = 'block';
-                streamStats.style.display = 'block';
-                playerControls.classList.remove('hidden');
-                serverRetryCount = 0;
-                
-                showNotification('Stream Started', 'Premium stream is now playing');
-            };
-            
-            playerFrame.onerror = function() {
-                clearTimeout(loadTimeout);
-                handleStreamError();
-            };
-            
-            // Load the stream
-            playerFrame.src = streamUrl;
-        }
-
-        function handleStreamError() {
-            loadingSpinner.style.display = 'none';
-            
-            if (serverRetryCount < MAX_RETRIES) {
-                serverRetryCount++;
-                
-                // Try next server
-                currentServerIndex = (currentServerIndex + 1) % availableServers.length;
-                
-                // Show notification
-                showNotification(`Retrying`, `Server ${serverRetryCount}/${MAX_RETRIES}`, false);
-                
-                // Retry after delay
-                setTimeout(startPremiumStream, 1000);
-            } else {
-                // Show error overlay
-                errorOverlay.style.display = 'flex';
-                isPlaying = false;
-                
-                // Add fallback servers if available
-                if (availableServers.length === ALIEZ_SERVERS.length) {
-                    availableServers = [...availableServers, ...FALLBACK_SERVERS];
-                    updateServerSelector();
-                }
-            }
-        }
-
-        function retryConnection() {
-            errorOverlay.style.display = 'none';
-            serverRetryCount = 0;
-            startPremiumStream();
-        }
-
-        function changeServer() {
-            const selectedIndex = parseInt(serverSelector.value);
-            if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < availableServers.length) {
-                currentServerIndex = selectedIndex;
-                startPremiumStream();
-            }
-        }
-
-        function togglePlayPause() {
-            if (isPlaying) {
-                // Pause logic would go here if we had direct control
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-                isPlaying = false;
-            } else {
-                // Play logic
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                isPlaying = true;
-            }
-        }
-
-        function toggleFullscreen() {
-            if (!isFullscreen) {
-                const container = playerModal.querySelector('.player-container');
-                if (container.requestFullscreen) {
-                    container.requestFullscreen();
-                } else if (container.webkitRequestFullscreen) {
-                    container.webkitRequestFullscreen();
-                } else if (container.msRequestFullscreen) {
-                    container.msRequestFullscreen();
-                }
-                isFullscreen = true;
-                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-                isFullscreen = false;
-                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
-            }
-        }
-
-        function closePlayer() {
-            playerModal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            
-            // Reset state
-            isPlaying = false;
-            playerFrame.src = '';
-            premiumAdOverlay.style.display = 'flex';
-            errorOverlay.style.display = 'none';
-            loadingSpinner.style.display = 'none';
-            streamStats.style.display = 'none';
-            serverSelection.style.display = 'none';
-            playerControls.classList.add('hidden');
-            
-            // Exit fullscreen if active
-            if (isFullscreen && document.exitFullscreen) {
-                document.exitFullscreen();
-                isFullscreen = false;
-                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            } catch (e) {
+                console.error('Error formatting time:', e);
+                return dateTime;
             }
         }
 
@@ -3166,40 +2670,6 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ===== HELPER FUNCTIONS =====
-        function formatTime(dateTime) {
-            if (!dateTime) return 'TBD';
-            
-            try {
-                // Handle ISO format
-                if (dateTime.includes('T')) {
-                    const date = new Date(dateTime);
-                    if (isNaN(date.getTime())) return dateTime;
-                    
-                    const now = new Date();
-                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                    const matchDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                    
-                    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    
-                    if (matchDate.getTime() === today.getTime()) {
-                        return `${timeStr} Today`;
-                    } else if (matchDate.getTime() === today.getTime() + 86400000) {
-                        return `${timeStr} Tomorrow`;
-                    } else {
-                        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                        return `${monthNames[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
-                    }
-                } else {
-                    // Handle "27 December at 13:30" format
-                    return dateTime.replace(' at ', ' ');
-                }
-            } catch (e) {
-                console.error('Error formatting time:', e);
-                return dateTime;
-            }
-        }
-
         // ===== EVENT LISTENERS =====
         function setupEventListeners() {
             backBtn.addEventListener('click', () => switchView('home'));
@@ -3222,8 +2692,7 @@
                     stream.stream_url && stream.stream_url.includes('webplayer2.php?t=alieztv')
                 );
                 if (aliezStream) {
-                    const streamId = extractAliezStreamId(aliezStream.stream_url);
-                    playAliezStream(streamId, currentModalMatch.matchup);
+                    loadStreamFromFixture(aliezStream.stream_url, currentModalMatch.matchup);
                 }
             });
             
@@ -3244,53 +2713,20 @@
             // Notification close
             notificationClose.addEventListener('click', hideNotification);
             
-            // Player modal events
+            // Player modal events (from first code)
             playerClose.addEventListener('click', closePlayer);
             playerModal.addEventListener('click', function(e) {
                 if (e.target === playerModal) closePlayer();
             });
             
-            premiumAdBtn.addEventListener('click', startPremiumStream);
-            retryBtn.addEventListener('click', retryConnection);
-            
-            // Player controls
-            playPauseBtn.addEventListener('click', togglePlayPause);
-            fullscreenBtn.addEventListener('click', toggleFullscreen);
-            qualitySelector.addEventListener('change', function() {
-                // Quality change logic would go here
-                showNotification('Quality Changed', `Stream quality set to ${this.options[this.selectedIndex].text}`);
+            loadBtn.addEventListener('click', updatePlayer);
+            aliezInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    updatePlayer();
+                }
             });
             
-            serverSelector.addEventListener('change', changeServer);
-            
-            // Fullscreen change detection
-            document.addEventListener('fullscreenchange', handleFullscreenChange);
-            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-            document.addEventListener('msfullscreenchange', handleFullscreenChange);
-            
-            function handleFullscreenChange() {
-                isFullscreen = !!(document.fullscreenElement || 
-                                document.webkitFullscreenElement || 
-                                document.msFullscreenElement);
-                
-                fullscreenBtn.innerHTML = isFullscreen ? 
-                    '<i class="fas fa-compress"></i>' : 
-                    '<i class="fas fa-expand"></i>';
-            }
-            
-            // Auto-hide controls
-            let controlsTimeout;
-            playerFrameContainer = document.querySelector('.player-frame-container');
-            
-            playerFrameContainer.addEventListener('mousemove', function() {
-                playerControls.classList.remove('hidden');
-                clearTimeout(controlsTimeout);
-                controlsTimeout = setTimeout(() => {
-                    if (isPlaying) {
-                        playerControls.classList.add('hidden');
-                    }
-                }, 3000);
-            });
+            skipBtn.addEventListener('click', skipAd);
             
             // Auto-refresh data every 2 minutes
             setInterval(() => {
@@ -3312,11 +2748,11 @@
         window.performSearch = performSearch;
         window.showNotification = showNotification;
         window.hideNotification = hideNotification;
-        window.playAliezStream = playAliezStream;
+        window.loadStreamFromFixture = loadStreamFromFixture;
         window.closePlayer = closePlayer;
-        window.startPremiumStream = startPremiumStream;
-        window.retryConnection = retryConnection;
-        window.changeServer = changeServer;
+        window.updatePlayer = updatePlayer;
+        window.startAdSequence = startAdSequence;
+        window.skipAd = skipAd;
     </script>
 </body>
 </html>
