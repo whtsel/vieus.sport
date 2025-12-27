@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vieus Sport - Football Streams</title>
+    <title>Vieus Sport - Premium Football Streams</title>
+    <meta name="referrer" content="no-referrer">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         /* ===== UPDATED STYLES ===== */
@@ -29,6 +30,8 @@
             --blue-gray: #5d7b9d;
             --countdown-red: #ff4444;
             --stream-red: #ff0000;
+            --gold: #ffd700;
+            --premium-gold: linear-gradient(45deg, #ffd700, #ffed4e);
         }
 
         body {
@@ -320,8 +323,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* REMOVED HOT CORNER FOR MATCH CARDS */
-
         /* LIVE CARDS - WINE RED */
         .match-card.live {
             border: 2px solid var(--wine-red);
@@ -449,12 +450,12 @@
             margin-bottom: 12px;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid #f5f5f5; /* Light border */
-            background: #f8f8f8; /* Ash white background */
+            border: 3px solid #f5f5f5;
+            background: #f8f8f8;
             padding: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), /* Dark outer glow */
-                        0 0 30px rgba(0, 0, 0, 0.4), /* Darker glow */
-                        inset 0 0 15px rgba(255, 255, 255, 0.9); /* Inner highlight */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6),
+                        0 0 30px rgba(0, 0, 0, 0.4),
+                        inset 0 0 15px rgba(255, 255, 255, 0.9);
             transition: all 0.4s ease;
             position: relative;
         }
@@ -467,14 +468,13 @@
                         inset 0 0 15px rgba(255, 255, 255, 0.9);
         }
 
-        /* Dark glow effect on hover */
         .team-logo:hover {
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), /* Darker outer glow */
-                        0 0 40px rgba(0, 0, 0, 0.6), /* Strong dark glow */
-                        0 0 0 3px rgba(0, 0, 0, 0.3), /* Dark outline */
-                        inset 0 0 20px rgba(255, 255, 255, 0.8); /* Brinner inner highlight */
-            border-color: rgba(0, 204, 255, 0.5); /* Subtle cyan border on hover */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8),
+                        0 0 40px rgba(0, 0, 0, 0.6),
+                        0 0 0 3px rgba(0, 0, 0, 0.3),
+                        inset 0 0 20px rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 204, 255, 0.5);
         }
 
         .match-card.upcoming .team-logo:hover {
@@ -483,28 +483,6 @@
                         0 0 0 3px rgba(255, 107, 53, 0.3),
                         inset 0 0 20px rgba(255, 255, 255, 0.8);
             border-color: rgba(255, 107, 53, 0.5);
-        }
-
-        /* Enhanced dark glow effect */
-        .team-logo::before {
-            content: '';
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
-            background: radial-gradient(circle at center, 
-                rgba(0, 0, 0, 0.4) 0%,
-                rgba(0, 0, 0, 0.2) 50%,
-                transparent 70%);
-            border-radius: 50%;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .team-logo:hover::before {
-            opacity: 1;
         }
 
         .team-logo img {
@@ -825,7 +803,7 @@
             border-radius: 50%;
             overflow: hidden;
             border: 3px solid var(--cream-yellow);
-            background: #f8f8f8; /* Ash white background */
+            background: #f8f8f8;
             padding: 15px;
             margin-bottom: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6),
@@ -905,22 +883,6 @@
             background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(139, 0, 0, 0.3));
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
-        }
-
-        .stream-item::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 0, 0, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .stream-item:hover::before {
-            opacity: 1;
         }
 
         /* Red TV logo */
@@ -1019,17 +981,6 @@
             transform: translateY(-2px);
         }
 
-        .modal-btn.secondary {
-            background: var(--graphite);
-            color: var(--text-light);
-            border: 2px solid var(--glass-white);
-        }
-
-        .modal-btn.secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
         /* ===== MOBILE DOCK ===== */
         .mobile-dock {
             position: fixed;
@@ -1070,7 +1021,6 @@
             justify-content: center;
         }
 
-        /* Specific styling for each dock item */
         .dock-item[data-view="home"] i {
             background: var(--cyan);
             color: #000;
@@ -1087,11 +1037,6 @@
             color: #333;
         }
 
-        .dock-item[data-view="account"] i {
-            background: #555;
-            color: #fff;
-        }
-
         .dock-item:hover {
             color: var(--text-light);
         }
@@ -1105,32 +1050,387 @@
             transform: scale(1.1);
         }
 
-        .dock-item.active[data-view="home"] i {
-            background: var(--cyan);
-            color: #000;
-        }
-
-        .dock-item.active[data-view="live"] i {
-            background: #ff3333;
-            color: #000;
-        }
-
-        .dock-item.active[data-view="upcoming"] i {
-            background: #ffcc99;
-            color: #333;
-        }
-
-        .dock-item.active[data-view="account"] i {
-            background: #777;
-            color: #fff;
-        }
-
         /* ===== FOOTER ===== */
         footer {
             background: var(--graphite);
             padding: 30px 0 80px;
             margin-top: 40px;
             border-top: 1px solid var(--glass-white);
+        }
+
+        /* ===== NEW PREMIUM PLAYER MODAL STYLES ===== */
+        .player-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 3000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .player-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .player-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid gold;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+        }
+
+        .player-header {
+            padding: 15px 20px;
+            background: #111;
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .player-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: gold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-close {
+            background: #222;
+            border: 1px solid #333;
+            color: #aaa;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .player-close:hover {
+            background: gold;
+            color: #000;
+        }
+
+        .player-frame-container {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
+        .player-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Premium Ad Overlay */
+        .premium-ad-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            padding: 30px;
+            text-align: center;
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.1), rgba(0, 0, 0, 0.9));
+        }
+
+        .premium-ad-overlay h2 {
+            color: gold;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .premium-ad-overlay p {
+            color: #aaa;
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        .premium-ad-btn {
+            background: var(--premium-gold);
+            color: #000;
+            border: none;
+            padding: 15px 50px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
+            margin-top: 20px;
+        }
+
+        .premium-ad-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(45deg, #ffed4e, #ffd700);
+        }
+
+        .premium-ad-btn:active {
+            transform: translateY(0);
+        }
+
+        .shield-icon {
+            font-size: 1.3rem;
+            animation: pulse-shield 2s infinite;
+        }
+
+        @keyframes pulse-shield {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .encryption-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            color: #0af;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .status-pulse {
+            width: 10px;
+            height: 10px;
+            background: #0af;
+            border-radius: 50%;
+            animation: status-pulse 1.5s infinite;
+        }
+
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Player Controls Bar */
+        .player-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.3s;
+        }
+
+        .player-controls.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .control-btn:hover {
+            background: gold;
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        .quality-selector {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quality-selector:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Stream Quality Indicators */
+        .quality-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .quality-hd {
+            background: linear-gradient(45deg, #ff3366, #ff6b6b);
+            color: white;
+        }
+
+        .quality-fhd {
+            background: linear-gradient(45deg, #2196f3, #21cbf3);
+            color: white;
+        }
+
+        .quality-uhd {
+            background: linear-gradient(45deg, #9c27b0, #e91e63);
+            color: white;
+        }
+
+        /* Stream Server Selection */
+        .server-selection {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            display: none;
+        }
+
+        .server-selector {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid gold;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .server-selector:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 15;
+            display: none;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid gold;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error Overlay */
+        .error-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 25;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .error-overlay h3 {
+            color: #ff4444;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .error-overlay p {
+            color: #aaa;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            max-width: 500px;
+        }
+
+        .retry-btn {
+            background: gold;
+            color: #000;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .retry-btn:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+        }
+
+        /* Stream Stats */
+        .stream-stats {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #0af;
+            display: none;
+            z-index: 10;
         }
 
         /* ===== RESPONSIVE DESIGN ===== */
@@ -1183,7 +1483,6 @@
                 max-width: calc(100% - 20px);
             }
             
-            /* FIX: Mobile league name display */
             .league-header-content {
                 width: calc(100% - 90px);
             }
@@ -1198,7 +1497,6 @@
                 font-size: 0.8rem;
             }
             
-            /* Adjust team logos for mobile */
             .team-logo {
                 width: 70px;
                 height: 70px;
@@ -1231,7 +1529,6 @@
                 font-size: 1rem;
             }
             
-            /* Stream items for mobile */
             .streams-list {
                 grid-template-columns: 1fr;
             }
@@ -1242,6 +1539,34 @@
             
             .stream-watch-now {
                 font-size: 0.85rem;
+            }
+            
+            /* Player modal mobile */
+            .player-container {
+                height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
+            
+            .player-header {
+                padding: 10px 15px;
+            }
+            
+            .player-title {
+                font-size: 1rem;
+            }
+            
+            .premium-ad-overlay h2 {
+                font-size: 1.8rem;
+            }
+            
+            .premium-ad-btn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+            
+            .player-controls {
+                padding: 10px 15px;
             }
         }
 
@@ -1292,7 +1617,6 @@
                 width: 100%;
             }
             
-            /* Further adjustments for very small screens */
             .league-name {
                 font-size: 0.9rem;
             }
@@ -1338,6 +1662,15 @@
             
             .stream-watch-now {
                 font-size: 0.8rem;
+            }
+            
+            .premium-ad-overlay h2 {
+                font-size: 1.5rem;
+            }
+            
+            .premium-ad-btn {
+                padding: 10px 25px;
+                font-size: 0.9rem;
             }
         }
 
@@ -1385,8 +1718,8 @@
             <i class="fas fa-bell"></i>
         </div>
         <div class="notification-content">
-            <div class="notification-title" id="notificationTitle">Reminder Set!</div>
-            <div class="notification-message" id="notificationMessage">You'll be notified before the match starts</div>
+            <div class="notification-title" id="notificationTitle">Stream Ready!</div>
+            <div class="notification-message" id="notificationMessage">Premium stream loaded successfully</div>
         </div>
         <button class="notification-close" id="notificationClose">
             <i class="fas fa-times"></i>
@@ -1423,7 +1756,7 @@
         </div>
         
         <div id="upcomingContainer">
-            <!-- Dynamically populated with league grouping -->
+            <!-- Dynamically populated with prioritized league grouping -->
         </div>
     </div>
 
@@ -1441,10 +1774,6 @@
             <i class="far fa-clock"></i>
             <span>Upcoming</span>
         </div>
-        <div class="dock-item" data-view="account">
-            <i class="fas fa-user-circle"></i>
-            <span>Account</span>
-        </div>
     </div>
 
     <!-- Footer -->
@@ -1453,10 +1782,10 @@
             <div class="footer-content">
                 <div class="footer-logo">
                     <i class="fas fa-play-circle"></i>
-                    Vieus Sport - Football Streaming
+                    Vieus Sport - Premium Football Streaming
                 </div>
                 <div class="copyright">
-                    &copy; 2024 Vieus Sport. Premium football streaming experience.
+                    &copy; 2024 Vieus Sport. All rights reserved.
                 </div>
             </div>
         </div>
@@ -1471,14 +1800,10 @@
                 </button>
                 <h3 class="modal-title" id="modalTitle">Match Details</h3>
                 <div class="modal-competition" id="modalCompetition"></div>
-                <div class="modal-rating" id="modalRating">★★★</div>
+                <div class="modal-rating" id="modalRating">★★★★★</div>
             </div>
             
             <div class="modal-teams" id="modalTeams">
-                <!-- Dynamically populated -->
-            </div>
-            
-            <div class="modal-info-strip" id="modalInfoStrip">
                 <!-- Dynamically populated -->
             </div>
             
@@ -1492,9 +1817,6 @@
             </div>
             
             <div class="modal-actions">
-                <button class="modal-btn secondary" id="modalReminderBtn">
-                    <i class="far fa-bell"></i> SET REMINDER
-                </button>
                 <button class="modal-btn primary" id="modalWatchBtn">
                     <i class="fas fa-play"></i> WATCH NOW
                 </button>
@@ -1502,366 +1824,217 @@
         </div>
     </div>
 
+    <!-- NEW: PREMIUM PLAYER MODAL -->
+    <div class="player-modal" id="playerModal">
+        <div class="player-container">
+            <div class="player-header">
+                <div class="player-title">
+                    <i class="fas fa-play-circle"></i>
+                    <span id="playerMatchTitle">Premium Stream</span>
+                </div>
+                <button class="player-close" id="playerClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="player-frame-container">
+                <!-- Premium Ad Overlay -->
+                <div class="premium-ad-overlay" id="premiumAdOverlay">
+                    <h2>SIGNAL ENCRYPTED</h2>
+                    <p>Your stream is protected by military-grade encryption. All pop-ups and redirects have been blocked for your security.</p>
+                    <button class="premium-ad-btn" id="premiumAdBtn">
+                        <i class="fas fa-shield-alt shield-icon"></i>
+                        START STREAMING
+                    </button>
+                    <div class="encryption-status">
+                        <div class="status-pulse"></div>
+                        <span>ENCRYPTION ACTIVE • NO POP-UPS • NO REDIRECTS</span>
+                    </div>
+                </div>
+                
+                <!-- Loading Spinner -->
+                <div class="loading-spinner" id="loadingSpinner">
+                    <div class="spinner"></div>
+                </div>
+                
+                <!-- Error Overlay -->
+                <div class="error-overlay" id="errorOverlay">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff4444; margin-bottom: 20px;"></i>
+                    <h3>STREAM CONNECTION FAILED</h3>
+                    <p>The stream could not be loaded. Please try another server or check your internet connection.</p>
+                    <button class="retry-btn" id="retryBtn">
+                        <i class="fas fa-redo"></i> RETRY CONNECTION
+                    </button>
+                </div>
+                
+                <!-- Stream Stats -->
+                <div class="stream-stats" id="streamStats">
+                    <i class="fas fa-wifi"></i> <span id="bitrate">0</span> kbps • 
+                    <i class="fas fa-clock"></i> <span id="bufferTime">0</span>s
+                </div>
+                
+                <!-- Server Selection -->
+                <div class="server-selection" id="serverSelection">
+                    <select class="server-selector" id="serverSelector">
+                        <option value="">Select Server</option>
+                    </select>
+                </div>
+                
+                <!-- Player Controls -->
+                <div class="player-controls" id="playerControls">
+                    <div class="control-left">
+                        <button class="control-btn" id="playPauseBtn">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <select class="quality-selector" id="qualitySelector">
+                            <option value="auto">Auto Quality</option>
+                            <option value="hd">HD 720p</option>
+                            <option value="fhd">FHD 1080p</option>
+                            <option value="uhd">UHD 4K</option>
+                        </select>
+                    </div>
+                    <div class="control-right">
+                        <button class="control-btn" id="fullscreenBtn">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Player iframe with sandbox and referrer policies -->
+                <iframe id="playerFrame" class="player-frame" 
+                        sandbox="allow-scripts allow-same-origin allow-presentation allow-popups allow-forms"
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        referrerpolicy="no-referrer"
+                        allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ===== CONFIGURATION =====
-        const API_BASE_URL = 'https://vieus-app.onrender.com';
-        let allMatches = [];
-        let filteredMatches = [];
-        let currentView = 'home';
-        let currentModalMatch = null;
-        let userReminders = JSON.parse(localStorage.getItem('vieusReminders')) || [];
-        let countdownTimers = {};
-
-        // ===== PREMIER LEAGUE TEAMS =====
-        const PREMIER_LEAGUE_TEAMS = [
-            "arsenal",
-            "aston villa",
-            "bournemouth",
-            "afc bournemouth",
-            "brentford",
-            "brighton & hove albion",
-            "brighton",
-            "chelsea",
-            "crystal palace",
-            "everton",
-            "fulham",
-            "ipswich town",
-            "ipswich",
-            "leicester city",
-            "leicester",
-            "liverpool",
-            "manchester city",
-            "man city",
-            "manchester united",
-            "man united",
-            "newcastle united",
-            "newcastle",
-            "nottingham forest",
-            "southampton",
-            "tottenham hotspur",
-            "tottenham",
-            "west ham united",
-            "west ham",
-            "wolverhampton wanderers",
-            "wolves"
+        const API_BASE_URL = 'https://raw.githubusercontent.com/whtsel/try/main/index.json';
+        
+        // Premium Aliez.tv proxy servers (rotated for reliability)
+        const ALIEZ_SERVERS = [
+            'https://emb.apl385.me/player/live.php',
+            'https://cdn.livetv872.me/webplayer2.php',
+            'https://cdn.livetv869.me/webplayer2.php',
+            'https://cdn.livetv865.me/webplayer2.php'
+        ];
+        
+        // Alternative fallback servers
+        const FALLBACK_SERVERS = [
+            'https://sportstreambest.onrender.com/aliez',
+            'https://streamproxy.pages.dev/aliez'
         ];
 
-        // ===== ENHANCED LEAGUE CLASSIFICATION SYSTEM =====
-        const LEAGUE_CLASSIFICATION = {
-            // TIER 1: TOP MEN'S LEAGUES
-            "premier league": { 
-                rank: 1, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-crown", 
-                color: "#3d195b", 
-                hot: true, 
-                displayName: "English Premier League",
-                filterTeams: true
+        // ===== UPDATED PRIORITIZED COMPETITION ORDER - FIXED FOR EPL ONLY =====
+        const PRIORITIZED_COMPETITIONS = [
+            { 
+                name: "Premier League", 
+                keywords: ["england. premier league"],
+                rank: 1,
+                icon: "fas fa-crown",
+                color: "#3d195b",
+                hot: true
             },
-            "la liga": { 
-                rank: 2, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-futbol", 
-                color: "#ff0000", 
-                hot: true, 
-                displayName: "La Liga"
+            { 
+                name: "FIFA World Cup (Qualifiers)", 
+                keywords: ["world cup", "world cup qualifiers", "fifa world cup"],
+                rank: 2,
+                icon: "fas fa-globe-americas",
+                color: "#1e90ff",
+                hot: true
             },
-            "bundesliga": { 
-                rank: 3, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-shield-alt", 
-                color: "#dd0000", 
-                hot: true, 
-                displayName: "Bundesliga"
+            { 
+                name: "FIFA Club World Cup", 
+                keywords: ["club world cup", "fifa club world"],
+                rank: 3,
+                icon: "fas fa-trophy",
+                color: "#ffd700",
+                hot: true
             },
-            "serie a": { 
-                rank: 4, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-flag", 
-                color: "#008c45", 
-                hot: true, 
-                displayName: "Serie A"
+            { 
+                name: "AFCON (Africa Cup of Nations)", 
+                keywords: ["afcon", "africa cup", "african cup", "africa cup of nations"],
+                rank: 4,
+                icon: "fas fa-globe-africa",
+                color: "#008000",
+                hot: true
             },
-            "ligue 1": { 
-                rank: 5, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-star", 
-                color: "#0d5eaf", 
-                hot: true, 
-                displayName: "Ligue 1"
+            { 
+                name: "UEFA Champions League", 
+                keywords: ["champions league", "uefa champions"],
+                rank: 5,
+                icon: "fas fa-star",
+                color: "#ff6b00",
+                hot: true
             },
-            
-            // TIER 1: EUROPEAN COMPETITIONS
-            "uefa champions league": { 
-                rank: 6, 
-                tier: 1,
-                type: "european", 
-                icon: "fas fa-trophy", 
-                color: "#ffd700", 
-                hot: true, 
-                displayName: "UEFA Champions League"
+            { 
+                name: "La Liga", 
+                keywords: ["spain. la liga"],
+                rank: 6,
+                icon: "fas fa-futbol",
+                color: "#ff0000",
+                hot: true
             },
-            "europa league": { 
-                rank: 7, 
-                tier: 1,
-                type: "european", 
-                icon: "fas fa-trophy", 
-                color: "#ff6b00", 
-                hot: true, 
-                displayName: "UEFA Europa League"
+            { 
+                name: "Bundesliga", 
+                keywords: ["germany. bundesliga"],
+                rank: 7,
+                icon: "fas fa-shield-alt",
+                color: "#dd0000",
+                hot: true
             },
-            
-            // TIER 1: OTHER TOP LEAGUES
-            "primeira liga": { 
-                rank: 8, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-futbol", 
-                color: "#006600", 
-                displayName: "Primeira Liga"
+            { 
+                name: "Serie A", 
+                keywords: ["italy. serie a"],
+                rank: 8,
+                icon: "fas fa-flag",
+                color: "#008c45",
+                hot: true
             },
-            "eredivisie": { 
-                rank: 9, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-futbol", 
-                color: "#ff6b35", 
-                displayName: "Eredivisie"
+            { 
+                name: "Ligue 1", 
+                keywords: ["france. ligue 1"],
+                rank: 9,
+                icon: "fas fa-star",
+                color: "#0d5eaf",
+                hot: true
             },
-            "scottish premiership": { 
-                rank: 10, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-futbol", 
-                color: "#003399", 
-                displayName: "Scottish Premiership"
+            { 
+                name: "Europa League", 
+                keywords: ["europa league", "uefa europa"],
+                rank: 10,
+                icon: "fas fa-trophy",
+                color: "#ff4500",
+                hot: false
             },
-            "belgian pro league": { 
-                rank: 11, 
-                tier: 1,
-                type: "club_men", 
-                icon: "fas fa-futbol", 
-                color: "#ff0000", 
-                displayName: "Belgian Pro League"
+            { 
+                name: "FA Cup / Carabao Cup", 
+                keywords: ["fa cup", "carabao cup", "efl cup"],
+                rank: 11,
+                icon: "fas fa-cup",
+                color: "#ff0000",
+                hot: false
             },
-            
-            // TIER 2: SECOND DIVISION LEAGUES
-            "championship": { 
-                rank: 20, 
-                tier: 2,
-                type: "club_men", 
-                icon: "fas fa-arrow-up", 
-                color: "#0d5eaf", 
-                displayName: "EFL Championship"
+            { 
+                name: "Nations League", 
+                keywords: ["nations league", "uefa nations"],
+                rank: 12,
+                icon: "fas fa-flag",
+                color: "#4b0082",
+                hot: false
             },
-            "segunda division": { 
-                rank: 21, 
-                tier: 2,
-                type: "club_men", 
-                icon: "fas fa-arrow-down", 
-                color: "#ff0000", 
-                displayName: "La Liga 2"
-            },
-            "2. bundesliga": { 
-                rank: 22, 
-                tier: 2,
-                type: "club_men", 
-                icon: "fas fa-arrow-down", 
-                color: "#990000", 
-                displayName: "2. Bundesliga"
-            },
-            "serie b": { 
-                rank: 23, 
-                tier: 2,
-                type: "club_men", 
-                icon: "fas fa-arrow-down", 
-                color: "#006600", 
-                displayName: "Serie B"
-            },
-            "league one": { 
-                rank: 24, 
-                tier: 3,
-                type: "club_men", 
-                icon: "fas fa-chevron-up", 
-                color: "#ff6b00", 
-                displayName: "EFL League One"
-            },
-            "league two": { 
-                rank: 25, 
-                tier: 4,
-                type: "club_men", 
-                icon: "fas fa-chevron-double-up", 
-                color: "#800080", 
-                displayName: "EFL League Two"
-            },
-            
-            // WOMEN'S LEAGUES (SEPARATE CATEGORY)
-            "women": { 
-                rank: 30, 
-                tier: 1,
-                type: "club_women", 
-                icon: "fas fa-venus", 
-                color: "#ff66b2", 
-                displayName: "Women's Football",
-                keywords: ["women", "womens", "female", "frauen", "femminile"]
-            },
-            "women's super league": { 
-                rank: 31, 
-                tier: 1,
-                type: "club_women", 
-                icon: "fas fa-venus", 
-                color: "#ff3399", 
-                displayName: "Women's Super League"
-            },
-            "nwsl": { 
-                rank: 32, 
-                tier: 1,
-                type: "club_women", 
-                icon: "fas fa-venus", 
-                color: "#ff66cc", 
-                displayName: "NWSL"
-            },
-            
-            // YOUTH/ACADEMY LEAGUES (SEPARATE CATEGORY)
-            "u21": { 
-                rank: 40, 
-                tier: 1,
-                type: "youth", 
-                icon: "fas fa-user-friends", 
-                color: "#00cc99", 
-                displayName: "U21 Matches",
-                keywords: ["u21", "under-21", "under 21", "reserves"]
-            },
-            "u19": { 
-                rank: 41, 
-                tier: 1,
-                type: "youth", 
-                icon: "fas fa-user-friends", 
-                color: "#00aa77", 
-                displayName: "U19 Matches",
-                keywords: ["u19", "under-19", "under 19", "junior"]
-            },
-            "u23": { 
-                rank: 42, 
-                tier: 1,
-                type: "youth", 
-                icon: "fas fa-user-friends", 
-                color: "#008855", 
-                displayName: "U23 Matches",
-                keywords: ["u23", "under-23", "under 23"]
-            },
-            
-            // INTERNATIONAL COMPETITIONS
-            "world cup": { 
-                rank: 50, 
-                tier: 1,
-                type: "national", 
-                icon: "fas fa-globe", 
-                color: "#1e90ff", 
-                hot: true,
-                displayName: "FIFA World Cup"
-            },
-            "euro": { 
-                rank: 51, 
-                tier: 1,
-                type: "national", 
-                icon: "fas fa-globe-europe", 
-                color: "#0047ab", 
-                displayName: "UEFA European Championship"
-            },
-            "copa america": { 
-                rank: 52, 
-                tier: 1,
-                type: "national", 
-                icon: "fas fa-globe-americas", 
-                color: "#ffcc00", 
-                displayName: "Copa America"
-            },
-            "african cup of nations": { 
-                rank: 53, 
-                tier: 1,
-                type: "national", 
-                icon: "fas fa-globe-africa", 
-                color: "#008000", 
-                displayName: "Africa Cup of Nations"
-            },
-            
-            // DOMESTIC CUPS
-            "fa cup": { 
-                rank: 60, 
-                tier: 1,
-                type: "cup", 
-                icon: "fas fa-cup", 
-                color: "#ff0000", 
-                displayName: "FA Cup"
-            },
-            "copa del rey": { 
-                rank: 61, 
-                tier: 1,
-                type: "cup", 
-                icon: "fas fa-crown", 
-                color: "#ffcc00", 
-                displayName: "Copa del Rey"
-            },
-            "dfb-pokal": { 
-                rank: 62, 
-                tier: 1,
-                type: "cup", 
-                icon: "fas fa-trophy", 
-                color: "#000000", 
-                displayName: "DFB-Pokal"
-            },
-            "coppa italia": { 
-                rank: 63, 
-                tier: 1,
-                type: "cup", 
-                icon: "fas fa-flag", 
-                color: "#008c45", 
-                displayName: "Coppa Italia"
-            },
-            "carabao cup": { 
-                rank: 64, 
-                tier: 1,
-                type: "cup", 
-                icon: "fas fa-mug-hot", 
-                color: "#f4a300", 
-                displayName: "Carabao Cup"
-            },
-            "europa conference league": { 
-                rank: 65, 
-                tier: 1,
-                type: "european", 
-                icon: "fas fa-medal", 
-                color: "#00a8e0", 
-                displayName: "UEFA Conference League"
-            },
-            
-            // FRIENDLY MATCHES
-            "friendly": { 
-                rank: 70, 
-                tier: 1,
-                type: "friendly", 
-                icon: "fas fa-handshake", 
-                color: "#999999", 
-                displayName: "Friendly Matches"
-            },
-            
-            // DEFAULT FOR OTHERS
-            "other": { 
-                rank: 999, 
-                tier: 0,
-                type: "other", 
-                icon: "fas fa-futbol", 
-                color: "#cccccc", 
-                hot: false,
-                displayName: "Other Matches"
+            { 
+                name: "EFL Championship", 
+                keywords: ["england. championship"],
+                rank: 13,
+                icon: "fas fa-arrow-up",
+                color: "#0d5eaf",
+                hot: false
             }
-        };
+        ];
 
         // ===== DOM ELEMENTS =====
         const liveContainer = document.getElementById('liveContainer');
@@ -1874,7 +2047,6 @@
         const modalClose = document.getElementById('modalClose');
         const streamsList = document.getElementById('streamsList');
         const modalStreams = document.getElementById('modalStreams');
-        const modalReminderBtn = document.getElementById('modalReminderBtn');
         const modalWatchBtn = document.getElementById('modalWatchBtn');
         const searchBar = document.getElementById('searchBar');
         const searchBtn = document.getElementById('searchBtn');
@@ -1882,17 +2054,172 @@
         const notificationTitle = document.getElementById('notificationTitle');
         const notificationMessage = document.getElementById('notificationMessage');
         const notificationClose = document.getElementById('notificationClose');
+        
+        // Player modal elements
+        const playerModal = document.getElementById('playerModal');
+        const playerClose = document.getElementById('playerClose');
+        const playerFrame = document.getElementById('playerFrame');
+        const playerMatchTitle = document.getElementById('playerMatchTitle');
+        const premiumAdOverlay = document.getElementById('premiumAdOverlay');
+        const premiumAdBtn = document.getElementById('premiumAdBtn');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorOverlay = document.getElementById('errorOverlay');
+        const retryBtn = document.getElementById('retryBtn');
+        const streamStats = document.getElementById('streamStats');
+        const serverSelection = document.getElementById('serverSelection');
+        const serverSelector = document.getElementById('serverSelector');
+        const playerControls = document.getElementById('playerControls');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const qualitySelector = document.getElementById('qualitySelector');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const bitrateElement = document.getElementById('bitrate');
+        const bufferTimeElement = document.getElementById('bufferTime');
+
+        // ===== GLOBAL VARIABLES =====
+        let allMatches = [];
+        let filteredMatches = [];
+        let currentView = 'home';
+        let currentModalMatch = null;
+        let userReminders = JSON.parse(localStorage.getItem('vieusReminders')) || [];
+        let countdownTimers = {};
+        let currentStreamId = null;
+        let currentStreamUrl = null;
+        let currentServerIndex = 0;
+        let isPlaying = false;
+        let isFullscreen = false;
+        let serverRetryCount = 0;
+        const MAX_RETRIES = 3;
+        
+        // Stream server rotation
+        let availableServers = [...ALIEZ_SERVERS];
+
+        // ===== UPDATED LOGO HANDLING FUNCTION =====
+        function getTeamLogo(teamName, logoUrl) {
+            // Clean team name for matching
+            const cleanTeamName = teamName.trim()
+                .replace('(W)', '') // Remove (W) from women's teams
+                .trim();
+            
+            // If a valid logo URL is provided in the data, ALWAYS use it first
+            if (logoUrl && 
+                typeof logoUrl === 'string' && 
+                logoUrl.trim() !== '' && 
+                logoUrl !== 'null' && 
+                logoUrl !== 'undefined' &&
+                !logoUrl.includes('placeholder')) {
+                
+                // Fix the URL to ensure it's properly formatted
+                let fixedUrl = logoUrl.trim();
+                
+                // Fix common URL issues
+                if (fixedUrl.startsWith('//')) {
+                    fixedUrl = 'https:' + fixedUrl;
+                }
+                
+                if (fixedUrl.startsWith('/')) {
+                    fixedUrl = 'https:' + fixedUrl;
+                }
+                
+                // Ensure it's a proper URL
+                if (fixedUrl.startsWith('http')) {
+                    // Return the original logo URL from the data
+                    return fixedUrl;
+                }
+            }
+            
+            // Only if no logo URL is provided in the data, use fallback system
+            // Clean team name for fallback matching
+            const cleanName = cleanTeamName.toLowerCase();
+            
+            // Specific team fallbacks for common teams in your data
+            const teamFallbacks = {
+                // Italy Serie A
+                'parma': 'https://upload.wikimedia.org/wikipedia/en/0/00/Parma_Calcio_1913_logo.svg',
+                'fiorentina': 'https://upload.wikimedia.org/wikipedia/en/2/2b/ACF_Fiorentina_logo.svg',
+                'lecce': 'https://upload.wikimedia.org/wikipedia/en/5/5d/U.S._Lecce_logo.svg',
+                'como': 'https://upload.wikimedia.org/wikipedia/en/7/7d/Como_1907_logo.svg',
+                'torino': 'https://upload.wikimedia.org/wikipedia/en/1/1d/Torino_FC_Logo.svg',
+                'cagliari': 'https://upload.wikimedia.org/wikipedia/en/6/69/Cagliari_Calcio_1920_logo.svg',
+                'udinese': 'https://upload.wikimedia.org/wikipedia/en/7/71/Udinese_Calcio_logo.svg',
+                'lazio': 'https://upload.wikimedia.org/wikipedia/en/5/53/SS_Lazio_logo.svg',
+                'juventus': 'https://upload.wikimedia.org/wikipedia/en/0/0c/Juventus_FC_2017_logo.svg',
+                
+                // England Premier League
+                'arsenal': 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
+                'manchester city': 'https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg',
+                'liverpool': 'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg',
+                'chelsea': 'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg',
+                'aston villa': 'https://upload.wikimedia.org/wikipedia/en/9/9f/Aston_Villa_logo.svg',
+                'west ham united': 'https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg',
+                'wolverhampton': 'https://upload.wikimedia.org/wikipedia/en/f/fc/Wolverhampton_Wanderers.svg',
+                'brentford': 'https://upload.wikimedia.org/wikipedia/en/2/2a/Brentford_FC_crest.svg',
+                'bournemouth': 'https://upload.wikimedia.org/wikipedia/en/e/e5/AFC_Bournemouth_%282013%29.svg',
+                'burnley': 'https://upload.wikimedia.org/wikipedia/en/6/6d/Burnley_FC_Logo.svg',
+                'everton': 'https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg',
+                'nottingham forest': 'https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_F.C._logo.svg',
+                'fulham': 'https://upload.wikimedia.org/wikipedia/en/e/eb/Fulham_FC_%28shield%29.svg',
+                'brighton': 'https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg',
+                
+                // Australia A-League
+                'adelaide united': 'https://upload.wikimedia.org/wikipedia/en/6/6d/Adelaide_United_FC_logo.svg',
+                'western sydney': 'https://upload.wikimedia.org/wikipedia/en/8/8b/Western_Sydney_Wanderers_FC_logo.svg',
+                'sydney': 'https://upload.wikimedia.org/wikipedia/en/4/48/Sydney_FC_logo.svg',
+                'auckland': 'https://upload.wikimedia.org/wikipedia/en/thumb/4/43/Auckland_City_FC_logo.svg/256px-Auckland_City_FC_logo.svg.png',
+                'central coast mariners': 'https://upload.wikimedia.org/wikipedia/en/5/5b/Central_Coast_Mariners_FC_logo.svg',
+                'melbourne victory': 'https://upload.wikimedia.org/wikipedia/en/2/28/Melbourne_Victory_FC_logo.svg',
+                'newcastle jets': 'https://upload.wikimedia.org/wikipedia/en/6/69/Newcastle_Jets_FC_logo.svg',
+                'canberra united': 'https://upload.wikimedia.org/wikipedia/en/8/8c/Canberra_United_FC_logo.svg',
+                
+                // Saudi Pro League
+                'al nassr': 'https://upload.wikimedia.org/wikipedia/en/9/9e/Al_Nassr_FC_Logo.svg',
+                'al-ittihad jeddah': 'https://upload.wikimedia.org/wikipedia/en/4/41/Al-Ittihad_Club_%28Jeddah%29_Logo.svg',
+                'al-shabab riyadh': 'https://upload.wikimedia.org/wikipedia/en/c/c5/Al-Shabab_FC_%28Riyadh%29_logo.svg',
+                
+                // Other teams
+                'hibernian': 'https://upload.wikimedia.org/wikipedia/en/5/5a/Hibernian_FC_logo.svg',
+                'hearts': 'https://upload.wikimedia.org/wikipedia/en/5/5d/Heart_of_Midlothian_FC_logo.svg',
+                'celtic': 'https://upload.wikimedia.org/wikipedia/en/5/5d/Celtic_FC_logo.svg',
+                'rangers': 'https://upload.wikimedia.org/wikipedia/en/4/43/Rangers_FC_logo.svg',
+                
+                // Default fallback
+                'default': 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
+            };
+            
+            // Check for exact match first
+            if (teamFallbacks[cleanName]) {
+                return teamFallbacks[cleanName];
+            }
+            
+            // Check for partial matches
+            for (const [key, url] of Object.entries(teamFallbacks)) {
+                if (cleanName.includes(key) || key.includes(cleanName)) {
+                    return url;
+                }
+            }
+            
+            // If no match found, generate a colored avatar
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanTeamName)}&background=random&color=fff&size=256&bold=true`;
+        }
 
         // ===== INITIALIZATION =====
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             setupEventListeners();
+            
+            // Initialize server selector
+            updateServerSelector();
+            
+            // Hide controls initially
+            playerControls.classList.add('hidden');
+            
+            // Simulate stream stats
+            simulateStreamStats();
         });
 
-        // ===== UPDATED COUNTDOWN TIMER FUNCTION WITH SECONDS =====
+        // ===== UPDATED COUNTDOWN TIMER FUNCTION =====
         function updateCountdown(matchId, startTime) {
             const now = new Date();
-            const matchDate = new Date(correctTime(startTime) || startTime);
+            const matchDate = new Date(startTime);
             
             if (isNaN(matchDate.getTime())) {
                 return "Invalid time";
@@ -1901,7 +2228,6 @@
             const diff = matchDate.getTime() - now.getTime();
             
             if (diff <= 0) {
-                // Match has started
                 if (countdownTimers[matchId]) {
                     clearInterval(countdownTimers[matchId]);
                     delete countdownTimers[matchId];
@@ -1924,7 +2250,6 @@
         }
 
         function startCountdownTimers() {
-            // Get all upcoming match cards
             const upcomingCards = document.querySelectorAll('.match-card.upcoming');
             
             upcomingCards.forEach(card => {
@@ -1933,18 +2258,15 @@
                 
                 if (!matchId || !startTime) return;
                 
-                // Clear existing timer for this match
                 if (countdownTimers[matchId]) {
                     clearInterval(countdownTimers[matchId]);
                 }
                 
-                // Update immediately
                 const countdownElement = card.querySelector('.countdown-timer');
                 if (countdownElement) {
                     countdownElement.textContent = updateCountdown(matchId, startTime);
                 }
                 
-                // Set up interval for updates
                 countdownTimers[matchId] = setInterval(() => {
                     const countdownElement = card.querySelector('.countdown-timer');
                     if (countdownElement) {
@@ -1960,25 +2282,7 @@
             });
         }
 
-        // ===== TIME CORRECTION FUNCTION =====
-        function correctTime(dateTime) {
-            if (!dateTime) return null;
-            
-            try {
-                const date = new Date(dateTime);
-                if (isNaN(date.getTime())) return dateTime;
-                
-                // Subtract 1 hour
-                date.setHours(date.getHours() - 1);
-                
-                return date.toISOString();
-            } catch (e) {
-                console.error('Error correcting time:', e);
-                return dateTime;
-            }
-        }
-
-        // ===== DATA LOADING =====
+        // ===== UPDATED DATA LOADING WITH DUPLICATE REMOVAL =====
         async function loadData() {
             try {
                 showLoading();
@@ -1988,42 +2292,107 @@
                 
                 const data = await response.json();
                 
-                // Filter matches - STRICTLY require both logos
-                allMatches = data.filter(match => {
-                    const homeTeam = getTeamName(match, 0);
-                    const awayTeam = getTeamName(match, 1);
-                    const homeLogo = getTeamLogo(match, 0);
-                    const awayLogo = getTeamLogo(match, 1);
+                // Use Set to track unique matches
+                const uniqueMatches = new Map();
+                const liveMatches = [];
+                const upcomingMatches = [];
+                
+                data.forEach(match => {
+                    // Basic validation
+                    if (!match.matchup || !match.team_logos) return;
                     
-                    // Strict validation for team names
-                    const hasValidHomeName = homeTeam && homeTeam.trim() !== '' && 
-                                            !/^\d+$/.test(homeTeam.replace(/\s/g, '')) &&
-                                            homeTeam !== 'Home Team' && 
+                    // Split matchup to get team names
+                    const teams = match.matchup.split(' – ');
+                    if (teams.length < 2) return;
+                    
+                    const homeTeam = teams[0]?.trim();
+                    const awayTeam = teams[1]?.trim();
+                    
+                    // Validate team names
+                    const hasValidHomeName = homeTeam && 
+                                            homeTeam.trim() !== '' && 
                                             homeTeam.length > 2 &&
-                                            !homeTeam.toLowerCase().includes('undefined');
+                                            !homeTeam.toLowerCase().includes('undefined') &&
+                                            homeTeam !== 'Simulcast';
                     
-                    const hasValidAwayName = awayTeam && awayTeam.trim() !== '' && 
-                                            !/^\d+$/.test(awayTeam.replace(/\s/g, '')) &&
-                                            awayTeam !== 'Away Team' && 
+                    const hasValidAwayName = awayTeam && 
+                                            awayTeam.trim() !== '' && 
                                             awayTeam.length > 2 &&
-                                            !awayTeam.toLowerCase().includes('undefined');
+                                            !awayTeam.toLowerCase().includes('undefined') &&
+                                            awayTeam !== 'Simulcast';
                     
-                    // Check if BOTH logos exist and are valid URLs
-                    const hasBothLogos = homeLogo && 
-                                        homeLogo.trim() !== '' && 
-                                        homeLogo !== 'null' &&
-                                        homeLogo !== 'undefined' &&
-                                        !homeLogo.includes('placeholder') &&
-                                        awayLogo && 
-                                        awayLogo.trim() !== '' && 
-                                        awayLogo !== 'null' &&
-                                        awayLogo !== 'undefined' &&
-                                        !awayLogo.includes('placeholder');
+                    if (!hasValidHomeName || !hasValidAwayName) return;
                     
-                    return hasValidHomeName && hasValidAwayName && hasBothLogos;
+                    // Check for team logos (with more lenient validation)
+                    const homeLogo = match.team_logos[0]?.logo_url;
+                    const awayLogo = match.team_logos[1]?.logo_url;
+                    
+                    // Accept any logo URL as long as it's not obviously broken
+                    const hasAnyLogo = (homeLogo && typeof homeLogo === 'string' && homeLogo.trim() !== '') ||
+                                     (awayLogo && typeof awayLogo === 'string' && awayLogo.trim() !== '');
+                    
+                    if (!hasAnyLogo) return;
+                    
+                    // Create unique identifier for duplicate checking
+                    const uniqueId = `${homeTeam}-${awayTeam}-${match.competition || ''}-${match.parsed_datetime || ''}`;
+                    
+                    // Skip if we've already seen this match
+                    if (uniqueMatches.has(uniqueId)) {
+                        console.log(`Skipping duplicate: ${homeTeam} vs ${awayTeam}`);
+                        return;
+                    }
+                    
+                    // Mark as seen
+                    uniqueMatches.set(uniqueId, true);
+                    
+                    // Check if match is from prioritized competition
+                    const priorityInfo = getCompetitionPriority(match);
+                    
+                    // For LIVE matches: require Aliez.tv streams
+                    if (match.is_live) {
+                        // Check for Aliez.tv streams
+                        const hasAliezStream = match.streams && match.streams.some(stream => 
+                            stream.stream_url && 
+                            (stream.stream_url.includes('aliez.tv') || 
+                             stream.stream_url.includes('alieztv') ||
+                             stream.stream_url.includes('webplayer2.php?t=alieztv') ||
+                             stream.stream_url.includes('player/live.php?id='))
+                        );
+                        
+                        if (hasAliezStream) {
+                            liveMatches.push(match);
+                        }
+                    } 
+                    // For UPCOMING matches: show if from prioritized competition
+                    else {
+                        if (priorityInfo !== null) {
+                            upcomingMatches.push(match);
+                        }
+                    }
                 });
                 
-                console.log(`Loaded ${allMatches.length} matches`);
+                // Remove duplicates from upcoming matches by checking for same teams within short time window
+                const filteredUpcomingMatches = [];
+                const seenCombinations = new Set();
+                
+                upcomingMatches.forEach(match => {
+                    const teams = match.matchup.split(' – ');
+                    const homeTeam = teams[0]?.trim().toLowerCase();
+                    const awayTeam = teams[1]?.trim().toLowerCase();
+                    const combination = `${homeTeam}-${awayTeam}`;
+                    
+                    // Only add if we haven't seen this combination recently
+                    if (!seenCombinations.has(combination)) {
+                        seenCombinations.add(combination);
+                        filteredUpcomingMatches.push(match);
+                    } else {
+                        console.log(`Filtered duplicate upcoming match: ${match.matchup}`);
+                    }
+                });
+                
+                // Combine matches
+                allMatches = [...liveMatches, ...filteredUpcomingMatches];
+                console.log(`Loaded ${liveMatches.length} live matches and ${filteredUpcomingMatches.length} upcoming matches (after deduplication)`);
                 filteredMatches = [...allMatches];
                 renderAllMatches();
             } catch (error) {
@@ -2064,6 +2433,79 @@
             upcomingContainer.innerHTML = errorHtml;
         }
 
+        // ===== EXTRACT ALIEZ.TV STREAM ID =====
+        function extractAliezStreamId(streamUrl) {
+            if (!streamUrl) return null;
+            
+            // Try to extract channel ID from Aliez.tv URL
+            const patterns = [
+                /id=(\d+)/i,  // Extract from id= parameter
+                /c=(\d+)/i,   // Extract from c= parameter
+                /channel.*?(\d+)/i,
+                /(\d+)(?=&|$)/i  // Look for standalone numbers
+            ];
+            
+            for (const pattern of patterns) {
+                const match = streamUrl.match(pattern);
+                if (match && match[1]) {
+                    return match[1];
+                }
+            }
+            
+            // Default fallback ID
+            return "245303";
+        }
+
+        // ===== BUILD SECURE STREAM URL =====
+        function buildSecureStreamUrl(streamId) {
+            // Rotate through available servers for load balancing
+            const server = availableServers[currentServerIndex];
+            
+            // Increment server index for next request
+            currentServerIndex = (currentServerIndex + 1) % availableServers.length;
+            
+            // Determine URL structure based on server
+            if (server.includes('player/live.php')) {
+                // emb.apl385.me format
+                return `${server}?id=${streamId}&autoplay=1&no_popups=1&referrer=${encodeURIComponent(window.location.origin)}`;
+            } else if (server.includes('webplayer2.php')) {
+                // cdn.livetv format
+                return `${server}?t=alieztv&c=${streamId}&lang=en&autoplay=1&no_redirects=1`;
+            } else {
+                // Generic format
+                return `${server}?id=${streamId}&autoplay=1`;
+            }
+        }
+
+        // ===== UPDATE SERVER SELECTOR =====
+        function updateServerSelector() {
+            serverSelector.innerHTML = '<option value="">Select Server</option>';
+            
+            availableServers.forEach((server, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `Server ${index + 1} (${new URL(server).hostname})`;
+                if (index === currentServerIndex) {
+                    option.selected = true;
+                }
+                serverSelector.appendChild(option);
+            });
+        }
+
+        // ===== SIMULATE STREAM STATS =====
+        function simulateStreamStats() {
+            setInterval(() => {
+                if (isPlaying && playerFrame.src) {
+                    // Simulate realistic bitrate (1-5 Mbps)
+                    const bitrate = Math.floor(Math.random() * 4000) + 1000;
+                    const bufferTime = (Math.random() * 2).toFixed(1);
+                    
+                    bitrateElement.textContent = bitrate;
+                    bufferTimeElement.textContent = bufferTime;
+                }
+            }, 2000);
+        }
+
         // ===== SEARCH FUNCTIONALITY =====
         function performSearch() {
             const searchTerm = searchBar.value.toLowerCase().trim();
@@ -2072,8 +2514,9 @@
                 filteredMatches = [...allMatches];
             } else {
                 filteredMatches = allMatches.filter(match => {
-                    const homeTeam = getTeamName(match, 0).toLowerCase();
-                    const awayTeam = getTeamName(match, 1).toLowerCase();
+                    const teams = match.matchup ? match.matchup.split(' – ') : ['', ''];
+                    const homeTeam = teams[0]?.toLowerCase() || '';
+                    const awayTeam = teams[1]?.toLowerCase() || '';
                     const competition = (match.competition || '').toLowerCase();
                     
                     return homeTeam.includes(searchTerm) || 
@@ -2085,292 +2528,234 @@
             renderAllMatches();
         }
 
-        // ===== ENHANCED LEAGUE DETECTION FUNCTION =====
-        function getCompetitionImportance(match) {
-            const competitionName = match.competition || '';
-            const homeTeam = getTeamName(match, 0).toLowerCase();
-            const awayTeam = getTeamName(match, 1).toLowerCase();
-            const nameLower = competitionName.toLowerCase();
+        // ===== UPDATED GET COMPETITION PRIORITY - STRICTER EPL CHECK =====
+        function getCompetitionPriority(match) {
+            const competitionName = (match.competition || '').toLowerCase();
             
-            // 1. FIRST: Check for women's leagues
-            if (containsWomenKeywords(nameLower) || containsWomenKeywords(homeTeam) || containsWomenKeywords(awayTeam)) {
-                return getWomenLeagueClassification(nameLower);
-            }
-            
-            // 2. SECOND: Check for youth leagues
-            if (containsYouthKeywords(nameLower) || containsYouthKeywords(homeTeam) || containsYouthKeywords(awayTeam)) {
-                return getYouthLeagueClassification(nameLower);
-            }
-            
-            // 3. THIRD: Special handling for Premier League
-            if (nameLower.includes("premier league")) {
-                const isHomeTeamPremierLeague = PREMIER_LEAGUE_TEAMS.some(team => 
-                    homeTeam.includes(team) || team.includes(homeTeam));
-                const isAwayTeamPremierLeague = PREMIER_LEAGUE_TEAMS.some(team => 
-                    awayTeam.includes(team) || team.includes(awayTeam));
-                
-                if (isHomeTeamPremierLeague && isAwayTeamPremierLeague) {
-                    return LEAGUE_CLASSIFICATION["premier league"];
-                } else {
-                    // If not actual Premier League teams, classify as lower division
-                    return getLeagueByPartialMatch(nameLower, true);
+            for (const comp of PRIORITIZED_COMPETITIONS) {
+                for (const keyword of comp.keywords) {
+                    // Exact match for EPL - only show England Premier League, not other premier leagues
+                    if (comp.name === "Premier League") {
+                        // Strict check for English Premier League only
+                        if (competitionName === "england. premier league" || 
+                            competitionName === "england premier league" ||
+                            competitionName.includes("england. premier league")) {
+                            return {
+                                ...comp,
+                                displayName: "Premier League (EPL)",
+                                rank: comp.rank
+                            };
+                        }
+                    } else {
+                        // For other competitions, use normal keyword matching
+                        if (competitionName.includes(keyword.toLowerCase())) {
+                            return {
+                                ...comp,
+                                displayName: comp.name,
+                                rank: comp.rank
+                            };
+                        }
+                    }
                 }
             }
             
-            // 4. FOURTH: Check for known leagues with explicit tier separation
-            const league = getLeagueByPartialMatch(nameLower, false);
+            // Return null for matches not in prioritized list
+            return null;
+        }
+
+        // ===== GROUP MATCHES BY PRIORITIZED COMPETITIONS (FOR UPCOMING) =====
+        function groupMatchesByPriority(matches) {
+            const groups = {};
             
-            // 5. FIFTH: For unknown competitions, show actual name
-            if (league.rank === 999) {
-                return {
-                    rank: 999,
-                    tier: 0,
-                    type: "other",
-                    icon: "fas fa-futbol",
-                    color: "#cccccc",
-                    hot: false,
-                    displayName: competitionName || "Other Matches"
+            // Initialize groups for each prioritized competition
+            PRIORITIZED_COMPETITIONS.forEach(comp => {
+                const displayName = comp.name === "Premier League" ? "Premier League (EPL)" : comp.name;
+                groups[comp.name] = {
+                    competition: comp.name,
+                    displayName: displayName,
+                    matches: [],
+                    importance: comp.rank,
+                    icon: comp.icon,
+                    color: comp.color,
+                    hot: comp.hot || false
                 };
-            }
+            });
             
-            return league;
-        }
-
-        // Helper functions for the new classification
-        function containsWomenKeywords(text) {
-            const womenKeywords = ["women", "womens", "female", "frauen", "femminile", "women's", "wsl"];
-            return womenKeywords.some(keyword => text.includes(keyword));
-        }
-
-        function containsYouthKeywords(text) {
-            const youthKeywords = ["u21", "u19", "u23", "u18", "under-21", "under-19", "under-23", 
-                                  "reserves", "academy", "youth", "junior"];
-            return youthKeywords.some(keyword => text.includes(keyword));
-        }
-
-        function getWomenLeagueClassification(nameLower) {
-            if (nameLower.includes("super league") || nameLower.includes("wsl")) {
-                return LEAGUE_CLASSIFICATION["women's super league"];
-            }
-            if (nameLower.includes("nwsl")) {
-                return LEAGUE_CLASSIFICATION["nwsl"];
-            }
-            return LEAGUE_CLASSIFICATION["women"];
-        }
-
-        function getYouthLeagueClassification(nameLower) {
-            if (nameLower.includes("u21") || nameLower.includes("under-21")) {
-                return LEAGUE_CLASSIFICATION["u21"];
-            }
-            if (nameLower.includes("u19") || nameLower.includes("under-19")) {
-                return LEAGUE_CLASSIFICATION["u19"];
-            }
-            if (nameLower.includes("u23") || nameLower.includes("under-23")) {
-                return LEAGUE_CLASSIFICATION["u23"];
-            }
-            return LEAGUE_CLASSIFICATION["u21"]; // Default youth classification
-        }
-
-        function getLeagueByPartialMatch(nameLower, isLowerDivisionCheck = false) {
-            // Check for exact matches first
-            for (const [key, value] of Object.entries(LEAGUE_CLASSIFICATION)) {
-                if (key === "other") continue;
-                
-                // For lower division check, prioritize lower tier leagues
-                if (isLowerDivisionCheck && value.tier > 1) {
-                    if (nameLower.includes(key)) {
-                        return value;
-                    }
-                } else if (!isLowerDivisionCheck) {
-                    if (nameLower.includes(key)) {
-                        return value;
-                    }
-                }
-            }
-            
-            // Check common variations
-            const variations = {
-                "champions league": "uefa champions league",
-                "europa league": "europa league",
-                "conference league": "europa conference league",
-                "fa cup": "fa cup",
-                "carabao": "carabao cup",
-                "community shield": "community shield",
-                "scottish": "scottish premiership",
-                "belgian": "belgian pro league",
-                "championship": "championship",
-                "segunda": "segunda division",
-                "2. bundesliga": "2. bundesliga",
-                "serie b": "serie b",
-                "league 1": "league one",
-                "league one": "league one",
-                "league 2": "league two",
-                "league two": "league two",
-                "copa del rey": "copa del rey",
-                "dfb-pokal": "dfb-pokal",
-                "coppa italia": "coppa italia",
-                "coupe de france": "coupe de france",
-                "friendly": "friendly"
-            };
-            
-            for (const [variation, leagueKey] of Object.entries(variations)) {
-                if (nameLower.includes(variation)) {
-                    return LEAGUE_CLASSIFICATION[leagueKey] || LEAGUE_CLASSIFICATION["other"];
-                }
-            }
-            
-            return LEAGUE_CLASSIFICATION["other"];
-        }
-
-        // ===== IMPROVED MATCH GROUPING BY LEAGUE TYPE =====
-        function groupMatchesByImportance(matches, isLive) {
-            const grouped = {};
-            
+            // Assign matches to groups
             matches.forEach(match => {
-                const leagueInfo = getCompetitionImportance(match);
-                
-                // Create group key based on league type and tier
-                let groupKey;
-                if (leagueInfo.type === "club_women") {
-                    groupKey = "Women's Football";
-                } else if (leagueInfo.type === "youth") {
-                    groupKey = "Youth/Academy Matches";
-                } else if (leagueInfo.tier > 1) {
-                    groupKey = `Lower Divisions - ${leagueInfo.displayName}`;
-                } else {
-                    // For top leagues, use their display name
-                    groupKey = leagueInfo.displayName;
+                const priorityInfo = getCompetitionPriority(match);
+                if (priorityInfo && groups[priorityInfo.name]) {
+                    groups[priorityInfo.name].matches.push(match);
                 }
-                
-                if (!grouped[groupKey]) {
-                    grouped[groupKey] = {
-                        competition: match.competition || "Other Matches",
-                        displayName: groupKey,
-                        matches: [],
-                        importance: leagueInfo.rank,
-                        tier: leagueInfo.tier,
-                        type: leagueInfo.type,
-                        icon: leagueInfo.icon,
-                        color: leagueInfo.color,
-                        hot: leagueInfo.hot || false
-                    };
-                }
-                grouped[groupKey].matches.push(match);
             });
             
-            // Convert to array and sort
-            const groupsArray = Object.values(grouped);
-            
-            // Sort: 1) Type (club_men first), 2) Tier (lower first), 3) Rank (lower first)
-            groupsArray.sort((a, b) => {
-                // First, separate categories
-                if (a.type !== b.type) {
-                    const typeOrder = { "club_men": 1, "european": 2, "national": 3, "cup": 4, "club_women": 5, "youth": 6, "other": 7 };
-                    return (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99);
-                }
-                
-                // Then by tier (lower tier numbers first)
-                if (a.tier !== b.tier) {
-                    return a.tier - b.tier;
-                }
-                
-                // Finally by rank (lower rank numbers first)
-                return a.importance - b.importance;
-            });
+            // Convert to array, sort by rank, and filter out empty groups
+            const groupsArray = Object.values(groups)
+                .filter(group => group.matches.length > 0)
+                .sort((a, b) => a.importance - b.importance);
             
             return groupsArray;
         }
 
-        // ===== RENDER MATCHES WITH GROUPING =====
+        // ===== RENDER MATCHES =====
         function renderAllMatches() {
             const liveMatches = filteredMatches.filter(match => match.is_live);
             const upcomingMatches = filteredMatches.filter(match => !match.is_live);
 
-            renderMatchesByImportance(liveContainer, liveMatches, true);
-            renderMatchesByImportance(upcomingContainer, upcomingMatches, false);
+            // Render live matches with regular grouping
+            renderLiveMatches(liveContainer, liveMatches);
             
-            // Start countdown timers for upcoming matches
+            // Render upcoming matches with prioritized competition grouping
+            renderUpcomingMatches(upcomingContainer, upcomingMatches);
+            
             setTimeout(startCountdownTimers, 100);
         }
 
-        function renderMatchesByImportance(container, matches, isLive) {
+        function renderLiveMatches(container, matches) {
             container.innerHTML = '';
 
             if (matches.length === 0) {
-                const emptyMessage = isLive ? 
-                    'No live matches at the moment' : 
-                    'No upcoming matches';
-                    
                 container.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: var(--text-gray);">
                         <i class="fas fa-tv-slash fa-2x"></i>
-                        <h3 style="color: var(--text-light); margin: 15px 0 10px;">${emptyMessage}</h3>
-                        <p>${searchBar.value ? 'Try a different search term' : 'Check back later for more matches'}</p>
+                        <h3 style="color: var(--text-light); margin: 15px 0 10px;">No Live Matches</h3>
+                        <p>Check back later or explore upcoming matches</p>
                     </div>
                 `;
                 return;
             }
 
-            // Group matches by importance
-            const groups = groupMatchesByImportance(matches, isLive);
-            
-            // Render groups
-            groups.forEach(group => {
-                // Skip empty groups
-                if (group.matches.length === 0) return;
+            // Group live matches by competition
+            const groups = {};
+            matches.forEach(match => {
+                const compName = match.competition || "Other Matches";
                 
-                // Create league section
-                const leagueSection = document.createElement('div');
-                leagueSection.className = 'league-section';
-                
-                // Create league header
-                const leagueHeader = document.createElement('div');
-                leagueHeader.className = 'league-header';
-                leagueHeader.style.borderLeftColor = group.color;
-                leagueHeader.onclick = function() {
-                    leagueSection.classList.toggle('collapsed');
-                };
-                
-                // Add HOT indicator if competition is hot
-                if (group.hot) {
-                    const hotIndicator = document.createElement('div');
-                    hotIndicator.className = 'hot-indicator';
-                    leagueHeader.appendChild(hotIndicator);
+                // Special handling for EPL in live matches
+                let displayName = compName;
+                if (compName.toLowerCase().includes("england. premier league")) {
+                    displayName = "Premier League (EPL)";
                 }
                 
-                leagueHeader.innerHTML = `
-                    <div class="league-header-content">
-                        <div class="league-icon" style="background: ${group.color}20;">
-                            <i class="${group.icon}" style="color: ${group.color};"></i>
-                        </div>
-                        <div class="league-name">${group.displayName}</div>
-                    </div>
-                    <div class="match-count" style="background: ${group.color};">
-                        ${group.matches.length} match${group.matches.length > 1 ? 'es' : ''}
-                    </div>
-                `;
+                if (!groups[compName]) {
+                    groups[compName] = {
+                        competition: compName,
+                        displayName: displayName,
+                        matches: [],
+                        color: "#8b0000",
+                        icon: "fas fa-broadcast-tower",
+                        hot: true
+                    };
+                }
+                groups[compName].matches.push(match);
+            });
+
+            // Sort groups and create league sections
+            Object.values(groups).sort((a, b) => {
+                // Put Premier League and Champions League first
+                const aIsImportant = a.competition.toLowerCase().includes('england. premier league') || 
+                                   a.competition.toLowerCase().includes('champions');
+                const bIsImportant = b.competition.toLowerCase().includes('england. premier league') || 
+                                   b.competition.toLowerCase().includes('champions');
                 
-                // Create matches grid
-                const matchesGrid = document.createElement('div');
-                matchesGrid.className = 'league-matches';
+                if (aIsImportant && !bIsImportant) return -1;
+                if (!aIsImportant && bIsImportant) return 1;
                 
-                // Add matches to grid
-                group.matches.forEach(match => {
-                    const matchCard = createMatchCard(match, isLive, group);
-                    matchesGrid.appendChild(matchCard);
-                });
-                
-                leagueSection.appendChild(leagueHeader);
-                leagueSection.appendChild(matchesGrid);
-                container.appendChild(leagueSection);
+                // Otherwise sort alphabetically
+                return a.competition.localeCompare(b.competition);
+            }).forEach(group => {
+                createLeagueSection(container, group, true);
             });
         }
 
+        function renderUpcomingMatches(container, matches) {
+            container.innerHTML = '';
+
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
+                        <i class="fas fa-tv-slash fa-2x"></i>
+                        <h3 style="color: var(--text-light); margin: 15px 0 10px;">No Upcoming Matches</h3>
+                        <p>Check back later for scheduled matches</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group upcoming matches by prioritized competitions
+            const groups = groupMatchesByPriority(matches);
+            
+            if (groups.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
+                        <i class="fas fa-calendar-alt fa-2x"></i>
+                        <h3 style="color: var(--text-light); margin: 15px 0 10px;">No Prioritized Matches</h3>
+                        <p>No matches from prioritized competitions found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Create league sections for each prioritized group
+            groups.forEach(group => {
+                createLeagueSection(container, group, false);
+            });
+        }
+
+        function createLeagueSection(container, group, isLive) {
+            const leagueSection = document.createElement('div');
+            leagueSection.className = 'league-section';
+            
+            const leagueHeader = document.createElement('div');
+            leagueHeader.className = 'league-header';
+            leagueHeader.style.borderLeftColor = group.color;
+            leagueHeader.onclick = function() {
+                leagueSection.classList.toggle('collapsed');
+            };
+            
+            if (group.hot) {
+                const hotIndicator = document.createElement('div');
+                hotIndicator.className = 'hot-indicator';
+                leagueHeader.appendChild(hotIndicator);
+            }
+            
+            leagueHeader.innerHTML = `
+                <div class="league-header-content">
+                    <div class="league-icon" style="background: ${group.color}20;">
+                        <i class="${group.icon}" style="color: ${group.color};"></i>
+                    </div>
+                    <div class="league-name">${group.displayName}</div>
+                </div>
+                <div class="match-count" style="background: ${group.color};">
+                    ${group.matches.length} match${group.matches.length > 1 ? 'es' : ''}
+                </div>
+            `;
+            
+            const matchesGrid = document.createElement('div');
+            matchesGrid.className = 'league-matches';
+            
+            // Sort matches by date
+            group.matches.sort((a, b) => {
+                const dateA = new Date(a.parsed_datetime || a.date_time);
+                const dateB = new Date(b.parsed_datetime || b.date_time);
+                return dateA - dateB;
+            });
+            
+            group.matches.forEach(match => {
+                const matchCard = createMatchCard(match, isLive, group);
+                matchesGrid.appendChild(matchCard);
+            });
+            
+            leagueSection.appendChild(leagueHeader);
+            leagueSection.appendChild(matchesGrid);
+            container.appendChild(leagueSection);
+        }
+
         function createMatchCard(match, isLive, group) {
-            const homeTeam = getTeamName(match, 0);
-            const awayTeam = getTeamName(match, 1);
-            const homeLogo = getTeamLogo(match, 0);
-            const awayLogo = getTeamLogo(match, 1);
+            const teams = match.matchup.split(' – ');
+            const homeTeam = teams[0]?.trim();
+            const awayTeam = teams[1]?.trim();
+            const homeLogo = match.team_logos[0]?.logo_url;
+            const awayLogo = match.team_logos[1]?.logo_url;
             const time = formatTime(match.parsed_datetime || match.date_time);
             const matchId = match.event_id || `${homeTeam}-${awayTeam}-${Date.now()}`;
             const startTime = match.parsed_datetime || match.date_time;
@@ -2393,8 +2778,8 @@
                 <div class="teams-display">
                     <div class="team">
                         <div class="team-logo">
-                            <img src="${homeLogo}" alt="${homeTeam}" 
-                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/80/f8f8f8/333333?text=${homeTeam.substring(0,2).toUpperCase()}'">
+                            <img src="${getTeamLogo(homeTeam, homeLogo)}" alt="${homeTeam}" 
+                                 onerror="this.onerror=null; this.src='${getTeamLogo(homeTeam, null)}'">
                         </div>
                         <div class="team-name">${homeTeam}</div>
                     </div>
@@ -2403,8 +2788,8 @@
                     
                     <div class="team">
                         <div class="team-logo">
-                            <img src="${awayLogo}" alt="${awayTeam}"
-                                 onerror="this.onerror=null; this.src='https://via.placeholder.com/80/f8f8f8/333333?text=${awayTeam.substring(0,2).toUpperCase()}'">
+                            <img src="${getTeamLogo(awayTeam, awayLogo)}" alt="${awayTeam}"
+                                 onerror="this.onerror=null; this.src='${getTeamLogo(awayTeam, null)}'">
                         </div>
                         <div class="team-name">${awayTeam}</div>
                     </div>
@@ -2423,7 +2808,6 @@
                 </div>
             `;
             
-            // Add click event for preview
             card.querySelector('.watch-btn').addEventListener('click', () => {
                 openPreview(match, group);
             });
@@ -2437,7 +2821,6 @@
             notificationMessage.textContent = message;
             notificationBar.classList.add('show');
             
-            // Auto-hide after 5 seconds for reminders
             if (isReminder) {
                 setTimeout(() => {
                     hideNotification();
@@ -2449,88 +2832,53 @@
             notificationBar.classList.remove('show');
         }
 
-        // ===== UPDATED PREVIEW MODAL WITH RED TV LOGO AND BLINKING TEXT =====
+        // ===== PREVIEW MODAL =====
         function openPreview(match, group) {
             currentModalMatch = match;
             
-            const homeTeam = getTeamName(match, 0);
-            const awayTeam = getTeamName(match, 1);
-            const homeLogo = getTeamLogo(match, 0);
-            const awayLogo = getTeamLogo(match, 1);
+            const teams = match.matchup.split(' – ');
+            const homeTeam = teams[0]?.trim();
+            const awayTeam = teams[1]?.trim();
+            const homeLogo = match.team_logos[0]?.logo_url;
+            const awayLogo = match.team_logos[1]?.logo_url;
             const time = formatTime(match.parsed_datetime || match.date_time);
-            const broadcastInfo = getBroadcastInfo(match);
             const displayCompetition = group ? group.displayName : match.competition;
             const isHotCompetition = group ? group.hot : false;
             
-            // Set modal title and info
             document.getElementById('modalTitle').textContent = `${homeTeam} vs ${awayTeam}`;
             
-            // Set competition with better handling for long names
             const modalCompetition = document.getElementById('modalCompetition');
             modalCompetition.textContent = displayCompetition;
             
-            // Add HOT badge to modal if competition is hot
             if (isHotCompetition) {
-                modalCompetition.innerHTML = `${displayCompetition} <span style="color: var(--hot-color); margin-left: 10px;"><i class="fas fa-fire"></i> HOT</span>`;
+                modalCompetition.innerHTML = `${displayCompetition} <span style="color: var(--hot-color); margin-left: 10px;"><i class="fas fa-fire"></i> PREMIUM</span>`;
             }
             
-            // Set teams in modal
             document.getElementById('modalTeams').innerHTML = `
                 <div class="modal-team">
                     <div class="modal-team-logo">
-                        <img src="${homeLogo}" alt="${homeTeam}"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/140/f8f8f8/333333?text=${homeTeam.substring(0,2).toUpperCase()}'">
+                        <img src="${getTeamLogo(homeTeam, homeLogo)}" alt="${homeTeam}"
+                             onerror="this.onerror=null; this.src='${getTeamLogo(homeTeam, null)}'">
                     </div>
                     <div class="modal-team-name">${homeTeam}</div>
                 </div>
                 <div class="modal-vs">VS</div>
                 <div class="modal-team">
                     <div class="modal-team-logo">
-                        <img src="${awayLogo}" alt="${awayTeam}"
-                             onerror="this.onerror=null; this.src='https://via.placeholder.com/140/f8f8f8/333333?text=${awayTeam.substring(0,2).toUpperCase()}'">
+                        <img src="${getTeamLogo(awayTeam, awayLogo)}" alt="${awayTeam}"
+                             onerror="this.onerror=null; this.src='${getTeamLogo(awayTeam, null)}'">
                     </div>
                     <div class="modal-team-name">${awayTeam}</div>
                 </div>
             `;
             
-            // Set info strip
-            document.getElementById('modalInfoStrip').innerHTML = `
-                <div class="info-item">
-                    <i class="far fa-calendar"></i>
-                    <span>${time}</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-circle" style="color: ${match.is_live ? '#ffcc00' : 'var(--cyan)'}"></i>
-                    <span>${match.is_live ? 'LIVE' : 'UPCOMING'}</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-globe"></i>
-                    <span>${broadcastInfo}</span>
-                </div>
-            `;
-            
-            // Populate stream links
             populateStreamLinks(match);
-            
-            // Update reminder button
-            const isReminded = userReminders.some(r => r.event_id === match.event_id);
-            modalReminderBtn.innerHTML = isReminded ? 
-                '<i class="fas fa-bell-slash"></i> REMOVE REMINDER' :
-                '<i class="far fa-bell"></i> SET REMINDER';
                 
             matchModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
-        function getBroadcastInfo(match) {
-            if (match.streams && match.streams.length > 0) {
-                const languages = [...new Set(match.streams.map(s => s.language).filter(Boolean))];
-                return languages.length > 0 ? languages.join(', ') : 'Multiple languages';
-            }
-            return 'Check schedule';
-        }
-
-        // ===== UPDATED STREAM LINKS WITH RED TV LOGO AND BLINKING TEXT =====
+        // ===== POPULATE STREAM LINKS =====
         function populateStreamLinks(match) {
             if (!match.streams || match.streams.length === 0) {
                 streamsList.innerHTML = `
@@ -2544,36 +2892,50 @@
                 return;
             }
             
-            const availableStreams = match.streams.filter(stream => 
-                stream.stream_url && stream.stream_url !== '#' && 
-                !stream.stream_url.includes('livetv.sx')
+            // Filter only Aliez.tv streams
+            const aliezStreams = match.streams.filter(stream => 
+                stream.stream_url && 
+                (stream.stream_url.includes('aliez.tv') || 
+                 stream.stream_url.includes('alieztv') ||
+                 stream.stream_url.includes('webplayer2.php') ||
+                 stream.stream_url.includes('player/live.php'))
             );
             
-            if (availableStreams.length === 0) {
+            if (aliezStreams.length === 0) {
                 streamsList.innerHTML = `
                     <div class="no-streams">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <h4>No Direct Streams</h4>
-                        <p>Try the WATCH NOW button for alternative streaming options</p>
+                        <h4>No Premium Streams</h4>
+                        <p>No encrypted streams available for this match</p>
                     </div>
                 `;
                 modalStreams.classList.remove('active');
                 return;
             }
             
-            streamsList.innerHTML = availableStreams.map((stream, index) => {
-                const language = stream.language || 'Unknown';
-                const quality = stream.rating || stream.bitrate || stream.stream_type || 'HD';
-                const percentage = stream.rating ? stream.rating.replace('%', '') : '95';
+            streamsList.innerHTML = aliezStreams.map((stream, index) => {
+                const language = stream.language || 'English';
+                const quality = stream.bitrate || stream.stream_type || 'HD';
+                const streamId = extractAliezStreamId(stream.stream_url);
+                
+                // Add quality badge
+                let qualityBadge = '';
+                if (quality.toLowerCase().includes('4k') || quality.toLowerCase().includes('uhd')) {
+                    qualityBadge = '<span class="quality-badge quality-uhd">4K</span>';
+                } else if (quality.toLowerCase().includes('1080') || quality.toLowerCase().includes('fhd')) {
+                    qualityBadge = '<span class="quality-badge quality-fhd">FHD</span>';
+                } else if (quality.toLowerCase().includes('720') || quality.toLowerCase().includes('hd')) {
+                    qualityBadge = '<span class="quality-badge quality-hd">HD</span>';
+                }
                 
                 return `
-                    <div class="stream-item" onclick="window.open('${stream.stream_url}', '_blank')">
+                    <div class="stream-item" onclick="playAliezStream('${streamId}', '${currentModalMatch.matchup}', '${language}', '${quality}')">
                         <div class="stream-tv-icon">
                             <i class="fas fa-tv"></i>
                         </div>
-                        <div class="stream-watch-now">WATCH NOW</div>
-                        <div class="stream-language">${language} - ${quality}</div>
-                        <div class="stream-quality">${percentage}% Reliable</div>
+                        <div class="stream-watch-now">PREMIUM STREAM</div>
+                        <div class="stream-language">${language} ${qualityBadge}</div>
+                        <div class="stream-quality">Encrypted • No Pop-ups</div>
                     </div>
                 `;
             }).join('');
@@ -2587,79 +2949,187 @@
             currentModalMatch = null;
         }
 
-        // ===== WATCH NOW FUNCTION =====
-        function watchNow() {
-            if (!currentModalMatch) return;
+        // ===== PLAY ALIEZ.TV STREAM =====
+        function playAliezStream(streamId, matchTitle, language = 'English', quality = 'HD') {
+            closeModal();
             
-            let streamUrl = null;
+            currentStreamId = streamId;
             
-            if (currentModalMatch.streams && currentModalMatch.streams.length > 0) {
-                const directStream = currentModalMatch.streams.find(s => 
-                    s.stream_url && s.stream_url !== '#' && 
-                    !s.stream_url.includes('livetv.sx')
-                );
-                
-                if (directStream) {
-                    streamUrl = directStream.stream_url;
-                } else {
-                    const firstStream = currentModalMatch.streams.find(s => s.stream_url && s.stream_url !== '#');
-                    if (firstStream) streamUrl = firstStream.stream_url;
-                }
+            // Show player modal
+            playerMatchTitle.textContent = matchTitle;
+            playerModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Reset state
+            isPlaying = false;
+            serverRetryCount = 0;
+            errorOverlay.style.display = 'none';
+            streamStats.style.display = 'none';
+            serverSelection.style.display = 'none';
+            playerControls.classList.add('hidden');
+            
+            // Show premium ad overlay
+            premiumAdOverlay.style.display = 'flex';
+            
+            // Clear player frame
+            playerFrame.src = '';
+            
+            // Update quality selector based on stream quality
+            if (quality.toLowerCase().includes('4k') || quality.toLowerCase().includes('uhd')) {
+                qualitySelector.value = 'uhd';
+            } else if (quality.toLowerCase().includes('1080') || quality.toLowerCase().includes('fhd')) {
+                qualitySelector.value = 'fhd';
+            } else {
+                qualitySelector.value = 'hd';
             }
             
-            if (streamUrl) {
-                window.open(streamUrl, '_blank');
+            // Show notification
+            showNotification('Premium Stream', 'Click START STREAMING to begin');
+        }
+
+        function startPremiumStream() {
+            // Hide ad overlay
+            premiumAdOverlay.style.display = 'none';
+            
+            // Show loading spinner
+            loadingSpinner.style.display = 'block';
+            
+            // Hide error overlay if shown
+            errorOverlay.style.display = 'none';
+            
+            // Build secure stream URL
+            const streamUrl = buildSecureStreamUrl(currentStreamId);
+            currentStreamUrl = streamUrl;
+            
+            console.log('Loading encrypted stream:', streamUrl);
+            
+            // Load player with timeout
+            const loadTimeout = setTimeout(() => {
+                if (!isPlaying) {
+                    handleStreamError();
+                }
+            }, 10000);
+            
+            // Set up player frame
+            playerFrame.onload = function() {
+                clearTimeout(loadTimeout);
+                loadingSpinner.style.display = 'none';
+                isPlaying = true;
+                serverSelection.style.display = 'block';
+                streamStats.style.display = 'block';
+                playerControls.classList.remove('hidden');
+                serverRetryCount = 0;
+                
+                showNotification('Stream Started', 'Premium stream is now playing');
+            };
+            
+            playerFrame.onerror = function() {
+                clearTimeout(loadTimeout);
+                handleStreamError();
+            };
+            
+            // Load the stream
+            playerFrame.src = streamUrl;
+        }
+
+        function handleStreamError() {
+            loadingSpinner.style.display = 'none';
+            
+            if (serverRetryCount < MAX_RETRIES) {
+                serverRetryCount++;
+                
+                // Try next server
+                currentServerIndex = (currentServerIndex + 1) % availableServers.length;
+                
                 // Show notification
-                showNotification('Stream Opening', 'The stream is opening in a new tab...', false);
+                showNotification(`Retrying`, `Server ${serverRetryCount}/${MAX_RETRIES}`, false);
+                
+                // Retry after delay
+                setTimeout(startPremiumStream, 1000);
             } else {
-                showNotification('No Direct Stream', 'Try clicking the individual stream links above', false);
+                // Show error overlay
+                errorOverlay.style.display = 'flex';
+                isPlaying = false;
+                
+                // Add fallback servers if available
+                if (availableServers.length === ALIEZ_SERVERS.length) {
+                    availableServers = [...availableServers, ...FALLBACK_SERVERS];
+                    updateServerSelector();
+                }
             }
         }
 
-        // ===== REMINDER SYSTEM =====
-        function toggleReminder() {
-            if (!currentModalMatch) return;
-            
-            const index = userReminders.findIndex(r => r.event_id === currentModalMatch.event_id);
-            
-            if (index === -1) {
-                // Add reminder
-                userReminders.push({
-                    event_id: currentModalMatch.event_id,
-                    competition: currentModalMatch.competition,
-                    matchup: currentModalMatch.matchup,
-                    date_time: currentModalMatch.date_time,
-                    added: new Date().toISOString()
-                });
-                
-                localStorage.setItem('vieusReminders', JSON.stringify(userReminders));
-                
-                // Show notification
-                const homeTeam = getTeamName(currentModalMatch, 0);
-                const awayTeam = getTeamName(currentModalMatch, 1);
-                showNotification(
-                    'Reminder Set!',
-                    `You'll be notified before ${homeTeam} vs ${awayTeam} starts`
-                );
-            } else {
-                // Remove reminder
-                userReminders.splice(index, 1);
-                localStorage.setItem('vieusReminders', JSON.stringify(userReminders));
-                
-                // Show notification
-                const homeTeam = getTeamName(currentModalMatch, 0);
-                const awayTeam = getTeamName(currentModalMatch, 1);
-                showNotification(
-                    'Reminder Removed',
-                    `Reminder for ${homeTeam} vs ${awayTeam} has been removed`
-                );
+        function retryConnection() {
+            errorOverlay.style.display = 'none';
+            serverRetryCount = 0;
+            startPremiumStream();
+        }
+
+        function changeServer() {
+            const selectedIndex = parseInt(serverSelector.value);
+            if (!isNaN(selectedIndex) && selectedIndex >= 0 && selectedIndex < availableServers.length) {
+                currentServerIndex = selectedIndex;
+                startPremiumStream();
             }
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                // Pause logic would go here if we had direct control
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                isPlaying = false;
+            } else {
+                // Play logic
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                isPlaying = true;
+            }
+        }
+
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                const container = playerModal.querySelector('.player-container');
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+                isFullscreen = true;
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                isFullscreen = false;
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            }
+        }
+
+        function closePlayer() {
+            playerModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
             
-            // Update reminder button
-            const isReminded = userReminders.some(r => r.event_id === currentModalMatch.event_id);
-            modalReminderBtn.innerHTML = isReminded ? 
-                '<i class="fas fa-bell-slash"></i> REMOVE REMINDER' :
-                '<i class="far fa-bell"></i> SET REMINDER';
+            // Reset state
+            isPlaying = false;
+            playerFrame.src = '';
+            premiumAdOverlay.style.display = 'flex';
+            errorOverlay.style.display = 'none';
+            loadingSpinner.style.display = 'none';
+            streamStats.style.display = 'none';
+            serverSelection.style.display = 'none';
+            playerControls.classList.add('hidden');
+            
+            // Exit fullscreen if active
+            if (isFullscreen && document.exitFullscreen) {
+                document.exitFullscreen();
+                isFullscreen = false;
+                fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+            }
         }
 
         // ===== VIEW MANAGEMENT =====
@@ -2691,111 +3161,42 @@
                     liveContainer.style.display = 'none';
                     upcomingContainer.style.display = 'block';
                     break;
-                    
-                case 'account':
-                    showAccountView();
-                    break;
             }
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function showAccountView() {
-            backBtn.style.display = 'flex';
-            sectionTitle.innerHTML = '<i class="fas fa-user-circle"></i> Account';
-            liveContainer.style.display = 'none';
-            upcomingContainer.style.display = 'none';
-            
-            let accountView = document.getElementById('accountView');
-            if (!accountView) {
-                accountView = document.createElement('div');
-                accountView.id = 'accountView';
-                const sectionHeader = document.querySelector('.section-header');
-                sectionHeader.parentNode.insertBefore(accountView, sectionHeader.nextSibling);
-            }
-            
-            accountView.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-gray);">
-                    <i class="fas fa-user-circle fa-3x" style="margin-bottom: 20px;"></i>
-                    <h3 style="color: var(--text-light); margin-bottom: 20px;">Your Reminders</h3>
-                    <div id="remindersList" style="text-align: left; max-width: 500px; margin: 0 auto;">
-                        ${userReminders.length === 0 ? 
-                            '<p style="text-align: center; color: var(--text-gray);">No reminders set</p>' : 
-                            userReminders.map(reminder => `
-                                <div style="background: var(--graphite); padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--cyan);">
-                                    <div style="font-weight: 600; margin-bottom: 5px;">${reminder.matchup}</div>
-                                    <div style="font-size: 0.9rem; color: var(--text-gray);">${reminder.competition}</div>
-                                    <div style="font-size: 0.8rem; color: var(--cyan); margin-top: 5px;">
-                                        ${formatTime(reminder.date_time)}
-                                    </div>
-                                </div>
-                            `).join('')}
-                    </div>
-                </div>
-            `;
-            accountView.style.display = 'block';
-        }
-
         // ===== HELPER FUNCTIONS =====
-        function getTeamName(match, index) {
-            if (match.team_logos && match.team_logos[index] && match.team_logos[index].team_name) {
-                return match.team_logos[index].team_name;
-            }
-            
-            if (match.matchup) {
-                const parts = match.matchup.split(/[–\-]/);
-                if (parts.length >= 2) {
-                    return parts[index].trim();
-                }
-            }
-            
-            return index === 0 ? 'Home Team' : 'Away Team';
-        }
-
-        function getTeamLogo(match, index) {
-            if (match.team_logos && match.team_logos[index] && match.team_logos[index].logo_url) {
-                return match.team_logos[index].logo_url;
-            }
-            return '';
-        }
-
-        // UPDATED FORMAT TIME FUNCTION WITH TIME CORRECTION
         function formatTime(dateTime) {
             if (!dateTime) return 'TBD';
             
             try {
-                // First correct the time (subtract 1 hour)
-                const correctedDateTime = correctTime(dateTime);
-                const date = new Date(correctedDateTime);
-                
-                if (isNaN(date.getTime())) {
-                    // If correction fails, try with original time
-                    const originalDate = new Date(dateTime);
-                    if (isNaN(originalDate.getTime())) return dateTime;
-                    return formatDate(originalDate);
+                // Handle ISO format
+                if (dateTime.includes('T')) {
+                    const date = new Date(dateTime);
+                    if (isNaN(date.getTime())) return dateTime;
+                    
+                    const now = new Date();
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    const matchDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                    
+                    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    
+                    if (matchDate.getTime() === today.getTime()) {
+                        return `${timeStr} Today`;
+                    } else if (matchDate.getTime() === today.getTime() + 86400000) {
+                        return `${timeStr} Tomorrow`;
+                    } else {
+                        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        return `${monthNames[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
+                    }
+                } else {
+                    // Handle "27 December at 13:30" format
+                    return dateTime.replace(' at ', ' ');
                 }
-                
-                return formatDate(date);
             } catch (e) {
                 console.error('Error formatting time:', e);
                 return dateTime;
-            }
-        }
-
-        function formatDate(date) {
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const matchDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-            
-            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            if (matchDate.getTime() === today.getTime()) {
-                return `${timeStr} Today`;
-            } else if (matchDate.getTime() === today.getTime() + 86400000) {
-                return `${timeStr} Tomorrow`;
-            } else {
-                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                return `${monthNames[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
             }
         }
 
@@ -2815,8 +3216,16 @@
                 if (e.target === matchModal) closeModal();
             });
             
-            modalWatchBtn.addEventListener('click', watchNow);
-            modalReminderBtn.addEventListener('click', toggleReminder);
+            modalWatchBtn.addEventListener('click', function() {
+                if (!currentModalMatch) return;
+                const aliezStream = currentModalMatch.streams?.find(stream => 
+                    stream.stream_url && stream.stream_url.includes('webplayer2.php?t=alieztv')
+                );
+                if (aliezStream) {
+                    const streamId = extractAliezStreamId(aliezStream.stream_url);
+                    playAliezStream(streamId, currentModalMatch.matchup);
+                }
+            });
             
             // Search functionality
             searchBtn.addEventListener('click', performSearch);
@@ -2826,7 +3235,6 @@
                 }
             });
             
-            // Real-time search as user types
             let searchTimeout;
             searchBar.addEventListener('input', function() {
                 clearTimeout(searchTimeout);
@@ -2836,14 +3244,59 @@
             // Notification close
             notificationClose.addEventListener('click', hideNotification);
             
-            // Check for upcoming reminders
+            // Player modal events
+            playerClose.addEventListener('click', closePlayer);
+            playerModal.addEventListener('click', function(e) {
+                if (e.target === playerModal) closePlayer();
+            });
+            
+            premiumAdBtn.addEventListener('click', startPremiumStream);
+            retryBtn.addEventListener('click', retryConnection);
+            
+            // Player controls
+            playPauseBtn.addEventListener('click', togglePlayPause);
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+            qualitySelector.addEventListener('change', function() {
+                // Quality change logic would go here
+                showNotification('Quality Changed', `Stream quality set to ${this.options[this.selectedIndex].text}`);
+            });
+            
+            serverSelector.addEventListener('change', changeServer);
+            
+            // Fullscreen change detection
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('msfullscreenchange', handleFullscreenChange);
+            
+            function handleFullscreenChange() {
+                isFullscreen = !!(document.fullscreenElement || 
+                                document.webkitFullscreenElement || 
+                                document.msFullscreenElement);
+                
+                fullscreenBtn.innerHTML = isFullscreen ? 
+                    '<i class="fas fa-compress"></i>' : 
+                    '<i class="fas fa-expand"></i>';
+            }
+            
+            // Auto-hide controls
+            let controlsTimeout;
+            playerFrameContainer = document.querySelector('.player-frame-container');
+            
+            playerFrameContainer.addEventListener('mousemove', function() {
+                playerControls.classList.remove('hidden');
+                clearTimeout(controlsTimeout);
+                controlsTimeout = setTimeout(() => {
+                    if (isPlaying) {
+                        playerControls.classList.add('hidden');
+                    }
+                }, 3000);
+            });
+            
+            // Auto-refresh data every 2 minutes
             setInterval(() => {
                 if (currentView === 'live' || currentView === 'home') {
                     loadData();
                 }
-                
-                // Check for upcoming matches with reminders
-                checkUpcomingReminders();
             }, 120000);
             
             // Update countdown timers every second
@@ -2852,46 +3305,18 @@
             }, 1000);
         }
 
-        function checkUpcomingReminders() {
-            const now = new Date();
-            
-            userReminders.forEach(reminder => {
-                try {
-                    // Use corrected time for reminder checks
-                    const correctedTime = correctTime(reminder.date_time);
-                    const matchTime = new Date(correctedTime || reminder.date_time);
-                    if (isNaN(matchTime.getTime())) return;
-                    
-                    // Check if match starts in 15 minutes
-                    const timeDiff = matchTime.getTime() - now.getTime();
-                    const minutesDiff = timeDiff / (1000 * 60);
-                    
-                    if (minutesDiff > 0 && minutesDiff <= 15) {
-                        // Check if we've already notified for this match
-                        const notificationKey = `notified_${reminder.event_id}`;
-                        if (!localStorage.getItem(notificationKey)) {
-                            showNotification(
-                                'Match Starting Soon!',
-                                `${reminder.matchup} starts in ${Math.round(minutesDiff)} minutes`,
-                                false
-                            );
-                            localStorage.setItem(notificationKey, 'true');
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error checking reminder:', e);
-                }
-            });
-        }
-
         // ===== GLOBAL FUNCTIONS =====
         window.openPreview = openPreview;
         window.loadData = loadData;
         window.switchView = switchView;
-        window.watchNow = watchNow;
         window.performSearch = performSearch;
         window.showNotification = showNotification;
         window.hideNotification = hideNotification;
+        window.playAliezStream = playAliezStream;
+        window.closePlayer = closePlayer;
+        window.startPremiumStream = startPremiumStream;
+        window.retryConnection = retryConnection;
+        window.changeServer = changeServer;
     </script>
 </body>
 </html>
