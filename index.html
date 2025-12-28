@@ -534,10 +534,10 @@
             background: rgba(0, 0, 0, 0.1);
         }
 
-        /* UPDATED: Red countdown timer container */
+        /* UPDATED: Red countdown timer container - Increased bottom spacing */
         .countdown-container {
             position: absolute;
-            bottom: -35px;
+            bottom: -45px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--countdown-red);
@@ -628,24 +628,45 @@
             margin: 30px 0 20px;
         }
 
+        /* UPDATED: Better back button with label and hover effects */
         .back-btn {
             background: var(--graphite);
             border: 1px solid var(--glass-white);
             color: var(--text-light);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            padding: 10px 20px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
+            font-weight: 600;
+            gap: 8px;
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
         }
 
         .back-btn:hover {
             background: var(--cyan);
             color: var(--graphite);
             transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 204, 255, 0.3);
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .back-btn:hover::before {
+            left: 100%;
         }
 
         .section-title {
@@ -1057,7 +1078,7 @@
             border-top: 1px solid var(--glass-white);
         }
 
-        /* ===== EXACT PLAYER MODAL FROM FIRST CODE ===== */
+        /* ===== SIMPLIFIED PLAYER MODAL ===== */
         .player-modal {
             position: fixed;
             top: 0;
@@ -1067,132 +1088,215 @@
             background: #000;
             z-index: 3000;
             display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
         }
 
         .player-modal.active {
-            display: flex;
+            display: block;
         }
 
         .player-container {
+            position: relative;
             width: 100%;
-            max-width: 1280px;
-            background: #000;
-            border-radius: 0;
-            overflow: hidden;
-            border: 2px solid gold;
+            height: 100%;
             display: flex;
             flex-direction: column;
         }
 
-        /* Responsive Top Bar - From first code */
-        #input-bar { 
-            padding: 15px; 
-            background: #111; 
-            border-bottom: 2px solid gold;
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
+        /* Minimal header with close and quality only */
+        .player-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
-        
-        @media (min-width: 768px) { 
-            #input-bar { 
-                flex-direction: row; 
-            } 
+
+        .player-close {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid gold;
+            color: #aaa;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
         }
 
-        #alieztv-url { 
-            width: 100%; 
-            max-width: 500px; 
-            background: #000; 
-            border: 1px solid #444; 
-            color: #0f0; 
-            padding: 12px; 
-            border-radius: 5px; 
+        .player-close:hover {
+            background: gold;
+            color: #000;
+        }
+
+        .quality-selector {
+            display: flex;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid gold;
+        }
+
+        .quality-btn {
+            background: #222;
+            color: #aaa;
+            border: 1px solid #444;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .quality-btn.active {
+            background: gold;
+            color: #000;
+            border-color: gold;
+        }
+
+        /* URL input */
+        #input-bar {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid gold;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 300px;
+            max-width: 90%;
+        }
+
+        #alieztv-url {
+            background: #000;
+            border: 1px solid #444;
+            color: #0f0;
+            padding: 12px;
+            border-radius: 5px;
             font-size: 16px;
-        }
-        
-        #load-btn { 
-            background: gold; 
-            color: #000; 
-            border: none; 
-            padding: 12px 25px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border-radius: 5px; 
-            width: 100%; 
-            max-width: 200px;
-        }
-
-        /* Responsive Player Container (16:9 Aspect Ratio) - From first code */
-        .aspect-ratio-box {
-            position: relative;
             width: 100%;
-            padding-top: 56.25%; /* 16:9 ratio calculation: 9/16 = 0.5625 */
-            background: #111;
         }
 
-        #stream-frame, #ad-overlay {
+        #load-btn {
+            background: gold;
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        /* AD overlay */
+        #ad-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            border: none;
-        }
-
-        /* Ad Overlay - From first code */
-        #ad-overlay {
-            background: rgba(0, 0, 0, 0.98);
-            z-index: 9999;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 30;
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
         }
-        
-        #ad-content h2 { 
-            color: gold; 
-            font-size: clamp(18px, 5vw, 28px); 
-            margin: 10px; 
+
+        #ad-content h2 {
+            color: gold;
+            font-size: 24px;
+            margin: 10px;
         }
-        
-        #skip-btn { 
-            margin-top: 20px; 
-            padding: 12px 30px; 
-            background: #fff; 
-            border: none; 
-            font-weight: bold; 
-            display: none; 
-            border-radius: 50px; 
+
+        #skip-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #fff;
+            border: none;
+            font-weight: bold;
+            display: none;
+            border-radius: 50px;
             cursor: pointer;
         }
 
-        .player-close {
+        /* MOBILE-SPECIFIC IFRAME STYLING - CRITICAL FOR CONTROLS */
+        #stream-frame {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: #222;
-            border: 1px solid #333;
-            color: #aaa;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 10000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            z-index: 1;
         }
 
-        .player-close:hover {
-            background: gold;
-            color: #000;
+        /* Mobile hint overlay */
+        .mobile-hint {
+            position: absolute;
+            bottom: 100px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 0 20px;
+            animation: fadeInOut 3s forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Mobile fullscreen adjustments */
+        @media (max-width: 768px) {
+            /* Ensure iframe uses full screen properly */
+            .player-modal {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            #stream-frame {
+                width: 100vw !important;
+                height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                -webkit-overflow-scrolling: touch !important;
+                overflow: auto !important;
+            }
+            
+            /* Hide hint after showing */
+            .mobile-hint {
+                display: block;
+                animation: fadeInOut 5s forwards;
+            }
         }
 
         /* ===== RESPONSIVE DESIGN ===== */
@@ -1265,7 +1369,7 @@
             }
             
             .countdown-container {
-                bottom: -30px;
+                bottom: -45px;
                 font-size: 0.8rem;
                 padding: 6px 15px;
                 min-width: 100px;
@@ -1303,17 +1407,10 @@
                 font-size: 0.85rem;
             }
             
-            /* Player modal mobile */
-            .player-container {
-                height: 100vh;
-                border-radius: 0;
-                border: none;
-                max-width: 100%;
-            }
-            
-            .aspect-ratio-box {
-                height: 100%;
-                padding-top: 0;
+            .back-btn {
+                min-width: 100px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
             }
         }
 
@@ -1373,7 +1470,7 @@
             }
             
             .countdown-container {
-                bottom: -25px;
+                bottom: -45px;
                 font-size: 0.75rem;
                 padding: 5px 12px;
                 min-width: 90px;
@@ -1408,6 +1505,12 @@
             }
             
             .stream-watch-now {
+                font-size: 0.8rem;
+            }
+            
+            .back-btn {
+                min-width: 90px;
+                padding: 6px 12px;
                 font-size: 0.8rem;
             }
         }
@@ -1470,6 +1573,7 @@
         <div class="section-header">
             <button class="back-btn" id="backBtn" style="display: none;">
                 <i class="fas fa-arrow-left"></i>
+                <span>Back</span>
             </button>
             <h2 class="section-title" id="sectionTitle">
                 <i class="fas fa-broadcast-tower"></i> Live Matches
@@ -1562,34 +1666,52 @@
         </div>
     </div>
 
-    <!-- EXACT PLAYER FROM FIRST CODE -->
+    <!-- SIMPLIFIED PLAYER MODAL - NATIVE CONTROLS FIXED -->
     <div class="player-modal" id="playerModal">
         <div class="player-container">
-            <button class="player-close" id="playerClose">
-                <i class="fas fa-times"></i>
-            </button>
+            <!-- Minimal header with close and quality only -->
+            <div class="player-header">
+                <button class="player-close" id="playerClose">
+                    <i class="fas fa-times"></i>
+                </button>
+                
+                <div class="quality-selector">
+                    <button class="quality-btn" id="hdBtn" onclick="setQuality('hd')">
+                        HD
+                    </button>
+                    <button class="quality-btn active" id="fhdBtn" onclick="setQuality('fhd')">
+                        4K
+                    </button>
+                </div>
+            </div>
             
+            <!-- URL input (shown before stream loads) -->
             <div id="input-bar">
                 <input type="text" id="alieztv-url" placeholder="Paste Aliez Link here...">
                 <button id="load-btn">LOAD STREAM</button>
             </div>
-
-            <div class="aspect-ratio-box">
-                <div id="ad-overlay">
-                    <div id="ad-content">
-                        <h2>LINK EXTRACTED</h2>
-                        <p>Stream starts in <span id="timer">10</span>s</p>
-                    </div>
-                    <button id="skip-btn">SKIP & WATCH</button>
+            
+            <!-- AD overlay -->
+            <div id="ad-overlay">
+                <div id="ad-content">
+                    <h2>LINK EXTRACTED</h2>
+                    <p>Stream starts in <span id="timer">10</span>s</p>
                 </div>
-
-                <iframe 
-                    id="stream-frame"
-                    src="" 
-                    sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
-                    allowfullscreen>
-                </iframe>
+                <button id="skip-btn">SKIP & WATCH</button>
             </div>
+            
+            <!-- MAIN IFRAME - NATIVE CONTROLS WILL WORK -->
+            <iframe 
+                id="stream-frame"
+                src="" 
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-forms allow-modals"
+                allow="autoplay; fullscreen; picture-in-picture; accelerometer; gyroscope"
+                allowfullscreen
+                webkitallowfullscreen
+                mozallowfullscreen
+                playsinline
+                webkit-playsinline>
+            </iframe>
         </div>
     </div>
 
@@ -1597,7 +1719,7 @@
         // ===== CONFIGURATION =====
         const API_BASE_URL = 'https://raw.githubusercontent.com/whtsel/try/main/index.json';
         
-        // ===== UPDATED PRIORITIZED COMPETITION ORDER - FIXED FOR EPL ONLY =====
+        // ===== UPDATED PRIORITIZED COMPETITION ORDER =====
         const PRIORITIZED_COMPETITIONS = [
             { 
                 name: "Premier League", 
@@ -1724,7 +1846,7 @@
         const notificationMessage = document.getElementById('notificationMessage');
         const notificationClose = document.getElementById('notificationClose');
         
-        // Player modal elements (from first code)
+        // Player modal elements
         const playerModal = document.getElementById('playerModal');
         const playerClose = document.getElementById('playerClose');
         const aliezInput = document.getElementById('alieztv-url');
@@ -1733,6 +1855,9 @@
         const adOverlay = document.getElementById('ad-overlay');
         const timerSpan = document.getElementById('timer');
         const skipBtn = document.getElementById('skip-btn');
+        const inputBar = document.getElementById('input-bar');
+        const hdBtn = document.getElementById('hdBtn');
+        const fhdBtn = document.getElementById('fhdBtn');
 
         // ===== GLOBAL VARIABLES =====
         let allMatches = [];
@@ -1742,10 +1867,12 @@
         let countdownTimers = {};
         let timeLeft = 10;
         let countdown;
+        let currentQuality = 'fhd';
+        let isStreamLoaded = false;
 
-        // ===== EXACT PLAYER FUNCTIONS FROM FIRST CODE =====
+        // ===== SIMPLIFIED PLAYER FUNCTIONS =====
         function updatePlayer() {
-            const inputUrl = document.getElementById('alieztv-url').value;
+            const inputUrl = aliezInput.value;
             
             // Extract the channel ID (c=) from the pasted URL
             const match = inputUrl.match(/[?&]c=(\d+)/);
@@ -1753,10 +1880,87 @@
             if (match && match[1]) {
                 const channelID = match[1];
                 // Build the APL385 destination link
-                streamFrame.src = `https://emb.apl385.me/player/live.php?id=${channelID}&autoplay=1`;
+                const streamUrl = `https://emb.apl385.me/player/live.php?id=${channelID}&autoplay=1`;
+                
+                // Set up iframe with mobile-friendly attributes
+                setupIframeForMobile(streamUrl);
                 startAdSequence();
+                
+                // Hide URL input when stream loads
+                inputBar.style.display = 'none';
+                isStreamLoaded = true;
+                
+                // Apply initial quality filter
+                applyQualityFilter();
+                
+                // Show notification
+                showNotification('Stream Loading', 'Premium stream is starting...');
+                
+                // Show mobile hint
+                showMobileHint();
             } else {
                 alert("Invalid link! Please ensure it contains 'c=CHANNEL_ID'");
+            }
+        }
+
+        // CRITICAL: Setup iframe properly for mobile controls
+        function setupIframeForMobile(url) {
+            // Clear any existing iframe
+            streamFrame.src = '';
+            
+            // Add mobile-specific attributes
+            streamFrame.setAttribute('playsinline', '');
+            streamFrame.setAttribute('webkit-playsinline', '');
+            streamFrame.setAttribute('x-webkit-airplay', 'allow');
+            streamFrame.setAttribute('x5-video-player-type', 'h5-page');
+            streamFrame.setAttribute('x5-video-player-fullscreen', 'true');
+            streamFrame.setAttribute('x5-video-orientation', 'landscape');
+            
+            // Add additional attributes for native controls
+            streamFrame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; accelerometer; gyroscope');
+            
+            // Set the source
+            setTimeout(() => {
+                streamFrame.src = url;
+            }, 100);
+            
+            // Apply mobile-specific styling
+            if (isMobile()) {
+                streamFrame.style.cssText = `
+                    width: 100vw !important;
+                    height: 100vh !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    -webkit-overflow-scrolling: touch !important;
+                    overflow: auto !important;
+                    background: #000 !important;
+                `;
+            }
+        }
+
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        function showMobileHint() {
+            if (isMobile()) {
+                setTimeout(() => {
+                    const hint = document.createElement('div');
+                    hint.className = 'mobile-hint';
+                    hint.innerHTML = `
+                        <p style="margin: 0 0 10px 0; font-weight: bold;">👆 Tap video to show controls</p>
+                        <p style="margin: 0; font-size: 0.9rem;">📱 Pinch to zoom | Double-tap to play/pause</p>
+                    `;
+                    document.querySelector('.player-container').appendChild(hint);
+                    
+                    // Remove hint after 5 seconds
+                    setTimeout(() => {
+                        if (hint.parentNode) {
+                            hint.remove();
+                        }
+                    }, 5000);
+                }, 2000);
             }
         }
 
@@ -1776,7 +1980,7 @@
 
         function skipAd() {
             clearInterval(countdown);
-            document.getElementById('ad-overlay').style.display = 'none';
+            adOverlay.style.display = 'none';
         }
 
         function closePlayer() {
@@ -1791,22 +1995,52 @@
                 countdown = null;
             }
             
-            // Reset input
+            // Reset input and show it again
             aliezInput.value = '';
+            inputBar.style.display = 'flex';
+            isStreamLoaded = false;
+            
+            // Reset quality
+            currentQuality = 'fhd';
+            updateQualityButtons();
+            applyQualityFilter();
+        }
+
+        // ===== QUALITY FUNCTIONS =====
+        function setQuality(quality) {
+            currentQuality = quality;
+            updateQualityButtons();
+            applyQualityFilter();
+            
+            // Show notification
+            showNotification('Quality Changed', quality === 'hd' ? 'HD Quality Selected' : '4K Enhanced Quality Selected');
+        }
+
+        function updateQualityButtons() {
+            hdBtn.classList.toggle('active', currentQuality === 'hd');
+            fhdBtn.classList.toggle('active', currentQuality === 'fhd');
+        }
+
+        function applyQualityFilter() {
+            if (currentQuality === 'hd') {
+                streamFrame.style.filter = 'none';
+                streamFrame.style.webkitFilter = 'none';
+            } else {
+                streamFrame.style.filter = 'contrast(110%) saturate(130%) brightness(105%)';
+                streamFrame.style.webkitFilter = 'contrast(110%) saturate(130%) brightness(105%)';
+            }
         }
 
         // ===== EXTRACT CHANNEL ID FROM STREAM URL =====
         function extractChannelId(streamUrl) {
             if (!streamUrl) return null;
             
-            // Try to extract channel ID from Aliez.tv URL
             const match = streamUrl.match(/[?&]c=(\d+)/);
             
             if (match && match[1]) {
                 return match[1];
             }
             
-            // Try alternative pattern
             const altMatch = streamUrl.match(/id=(\d+)/);
             if (altMatch && altMatch[1]) {
                 return altMatch[1];
@@ -1831,22 +2065,31 @@
             // Auto-fill the input with the stream URL
             aliezInput.value = streamUrl;
             
-            // Auto-load the stream
-            streamFrame.src = `https://emb.apl385.me/player/live.php?id=${channelId}&autoplay=1`;
+            // Auto-load the stream with mobile support
+            const finalUrl = `https://emb.apl385.me/player/live.php?id=${channelId}&autoplay=1`;
+            setupIframeForMobile(finalUrl);
             startAdSequence();
+            
+            // Hide URL input when stream loads
+            inputBar.style.display = 'none';
+            isStreamLoaded = true;
+            
+            // Apply quality filter
+            applyQualityFilter();
             
             // Show notification
             showNotification('Stream Loading', 'Premium stream is starting...');
+            
+            // Show mobile hint
+            showMobileHint();
         }
 
-        // ===== UPDATED LOGO HANDLING FUNCTION =====
+        // ===== REST OF THE CODE (same as before) =====
         function getTeamLogo(teamName, logoUrl) {
-            // Clean team name for matching
             const cleanTeamName = teamName.trim()
-                .replace('(W)', '') // Remove (W) from women's teams
+                .replace('(W)', '')
                 .trim();
             
-            // If a valid logo URL is provided in the data, ALWAYS use it first
             if (logoUrl && 
                 typeof logoUrl === 'string' && 
                 logoUrl.trim() !== '' && 
@@ -1854,10 +2097,8 @@
                 logoUrl !== 'undefined' &&
                 !logoUrl.includes('placeholder')) {
                 
-                // Fix the URL to ensure it's properly formatted
                 let fixedUrl = logoUrl.trim();
                 
-                // Fix common URL issues
                 if (fixedUrl.startsWith('//')) {
                     fixedUrl = 'https:' + fixedUrl;
                 }
@@ -1866,20 +2107,14 @@
                     fixedUrl = 'https:' + fixedUrl;
                 }
                 
-                // Ensure it's a proper URL
                 if (fixedUrl.startsWith('http')) {
-                    // Return the original logo URL from the data
                     return fixedUrl;
                 }
             }
             
-            // Only if no logo URL is provided in the data, use fallback system
-            // Clean team name for fallback matching
             const cleanName = cleanTeamName.toLowerCase();
             
-            // Specific team fallbacks for common teams in your data
             const teamFallbacks = {
-                // Italy Serie A
                 'parma': 'https://upload.wikimedia.org/wikipedia/en/0/00/Parma_Calcio_1913_logo.svg',
                 'fiorentina': 'https://upload.wikimedia.org/wikipedia/en/2/2b/ACF_Fiorentina_logo.svg',
                 'lecce': 'https://upload.wikimedia.org/wikipedia/en/5/5d/U.S._Lecce_logo.svg',
@@ -1889,8 +2124,6 @@
                 'udinese': 'https://upload.wikimedia.org/wikipedia/en/7/71/Udinese_Calcio_logo.svg',
                 'lazio': 'https://upload.wikimedia.org/wikipedia/en/5/53/SS_Lazio_logo.svg',
                 'juventus': 'https://upload.wikimedia.org/wikipedia/en/0/0c/Juventus_FC_2017_logo.svg',
-                
-                // England Premier League
                 'arsenal': 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
                 'manchester city': 'https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg',
                 'liverpool': 'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg',
@@ -1905,8 +2138,6 @@
                 'nottingham forest': 'https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_F.C._logo.svg',
                 'fulham': 'https://upload.wikimedia.org/wikipedia/en/e/eb/Fulham_FC_%28shield%29.svg',
                 'brighton': 'https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg',
-                
-                // Australia A-League
                 'adelaide united': 'https://upload.wikimedia.org/wikipedia/en/6/6d/Adelaide_United_FC_logo.svg',
                 'western sydney': 'https://upload.wikimedia.org/wikipedia/en/8/8b/Western_Sydney_Wanderers_FC_logo.svg',
                 'sydney': 'https://upload.wikimedia.org/wikipedia/en/4/48/Sydney_FC_logo.svg',
@@ -1915,35 +2146,26 @@
                 'melbourne victory': 'https://upload.wikimedia.org/wikipedia/en/2/28/Melbourne_Victory_FC_logo.svg',
                 'newcastle jets': 'https://upload.wikimedia.org/wikipedia/en/6/69/Newcastle_Jets_FC_logo.svg',
                 'canberra united': 'https://upload.wikimedia.org/wikipedia/en/8/8c/Canberra_United_FC_logo.svg',
-                
-                // Saudi Pro League
                 'al nassr': 'https://upload.wikimedia.org/wikipedia/en/9/9e/Al_Nassr_FC_Logo.svg',
                 'al-ittihad jeddah': 'https://upload.wikimedia.org/wikipedia/en/4/41/Al-Ittihad_Club_%28Jeddah%29_Logo.svg',
                 'al-shabab riyadh': 'https://upload.wikimedia.org/wikipedia/en/c/c5/Al-Shabab_FC_%28Riyadh%29_logo.svg',
-                
-                // Other teams
                 'hibernian': 'https://upload.wikimedia.org/wikipedia/en/5/5a/Hibernian_FC_logo.svg',
                 'hearts': 'https://upload.wikimedia.org/wikipedia/en/5/5d/Heart_of_Midlothian_FC_logo.svg',
                 'celtic': 'https://upload.wikimedia.org/wikipedia/en/5/5d/Celtic_FC_logo.svg',
                 'rangers': 'https://upload.wikimedia.org/wikipedia/en/4/43/Rangers_FC_logo.svg',
-                
-                // Default fallback
                 'default': 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
             };
             
-            // Check for exact match first
             if (teamFallbacks[cleanName]) {
                 return teamFallbacks[cleanName];
             }
             
-            // Check for partial matches
             for (const [key, url] of Object.entries(teamFallbacks)) {
                 if (cleanName.includes(key) || key.includes(cleanName)) {
                     return url;
                 }
             }
             
-            // If no match found, generate a colored avatar
             return `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanTeamName)}&background=random&color=fff&size=256&bold=true`;
         }
 
@@ -1953,7 +2175,6 @@
             setupEventListeners();
         });
 
-        // ===== UPDATED COUNTDOWN TIMER FUNCTION =====
         function updateCountdown(matchId, startTime) {
             const now = new Date();
             const matchDate = new Date(startTime);
@@ -2019,7 +2240,6 @@
             });
         }
 
-        // ===== UPDATED DATA LOADING WITH DUPLICATE REMOVAL =====
         async function loadData() {
             try {
                 showLoading();
@@ -2029,23 +2249,19 @@
                 
                 const data = await response.json();
                 
-                // Use Set to track unique matches
                 const uniqueMatches = new Map();
                 const liveMatches = [];
                 const upcomingMatches = [];
                 
                 data.forEach(match => {
-                    // Basic validation
                     if (!match.matchup || !match.team_logos) return;
                     
-                    // Split matchup to get team names
                     const teams = match.matchup.split(' – ');
                     if (teams.length < 2) return;
                     
                     const homeTeam = teams[0]?.trim();
                     const awayTeam = teams[1]?.trim();
                     
-                    // Validate team names
                     const hasValidHomeName = homeTeam && 
                                             homeTeam.trim() !== '' && 
                                             homeTeam.length > 2 &&
@@ -2060,34 +2276,25 @@
                     
                     if (!hasValidHomeName || !hasValidAwayName) return;
                     
-                    // Check for team logos (with more lenient validation)
                     const homeLogo = match.team_logos[0]?.logo_url;
                     const awayLogo = match.team_logos[1]?.logo_url;
                     
-                    // Accept any logo URL as long as it's not obviously broken
                     const hasAnyLogo = (homeLogo && typeof homeLogo === 'string' && homeLogo.trim() !== '') ||
                                      (awayLogo && typeof awayLogo === 'string' && awayLogo.trim() !== '');
                     
                     if (!hasAnyLogo) return;
                     
-                    // Create unique identifier for duplicate checking
                     const uniqueId = `${homeTeam}-${awayTeam}-${match.competition || ''}-${match.parsed_datetime || ''}`;
                     
-                    // Skip if we've already seen this match
                     if (uniqueMatches.has(uniqueId)) {
-                        console.log(`Skipping duplicate: ${homeTeam} vs ${awayTeam}`);
                         return;
                     }
                     
-                    // Mark as seen
                     uniqueMatches.set(uniqueId, true);
                     
-                    // Check if match is from prioritized competition
                     const priorityInfo = getCompetitionPriority(match);
                     
-                    // For LIVE matches: require Aliez.tv streams
                     if (match.is_live) {
-                        // Check for Aliez.tv streams
                         const hasAliezStream = match.streams && match.streams.some(stream => 
                             stream.stream_url && 
                             (stream.stream_url.includes('aliez.tv') || 
@@ -2099,16 +2306,13 @@
                         if (hasAliezStream) {
                             liveMatches.push(match);
                         }
-                    } 
-                    // For UPCOMING matches: show if from prioritized competition
-                    else {
+                    } else {
                         if (priorityInfo !== null) {
                             upcomingMatches.push(match);
                         }
                     }
                 });
                 
-                // Remove duplicates from upcoming matches by checking for same teams within short time window
                 const filteredUpcomingMatches = [];
                 const seenCombinations = new Set();
                 
@@ -2118,18 +2322,13 @@
                     const awayTeam = teams[1]?.trim().toLowerCase();
                     const combination = `${homeTeam}-${awayTeam}`;
                     
-                    // Only add if we haven't seen this combination recently
                     if (!seenCombinations.has(combination)) {
                         seenCombinations.add(combination);
                         filteredUpcomingMatches.push(match);
-                    } else {
-                        console.log(`Filtered duplicate upcoming match: ${match.matchup}`);
                     }
                 });
                 
-                // Combine matches
                 allMatches = [...liveMatches, ...filteredUpcomingMatches];
-                console.log(`Loaded ${liveMatches.length} live matches and ${filteredUpcomingMatches.length} upcoming matches (after deduplication)`);
                 filteredMatches = [...allMatches];
                 renderAllMatches();
             } catch (error) {
@@ -2170,7 +2369,6 @@
             upcomingContainer.innerHTML = errorHtml;
         }
 
-        // ===== SEARCH FUNCTIONALITY =====
         function performSearch() {
             const searchTerm = searchBar.value.toLowerCase().trim();
             
@@ -2192,15 +2390,12 @@
             renderAllMatches();
         }
 
-        // ===== UPDATED GET COMPETITION PRIORITY - STRICTER EPL CHECK =====
         function getCompetitionPriority(match) {
             const competitionName = (match.competition || '').toLowerCase();
             
             for (const comp of PRIORITIZED_COMPETITIONS) {
                 for (const keyword of comp.keywords) {
-                    // Exact match for EPL - only show England Premier League, not other premier leagues
                     if (comp.name === "Premier League") {
-                        // Strict check for English Premier League only
                         if (competitionName === "england. premier league" || 
                             competitionName === "england premier league" ||
                             competitionName.includes("england. premier league")) {
@@ -2211,7 +2406,6 @@
                             };
                         }
                     } else {
-                        // For other competitions, use normal keyword matching
                         if (competitionName.includes(keyword.toLowerCase())) {
                             return {
                                 ...comp,
@@ -2223,15 +2417,12 @@
                 }
             }
             
-            // Return null for matches not in prioritized list
             return null;
         }
 
-        // ===== GROUP MATCHES BY PRIORITIZED COMPETITIONS (FOR UPCOMING) =====
         function groupMatchesByPriority(matches) {
             const groups = {};
             
-            // Initialize groups for each prioritized competition
             PRIORITIZED_COMPETITIONS.forEach(comp => {
                 const displayName = comp.name === "Premier League" ? "Premier League (EPL)" : comp.name;
                 groups[comp.name] = {
@@ -2245,7 +2436,6 @@
                 };
             });
             
-            // Assign matches to groups
             matches.forEach(match => {
                 const priorityInfo = getCompetitionPriority(match);
                 if (priorityInfo && groups[priorityInfo.name]) {
@@ -2253,7 +2443,6 @@
                 }
             });
             
-            // Convert to array, sort by rank, and filter out empty groups
             const groupsArray = Object.values(groups)
                 .filter(group => group.matches.length > 0)
                 .sort((a, b) => a.importance - b.importance);
@@ -2261,15 +2450,11 @@
             return groupsArray;
         }
 
-        // ===== RENDER MATCHES =====
         function renderAllMatches() {
             const liveMatches = filteredMatches.filter(match => match.is_live);
             const upcomingMatches = filteredMatches.filter(match => !match.is_live);
 
-            // Render live matches with regular grouping
             renderLiveMatches(liveContainer, liveMatches);
-            
-            // Render upcoming matches with prioritized competition grouping
             renderUpcomingMatches(upcomingContainer, upcomingMatches);
             
             setTimeout(startCountdownTimers, 100);
@@ -2289,12 +2474,10 @@
                 return;
             }
 
-            // Group live matches by competition
             const groups = {};
             matches.forEach(match => {
                 const compName = match.competition || "Other Matches";
                 
-                // Special handling for EPL in live matches
                 let displayName = compName;
                 if (compName.toLowerCase().includes("england. premier league")) {
                     displayName = "Premier League (EPL)";
@@ -2313,9 +2496,7 @@
                 groups[compName].matches.push(match);
             });
 
-            // Sort groups and create league sections
             Object.values(groups).sort((a, b) => {
-                // Put Premier League and Champions League first
                 const aIsImportant = a.competition.toLowerCase().includes('england. premier league') || 
                                    a.competition.toLowerCase().includes('champions');
                 const bIsImportant = b.competition.toLowerCase().includes('england. premier league') || 
@@ -2324,7 +2505,6 @@
                 if (aIsImportant && !bIsImportant) return -1;
                 if (!aIsImportant && bIsImportant) return 1;
                 
-                // Otherwise sort alphabetically
                 return a.competition.localeCompare(b.competition);
             }).forEach(group => {
                 createLeagueSection(container, group, true);
@@ -2345,7 +2525,6 @@
                 return;
             }
 
-            // Group upcoming matches by prioritized competitions
             const groups = groupMatchesByPriority(matches);
             
             if (groups.length === 0) {
@@ -2359,7 +2538,6 @@
                 return;
             }
 
-            // Create league sections for each prioritized group
             groups.forEach(group => {
                 createLeagueSection(container, group, false);
             });
@@ -2397,7 +2575,6 @@
             const matchesGrid = document.createElement('div');
             matchesGrid.className = 'league-matches';
             
-            // Sort matches by date
             group.matches.sort((a, b) => {
                 const dateA = new Date(a.parsed_datetime || a.date_time);
                 const dateB = new Date(b.parsed_datetime || b.date_time);
@@ -2542,7 +2719,6 @@
             document.body.style.overflow = 'hidden';
         }
 
-        // ===== POPULATE STREAM LINKS =====
         function populateStreamLinks(match) {
             if (!match.streams || match.streams.length === 0) {
                 streamsList.innerHTML = `
@@ -2556,7 +2732,6 @@
                 return;
             }
             
-            // Filter only Aliez.tv streams
             const aliezStreams = match.streams.filter(stream => 
                 stream.stream_url && 
                 (stream.stream_url.includes('aliez.tv') || 
@@ -2607,7 +2782,6 @@
             if (!dateTime) return 'TBD';
             
             try {
-                // Handle ISO format
                 if (dateTime.includes('T')) {
                     const date = new Date(dateTime);
                     if (isNaN(date.getTime())) return dateTime;
@@ -2627,7 +2801,6 @@
                         return `${monthNames[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
                     }
                 } else {
-                    // Handle "27 December at 13:30" format
                     return dateTime.replace(' at ', ' ');
                 }
             } catch (e) {
@@ -2696,7 +2869,6 @@
                 }
             });
             
-            // Search functionality
             searchBtn.addEventListener('click', performSearch);
             searchBar.addEventListener('keyup', function(e) {
                 if (e.key === 'Enter') {
@@ -2710,10 +2882,8 @@
                 searchTimeout = setTimeout(performSearch, 300);
             });
             
-            // Notification close
             notificationClose.addEventListener('click', hideNotification);
             
-            // Player modal events (from first code)
             playerClose.addEventListener('click', closePlayer);
             playerModal.addEventListener('click', function(e) {
                 if (e.target === playerModal) closePlayer();
@@ -2753,6 +2923,7 @@
         window.updatePlayer = updatePlayer;
         window.startAdSequence = startAdSequence;
         window.skipAd = skipAd;
+        window.setQuality = setQuality;
     </script>
 </body>
 </html>
