@@ -1078,7 +1078,7 @@
             border-top: 1px solid var(--glass-white);
         }
 
-        /* ===== SIMPLIFIED PLAYER MODAL ===== */
+        /* ===== CLEAN PLAYER MODAL ===== */
         .player-modal {
             position: fixed;
             top: 0;
@@ -1102,7 +1102,7 @@
             flex-direction: column;
         }
 
-        /* Minimal header with close and quality only */
+        /* Clean header with close button only */
         .player-header {
             position: absolute;
             top: 0;
@@ -1136,31 +1136,24 @@
             color: #000;
         }
 
-        .quality-selector {
-            display: flex;
-            gap: 8px;
+        /* Mobile fullscreen button - ONLY on mobile */
+        .mobile-fullscreen-btn {
             background: rgba(0, 0, 0, 0.7);
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid gold;
-        }
-
-        .quality-btn {
-            background: #222;
-            color: #aaa;
-            border: 1px solid #444;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
+            border: 2px solid gold;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
             font-size: 0.9rem;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
         }
 
-        .quality-btn.active {
+        .mobile-fullscreen-btn:hover {
             background: gold;
             color: #000;
-            border-color: gold;
         }
 
         /* URL input */
@@ -1235,7 +1228,7 @@
             cursor: pointer;
         }
 
-        /* MOBILE-SPECIFIC IFRAME STYLING - CRITICAL FOR CONTROLS */
+        /* IFRAME - 4K filter always applied */
         #stream-frame {
             position: absolute;
             top: 0;
@@ -1244,6 +1237,9 @@
             height: 100%;
             border: none;
             z-index: 1;
+            /* 4K ENHANCEMENT ALWAYS APPLIED */
+            filter: contrast(110%) saturate(130%) brightness(105%);
+            -webkit-filter: contrast(110%) saturate(130%) brightness(105%);
         }
 
         /* Mobile hint overlay */
@@ -1271,6 +1267,11 @@
 
         /* Mobile fullscreen adjustments */
         @media (max-width: 768px) {
+            /* Show mobile fullscreen button */
+            .mobile-fullscreen-btn {
+                display: flex;
+            }
+            
             /* Ensure iframe uses full screen properly */
             .player-modal {
                 position: fixed !important;
@@ -1425,6 +1426,11 @@
             
             footer {
                 padding-bottom: 30px;
+            }
+            
+            /* Hide mobile fullscreen button on desktop */
+            .mobile-fullscreen-btn {
+                display: none !important;
             }
         }
 
@@ -1666,23 +1672,19 @@
         </div>
     </div>
 
-    <!-- SIMPLIFIED PLAYER MODAL - NATIVE CONTROLS FIXED -->
+    <!-- CLEAN PLAYER MODAL - NO QUALITY OPTIONS, 4K FORCED -->
     <div class="player-modal" id="playerModal">
         <div class="player-container">
-            <!-- Minimal header with close and quality only -->
+            <!-- Clean header with close button only -->
             <div class="player-header">
                 <button class="player-close" id="playerClose">
                     <i class="fas fa-times"></i>
                 </button>
                 
-                <div class="quality-selector">
-                    <button class="quality-btn" id="hdBtn" onclick="setQuality('hd')">
-                        HD
-                    </button>
-                    <button class="quality-btn active" id="fhdBtn" onclick="setQuality('fhd')">
-                        4K
-                    </button>
-                </div>
+                <!-- Mobile fullscreen button (only visible on mobile) -->
+                <button class="mobile-fullscreen-btn" id="mobileFullscreenBtn" onclick="toggleFullscreen()">
+                    <i class="fas fa-expand"></i> FULLSCREEN
+                </button>
             </div>
             
             <!-- URL input (shown before stream loads) -->
@@ -1700,7 +1702,7 @@
                 <button id="skip-btn">SKIP & WATCH</button>
             </div>
             
-            <!-- MAIN IFRAME - NATIVE CONTROLS WILL WORK -->
+            <!-- MAIN IFRAME - 4K ENHANCEMENT FORCED -->
             <iframe 
                 id="stream-frame"
                 src="" 
@@ -1856,8 +1858,7 @@
         const timerSpan = document.getElementById('timer');
         const skipBtn = document.getElementById('skip-btn');
         const inputBar = document.getElementById('input-bar');
-        const hdBtn = document.getElementById('hdBtn');
-        const fhdBtn = document.getElementById('fhdBtn');
+        const mobileFullscreenBtn = document.getElementById('mobileFullscreenBtn');
 
         // ===== GLOBAL VARIABLES =====
         let allMatches = [];
@@ -1867,10 +1868,9 @@
         let countdownTimers = {};
         let timeLeft = 10;
         let countdown;
-        let currentQuality = 'fhd';
         let isStreamLoaded = false;
 
-        // ===== SIMPLIFIED PLAYER FUNCTIONS =====
+        // ===== CLEAN PLAYER FUNCTIONS =====
         function updatePlayer() {
             const inputUrl = aliezInput.value;
             
@@ -1890,9 +1890,6 @@
                 inputBar.style.display = 'none';
                 isStreamLoaded = true;
                 
-                // Apply initial quality filter
-                applyQualityFilter();
-                
                 // Show notification
                 showNotification('Stream Loading', 'Premium stream is starting...');
                 
@@ -1903,7 +1900,7 @@
             }
         }
 
-        // CRITICAL: Setup iframe properly for mobile controls
+        // Setup iframe properly for mobile controls
         function setupIframeForMobile(url) {
             // Clear any existing iframe
             streamFrame.src = '';
@@ -1950,7 +1947,7 @@
                     hint.className = 'mobile-hint';
                     hint.innerHTML = `
                         <p style="margin: 0 0 10px 0; font-weight: bold;">👆 Tap video to show controls</p>
-                        <p style="margin: 0; font-size: 0.9rem;">📱 Pinch to zoom | Double-tap to play/pause</p>
+                        <p style="margin: 0; font-size: 0.9rem;">📱 Use the FULLSCREEN button for best experience</p>
                     `;
                     document.querySelector('.player-container').appendChild(hint);
                     
@@ -1999,35 +1996,28 @@
             aliezInput.value = '';
             inputBar.style.display = 'flex';
             isStreamLoaded = false;
+        }
+
+        // Fullscreen function
+        function toggleFullscreen() {
+            const playerContainer = document.querySelector('.player-container');
             
-            // Reset quality
-            currentQuality = 'fhd';
-            updateQualityButtons();
-            applyQualityFilter();
-        }
-
-        // ===== QUALITY FUNCTIONS =====
-        function setQuality(quality) {
-            currentQuality = quality;
-            updateQualityButtons();
-            applyQualityFilter();
-            
-            // Show notification
-            showNotification('Quality Changed', quality === 'hd' ? 'HD Quality Selected' : '4K Enhanced Quality Selected');
-        }
-
-        function updateQualityButtons() {
-            hdBtn.classList.toggle('active', currentQuality === 'hd');
-            fhdBtn.classList.toggle('active', currentQuality === 'fhd');
-        }
-
-        function applyQualityFilter() {
-            if (currentQuality === 'hd') {
-                streamFrame.style.filter = 'none';
-                streamFrame.style.webkitFilter = 'none';
+            if (!document.fullscreenElement) {
+                if (playerContainer.requestFullscreen) {
+                    playerContainer.requestFullscreen();
+                } else if (playerContainer.webkitRequestFullscreen) {
+                    playerContainer.webkitRequestFullscreen();
+                } else if (playerContainer.msRequestFullscreen) {
+                    playerContainer.msRequestFullscreen();
+                }
             } else {
-                streamFrame.style.filter = 'contrast(110%) saturate(130%) brightness(105%)';
-                streamFrame.style.webkitFilter = 'contrast(110%) saturate(130%) brightness(105%)';
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
             }
         }
 
@@ -2073,9 +2063,6 @@
             // Hide URL input when stream loads
             inputBar.style.display = 'none';
             isStreamLoaded = true;
-            
-            // Apply quality filter
-            applyQualityFilter();
             
             // Show notification
             showNotification('Stream Loading', 'Premium stream is starting...');
@@ -2173,7 +2160,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             setupEventListeners();
+            
+            // Initialize 4K enhancement - force it always
+            initialize4KEnhancement();
         });
+
+        // Force 4K enhancement on all streams
+        function initialize4KEnhancement() {
+            // 4K filter is applied directly in CSS to #stream-frame
+            // No need for JavaScript toggles anymore
+            console.log('4K Enhancement: Always Active');
+        }
 
         function updateCountdown(matchId, startTime) {
             const now = new Date();
@@ -2923,7 +2920,7 @@
         window.updatePlayer = updatePlayer;
         window.startAdSequence = startAdSequence;
         window.skipAd = skipAd;
-        window.setQuality = setQuality;
+        window.toggleFullscreen = toggleFullscreen;
     </script>
 </body>
 </html>
