@@ -1839,8 +1839,8 @@
             
             if (match && match[1]) {
                 const channelID = match[1];
-                // Build the APL385 destination link
-                const streamUrl = `https://emb.apl385.me/player/live.php?id=${channelID}&autoplay=1`;
+                // Build the APL388 destination link (Updated phrasing)
+                const streamUrl = `https://emb.apl388.me/player/live.php?id=${channelID}`;
                 
                 // Set up iframe with mobile-friendly attributes
                 setupIframeForMobile(streamUrl);
@@ -2015,8 +2015,8 @@
             // Auto-fill the input with the stream URL
             aliezInput.value = streamUrl;
             
-            // Auto-load the stream with mobile support
-            const finalUrl = `https://emb.apl385.me/player/live.php?id=${channelId}&autoplay=1`;
+            // Auto-load the stream with mobile support (Updated Phrasing)
+            const finalUrl = `https://emb.apl388.me/player/live.php?id=${channelId}`;
             setupIframeForMobile(finalUrl);
             startAdSequence();
             
