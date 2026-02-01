@@ -1112,10 +1112,34 @@
             background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
             z-index: 10;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between; /* Space out buttons */
             align-items: center;
-            /* FIX: Allow clicks to pass through header */
             pointer-events: none;
+        }
+
+        /* Player Back Button */
+        .player-back-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--cyan);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            pointer-events: auto;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+        }
+
+        .player-back-btn:hover {
+            background: var(--cyan);
+            color: #000;
+            transform: translateX(5px);
         }
 
         /* Mobile fullscreen button - ONLY on mobile */
@@ -1646,6 +1670,10 @@
     <div class="player-modal" id="playerModal">
         <div class="player-container">
             <div class="player-header">
+                <button class="player-back-btn" id="playerCloseBtn">
+                    <i class="fas fa-chevron-left"></i> BACK
+                </button>
+                
                 <button class="mobile-fullscreen-btn" id="mobileFullscreenBtn" onclick="toggleFullscreen()">
                     <i class="fas fa-expand"></i> FULLSCREEN
                 </button>
@@ -1811,6 +1839,7 @@
         
         // Player modal elements
         const playerModal = document.getElementById('playerModal');
+        const playerCloseBtn = document.getElementById('playerCloseBtn');
         const aliezInput = document.getElementById('alieztv-url');
         const loadBtn = document.getElementById('load-btn');
         const streamFrame = document.getElementById('stream-frame');
@@ -1839,7 +1868,7 @@
             
             if (match && match[1]) {
                 const channelID = match[1];
-                // Build the APL388 destination link (Updated phrasing)
+                // Build the APL388 destination link
                 const streamUrl = `https://emb.apl388.me/player/live.php?id=${channelID}`;
                 
                 // Set up iframe with mobile-friendly attributes
@@ -1860,28 +1889,20 @@
             }
         }
 
-        // Setup iframe properly for mobile controls
         function setupIframeForMobile(url) {
-            // Clear any existing iframe
             streamFrame.src = '';
-            
-            // Add mobile-specific attributes
             streamFrame.setAttribute('playsinline', '');
             streamFrame.setAttribute('webkit-playsinline', '');
             streamFrame.setAttribute('x-webkit-airplay', 'allow');
             streamFrame.setAttribute('x5-video-player-type', 'h5-page');
             streamFrame.setAttribute('x5-video-player-fullscreen', 'true');
             streamFrame.setAttribute('x5-video-orientation', 'landscape');
-            
-            // Add additional attributes for native controls
             streamFrame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; accelerometer; gyroscope');
             
-            // Set the source
             setTimeout(() => {
                 streamFrame.src = url;
             }, 100);
             
-            // Apply mobile-specific styling
             if (isMobile()) {
                 streamFrame.style.cssText = `
                     width: 100vw !important;
@@ -1911,11 +1932,8 @@
                     `;
                     document.querySelector('.player-container').appendChild(hint);
                     
-                    // Remove hint after 5 seconds
                     setTimeout(() => {
-                        if (hint.parentNode) {
-                            hint.remove();
-                        }
+                        if (hint.parentNode) hint.remove();
                     }, 5000);
                 }, 2000);
             }
@@ -1944,942 +1962,277 @@
             playerModal.classList.remove('active');
             document.body.style.overflow = 'auto';
             
-            // Reset player
+            // CRITICAL: Clear src to stop video/audio stream
             streamFrame.src = '';
+            
             adOverlay.style.display = 'none';
             if (countdown) {
                 clearInterval(countdown);
                 countdown = null;
             }
             
-            // Reset input and show it again
             aliezInput.value = '';
             inputBar.style.display = 'flex';
             isStreamLoaded = false;
         }
 
-        // Fullscreen function
         function toggleFullscreen() {
             const playerContainer = document.querySelector('.player-container');
-            
             if (!document.fullscreenElement) {
-                if (playerContainer.requestFullscreen) {
-                    playerContainer.requestFullscreen();
-                } else if (playerContainer.webkitRequestFullscreen) {
-                    playerContainer.webkitRequestFullscreen();
-                } else if (playerContainer.msRequestFullscreen) {
-                    playerContainer.msRequestFullscreen();
-                }
+                if (playerContainer.requestFullscreen) playerContainer.requestFullscreen();
+                else if (playerContainer.webkitRequestFullscreen) playerContainer.webkitRequestFullscreen();
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
         // ===== EXTRACT CHANNEL ID FROM STREAM URL =====
         function extractChannelId(streamUrl) {
             if (!streamUrl) return null;
-            
             const match = streamUrl.match(/[?&]c=(\d+)/);
-            
-            if (match && match[1]) {
-                return match[1];
-            }
-            
+            if (match && match[1]) return match[1];
             const altMatch = streamUrl.match(/id=(\d+)/);
-            if (altMatch && altMatch[1]) {
-                return altMatch[1];
-            }
-            
+            if (altMatch && altMatch[1]) return altMatch[1];
             return null;
         }
 
         // ===== LOAD STREAM FROM FIXTURE =====
         function loadStreamFromFixture(streamUrl, matchTitle) {
             const channelId = extractChannelId(streamUrl);
-            
             if (!channelId) {
                 alert("Could not extract channel ID from stream URL");
                 return;
             }
             
-            // Show player modal
             playerModal.classList.add('active');
             document.body.style.overflow = 'hidden';
-            
-            // Auto-fill the input with the stream URL
             aliezInput.value = streamUrl;
             
-            // Auto-load the stream with mobile support (Updated Phrasing)
             const finalUrl = `https://emb.apl388.me/player/live.php?id=${channelId}`;
             setupIframeForMobile(finalUrl);
             startAdSequence();
             
-            // Hide URL input when stream loads
             inputBar.style.display = 'none';
             isStreamLoaded = true;
-            
-            // Show notification
             showNotification('Stream Loading', 'Premium stream is starting...');
-            
-            // Show mobile hint
             showMobileHint();
         }
 
-        // ===== REST OF THE CODE (same as before) =====
+        // ===== DATA LOGIC =====
         function getTeamLogo(teamName, logoUrl) {
-            const cleanTeamName = teamName.trim()
-                .replace('(W)', '')
-                .trim();
-            
-            if (logoUrl && 
-                typeof logoUrl === 'string' && 
-                logoUrl.trim() !== '' && 
-                logoUrl !== 'null' && 
-                logoUrl !== 'undefined' &&
-                !logoUrl.includes('placeholder')) {
-                
+            const cleanTeamName = teamName.trim().replace('(W)', '').trim();
+            if (logoUrl && typeof logoUrl === 'string' && logoUrl.trim() !== '' && logoUrl !== 'null' && logoUrl !== 'undefined') {
                 let fixedUrl = logoUrl.trim();
-                
-                if (fixedUrl.startsWith('//')) {
-                    fixedUrl = 'https:' + fixedUrl;
-                }
-                
-                if (fixedUrl.startsWith('/')) {
-                    fixedUrl = 'https:' + fixedUrl;
-                }
-                
-                if (fixedUrl.startsWith('http')) {
-                    return fixedUrl;
-                }
+                if (fixedUrl.startsWith('//')) fixedUrl = 'https:' + fixedUrl;
+                return fixedUrl;
             }
-            
-            const cleanName = cleanTeamName.toLowerCase();
-            
-            const teamFallbacks = {
-                'parma': 'https://upload.wikimedia.org/wikipedia/en/0/00/Parma_Calcio_1913_logo.svg',
-                'fiorentina': 'https://upload.wikimedia.org/wikipedia/en/2/2b/ACF_Fiorentina_logo.svg',
-                'lecce': 'https://upload.wikimedia.org/wikipedia/en/5/5d/U.S._Lecce_logo.svg',
-                'como': 'https://upload.wikimedia.org/wikipedia/en/7/7d/Como_1907_logo.svg',
-                'torino': 'https://upload.wikimedia.org/wikipedia/en/1/1d/Torino_FC_Logo.svg',
-                'cagliari': 'https://upload.wikimedia.org/wikipedia/en/6/69/Cagliari_Calcio_1920_logo.svg',
-                'udinese': 'https://upload.wikimedia.org/wikipedia/en/7/71/Udinese_Calcio_logo.svg',
-                'lazio': 'https://upload.wikimedia.org/wikipedia/en/5/53/SS_Lazio_logo.svg',
-                'juventus': 'https://upload.wikimedia.org/wikipedia/en/0/0c/Juventus_FC_2017_logo.svg',
-                'arsenal': 'https://upload.wikimedia.org/wikipedia/en/5/53/Arsenal_FC.svg',
-                'manchester city': 'https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg',
-                'liverpool': 'https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg',
-                'chelsea': 'https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg',
-                'aston villa': 'https://upload.wikimedia.org/wikipedia/en/9/9f/Aston_Villa_logo.svg',
-                'west ham united': 'https://upload.wikimedia.org/wikipedia/en/c/c2/West_Ham_United_FC_logo.svg',
-                'wolverhampton': 'https://upload.wikimedia.org/wikipedia/en/f/fc/Wolverhampton_Wanderers.svg',
-                'brentford': 'https://upload.wikimedia.org/wikipedia/en/2/2a/Brentford_FC_crest.svg',
-                'bournemouth': 'https://upload.wikimedia.org/wikipedia/en/e/e5/AFC_Bournemouth_%282013%29.svg',
-                'burnley': 'https://upload.wikimedia.org/wikipedia/en/6/6d/Burnley_FC_Logo.svg',
-                'everton': 'https://upload.wikimedia.org/wikipedia/en/7/7c/Everton_FC_logo.svg',
-                'nottingham forest': 'https://upload.wikimedia.org/wikipedia/en/e/e5/Nottingham_Forest_F.C._logo.svg',
-                'fulham': 'https://upload.wikimedia.org/wikipedia/en/e/eb/Fulham_FC_%28shield%29.svg',
-                'brighton': 'https://upload.wikimedia.org/wikipedia/en/f/fd/Brighton_%26_Hove_Albion_logo.svg',
-                'adelaide united': 'https://upload.wikimedia.org/wikipedia/en/6/6d/Adelaide_United_FC_logo.svg',
-                'western sydney': 'https://upload.wikimedia.org/wikipedia/en/8/8b/Western_Sydney_Wanderers_FC_logo.svg',
-                'sydney': 'https://upload.wikimedia.org/wikipedia/en/4/48/Sydney_FC_logo.svg',
-                'auckland': 'https://upload.wikimedia.org/wikipedia/en/thumb/4/43/Auckland_City_FC_logo.svg/256px-Auckland_City_FC_logo.svg.png',
-                'central coast mariners': 'https://upload.wikimedia.org/wikipedia/en/5/5b/Central_Coast_Mariners_FC_logo.svg',
-                'melbourne victory': 'https://upload.wikimedia.org/wikipedia/en/2/28/Melbourne_Victory_FC_logo.svg',
-                'newcastle jets': 'https://upload.wikimedia.org/wikipedia/en/6/69/Newcastle_Jets_FC_logo.svg',
-                'canberra united': 'https://upload.wikimedia.org/wikipedia/en/8/8c/Canberra_United_FC_logo.svg',
-                'al nassr': 'https://upload.wikimedia.org/wikipedia/en/9/9e/Al_Nassr_FC_Logo.svg',
-                'al-ittihad jeddah': 'https://upload.wikimedia.org/wikipedia/en/4/41/Al-Ittihad_Club_%28Jeddah%29_Logo.svg',
-                'al-shabab riyadh': 'https://upload.wikimedia.org/wikipedia/en/c/c5/Al-Shabab_FC_%28Riyadh%29_logo.svg',
-                'hibernian': 'https://upload.wikimedia.org/wikipedia/en/5/5a/Hibernian_FC_logo.svg',
-                'hearts': 'https://upload.wikimedia.org/wikipedia/en/5/5d/Heart_of_Midlothian_FC_logo.svg',
-                'celtic': 'https://upload.wikimedia.org/wikipedia/en/5/5d/Celtic_FC_logo.svg',
-                'rangers': 'https://upload.wikimedia.org/wikipedia/en/4/43/Rangers_FC_logo.svg',
-                'default': 'https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg'
-            };
-            
-            if (teamFallbacks[cleanName]) {
-                return teamFallbacks[cleanName];
-            }
-            
-            for (const [key, url] of Object.entries(teamFallbacks)) {
-                if (cleanName.includes(key) || key.includes(cleanName)) {
-                    return url;
-                }
-            }
-            
             return `https://ui-avatars.com/api/?name=${encodeURIComponent(cleanTeamName)}&background=random&color=fff&size=256&bold=true`;
-        }
-
-        // ===== INITIALIZATION =====
-        document.addEventListener('DOMContentLoaded', function() {
-            loadData();
-            setupEventListeners();
-            
-            // Initialize 4K enhancement - force it always
-            initialize4KEnhancement();
-        });
-
-        // Force 4K enhancement on all streams
-        function initialize4KEnhancement() {
-            // 4K filter is applied directly in CSS to #stream-frame
-            // No need for JavaScript toggles anymore
-            console.log('4K Enhancement: Always Active');
         }
 
         function updateCountdown(matchId, startTime) {
             const now = new Date();
             const matchDate = new Date(startTime);
-            
-            if (isNaN(matchDate.getTime())) {
-                return "Invalid time";
-            }
-            
+            if (isNaN(matchDate.getTime())) return "Invalid time";
             const diff = matchDate.getTime() - now.getTime();
-            
-            if (diff <= 0) {
-                if (countdownTimers[matchId]) {
-                    clearInterval(countdownTimers[matchId]);
-                    delete countdownTimers[matchId];
-                }
-                return "Match Started";
-            }
-            
+            if (diff <= 0) return "Match Started";
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            if (days > 0) {
-                return `${days}d ${hours}h ${minutes}m`;
-            } else if (hours > 0) {
-                return `${hours}h ${minutes}m ${seconds}s`;
-            } else {
-                return `${minutes}m ${seconds}s`;
-            }
+            return days > 0 ? `${days}d ${hours}h ${minutes}m` : (hours > 0 ? `${hours}h ${minutes}m ${seconds}s` : `${minutes}m ${seconds}s`);
         }
 
         function startCountdownTimers() {
             const upcomingCards = document.querySelectorAll('.match-card.upcoming');
-            
             upcomingCards.forEach(card => {
                 const matchId = card.dataset.matchId;
                 const startTime = card.dataset.startTime;
-                
                 if (!matchId || !startTime) return;
-                
-                if (countdownTimers[matchId]) {
-                    clearInterval(countdownTimers[matchId]);
-                }
-                
                 const countdownElement = card.querySelector('.countdown-timer');
-                if (countdownElement) {
-                    countdownElement.textContent = updateCountdown(matchId, startTime);
-                }
-                
-                countdownTimers[matchId] = setInterval(() => {
-                    const countdownElement = card.querySelector('.countdown-timer');
-                    if (countdownElement) {
-                        const newTime = updateCountdown(matchId, startTime);
-                        countdownElement.textContent = newTime;
-                        
-                        if (newTime === "Match Started") {
-                            clearInterval(countdownTimers[matchId]);
-                            delete countdownTimers[matchId];
-                        }
-                    }
-                }, 1000);
+                if (countdownElement) countdownElement.textContent = updateCountdown(matchId, startTime);
             });
         }
 
         async function loadData() {
             try {
                 showLoading();
-                
                 const response = await fetch(API_BASE_URL);
-                if (!response.ok) throw new Error('Network response failed');
-                
                 const data = await response.json();
-                
                 const uniqueMatches = new Map();
                 const liveMatches = [];
                 const upcomingMatches = [];
                 
                 data.forEach(match => {
                     if (!match.matchup || !match.team_logos) return;
-                    
                     const teams = match.matchup.split(' – ');
                     if (teams.length < 2) return;
-                    
-                    const homeTeam = teams[0]?.trim();
-                    const awayTeam = teams[1]?.trim();
-                    
-                    const hasValidHomeName = homeTeam && 
-                                            homeTeam.trim() !== '' && 
-                                            homeTeam.length > 2 &&
-                                            !homeTeam.toLowerCase().includes('undefined') &&
-                                            homeTeam !== 'Simulcast';
-                    
-                    const hasValidAwayName = awayTeam && 
-                                            awayTeam.trim() !== '' && 
-                                            awayTeam.length > 2 &&
-                                            !awayTeam.toLowerCase().includes('undefined') &&
-                                            awayTeam !== 'Simulcast';
-                    
-                    if (!hasValidHomeName || !hasValidAwayName) return;
-                    
-                    const homeLogo = match.team_logos[0]?.logo_url;
-                    const awayLogo = match.team_logos[1]?.logo_url;
-                    
-                    const hasAnyLogo = (homeLogo && typeof homeLogo === 'string' && homeLogo.trim() !== '') ||
-                                     (awayLogo && typeof awayLogo === 'string' && awayLogo.trim() !== '');
-                    
-                    if (!hasAnyLogo) return;
-                    
-                    const uniqueId = `${homeTeam}-${awayTeam}-${match.competition || ''}-${match.parsed_datetime || ''}`;
-                    
-                    if (uniqueMatches.has(uniqueId)) {
-                        return;
-                    }
-                    
+                    const uniqueId = `${teams[0]}-${teams[1]}-${match.parsed_datetime}`;
+                    if (uniqueMatches.has(uniqueId)) return;
                     uniqueMatches.set(uniqueId, true);
                     
-                    const priorityInfo = getCompetitionPriority(match);
-                    
-                    if (match.is_live) {
-                        const hasAliezStream = match.streams && match.streams.some(stream => 
-                            stream.stream_url && 
-                            (stream.stream_url.includes('aliez.tv') || 
-                             stream.stream_url.includes('alieztv') ||
-                             stream.stream_url.includes('webplayer2.php?t=alieztv') ||
-                             stream.stream_url.includes('player/live.php?id='))
-                        );
-                        
-                        if (hasAliezStream) {
-                            liveMatches.push(match);
-                        }
-                    } else {
-                        if (priorityInfo !== null) {
-                            upcomingMatches.push(match);
-                        }
-                    }
+                    if (match.is_live && match.streams?.some(s => s.stream_url?.includes('aliez'))) liveMatches.push(match);
+                    else if (!match.is_live && getCompetitionPriority(match)) upcomingMatches.push(match);
                 });
                 
-                const filteredUpcomingMatches = [];
-                const seenCombinations = new Set();
-                
-                upcomingMatches.forEach(match => {
-                    const teams = match.matchup.split(' – ');
-                    const homeTeam = teams[0]?.trim().toLowerCase();
-                    const awayTeam = teams[1]?.trim().toLowerCase();
-                    const combination = `${homeTeam}-${awayTeam}`;
-                    
-                    if (!seenCombinations.has(combination)) {
-                        seenCombinations.add(combination);
-                        filteredUpcomingMatches.push(match);
-                    }
-                });
-                
-                allMatches = [...liveMatches, ...filteredUpcomingMatches];
+                allMatches = [...liveMatches, ...upcomingMatches];
                 filteredMatches = [...allMatches];
                 renderAllMatches();
             } catch (error) {
-                console.error('Error loading data:', error);
                 showError();
             }
         }
 
         function showLoading() {
-            liveContainer.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-gray);">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                    <p style="margin-top: 15px;">Loading live matches...</p>
-                </div>
-            `;
-            
-            upcomingContainer.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--text-gray);">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                    <p style="margin-top: 15px;">Loading upcoming matches...</p>
-                </div>
-            `;
+            liveContainer.innerHTML = '<p>Loading live matches...</p>';
+            upcomingContainer.innerHTML = '<p>Loading upcoming matches...</p>';
         }
 
         function showError() {
-            const errorHtml = `
-                <div style="text-align: center; padding: 40px; color: var(--text-gray);">
-                    <i class="fas fa-exclamation-triangle fa-2x"></i>
-                    <h3 style="color: var(--text-light); margin: 15px 0 10px;">Connection Error</h3>
-                    <p>Unable to load matches. Please try again later.</p>
-                    <button class="watch-btn" onclick="loadData()" style="margin-top: 20px; width: auto; padding: 10px 30px;">
-                        <i class="fas fa-redo"></i> Retry
-                    </button>
-                </div>
-            `;
-            
-            liveContainer.innerHTML = errorHtml;
-            upcomingContainer.innerHTML = errorHtml;
-        }
-
-        function performSearch() {
-            const searchTerm = searchBar.value.toLowerCase().trim();
-            
-            if (!searchTerm) {
-                filteredMatches = [...allMatches];
-            } else {
-                filteredMatches = allMatches.filter(match => {
-                    const teams = match.matchup ? match.matchup.split(' – ') : ['', ''];
-                    const homeTeam = teams[0]?.toLowerCase() || '';
-                    const awayTeam = teams[1]?.toLowerCase() || '';
-                    const competition = (match.competition || '').toLowerCase();
-                    
-                    return homeTeam.includes(searchTerm) || 
-                           awayTeam.includes(searchTerm) || 
-                           competition.includes(searchTerm);
-                });
-            }
-            
-            renderAllMatches();
+            liveContainer.innerHTML = '<p>Connection Error.</p>';
         }
 
         function getCompetitionPriority(match) {
-            const competitionName = (match.competition || '').toLowerCase();
-            
-            for (const comp of PRIORITIZED_COMPETITIONS) {
-                for (const keyword of comp.keywords) {
-                    if (comp.name === "Premier League") {
-                        if (competitionName === "england. premier league" || 
-                            competitionName === "england premier league" ||
-                            competitionName.includes("england. premier league")) {
-                            return {
-                                ...comp,
-                                displayName: "Premier League (EPL)",
-                                rank: comp.rank
-                            };
-                        }
-                    } else {
-                        if (competitionName.includes(keyword.toLowerCase())) {
-                            return {
-                                ...comp,
-                                displayName: comp.name,
-                                rank: comp.rank
-                            };
-                        }
-                    }
-                }
-            }
-            
-            return null;
+            const compName = (match.competition || '').toLowerCase();
+            return PRIORITIZED_COMPETITIONS.find(c => c.keywords.some(k => compName.includes(k.toLowerCase()))) || null;
         }
 
         function groupMatchesByPriority(matches) {
             const groups = {};
-            
             PRIORITIZED_COMPETITIONS.forEach(comp => {
-                const displayName = comp.name === "Premier League" ? "Premier League (EPL)" : comp.name;
-                groups[comp.name] = {
-                    competition: comp.name,
-                    displayName: displayName,
-                    matches: [],
-                    importance: comp.rank,
-                    icon: comp.icon,
-                    color: comp.color,
-                    hot: comp.hot || false
-                };
+                groups[comp.name] = { ...comp, matches: [] };
             });
-            
             matches.forEach(match => {
-                const priorityInfo = getCompetitionPriority(match);
-                if (priorityInfo && groups[priorityInfo.name]) {
-                    groups[priorityInfo.name].matches.push(match);
-                }
+                const priority = getCompetitionPriority(match);
+                if (priority) groups[priority.name].matches.push(match);
             });
-            
-            const groupsArray = Object.values(groups)
-                .filter(group => group.matches.length > 0)
-                .sort((a, b) => a.importance - b.importance);
-            
-            return groupsArray;
+            return Object.values(groups).filter(g => g.matches.length > 0).sort((a,b) => a.rank - b.rank);
         }
 
         function renderAllMatches() {
-            const liveMatches = filteredMatches.filter(match => match.is_live);
-            const upcomingMatches = filteredMatches.filter(match => !match.is_live);
-
+            const liveMatches = filteredMatches.filter(m => m.is_live);
+            const upcomingMatches = filteredMatches.filter(m => !m.is_live);
             renderLiveMatches(liveContainer, liveMatches);
             renderUpcomingMatches(upcomingContainer, upcomingMatches);
-            
             setTimeout(startCountdownTimers, 100);
         }
 
         function renderLiveMatches(container, matches) {
-            container.innerHTML = '';
-
-            if (matches.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
-                        <i class="fas fa-tv-slash fa-2x"></i>
-                        <h3 style="color: var(--text-light); margin: 15px 0 10px;">No Live Matches</h3>
-                        <p>Check back later or explore upcoming matches</p>
-                    </div>
-                `;
-                return;
-            }
-
+            container.innerHTML = matches.length === 0 ? '<p>No live matches.</p>' : '';
             const groups = {};
             matches.forEach(match => {
-                const compName = match.competition || "Other Matches";
-                
-                let displayName = compName;
-                if (compName.toLowerCase().includes("england. premier league")) {
-                    displayName = "Premier League (EPL)";
-                }
-                
-                if (!groups[compName]) {
-                    groups[compName] = {
-                        competition: compName,
-                        displayName: displayName,
-                        matches: [],
-                        color: "#8b0000",
-                        icon: "fas fa-broadcast-tower",
-                        hot: true
-                    };
-                }
-                groups[compName].matches.push(match);
+                const comp = match.competition || "Other";
+                if (!groups[comp]) groups[comp] = { displayName: comp, matches: [], color: "#8b0000", icon: "fas fa-tv", hot: true };
+                groups[comp].matches.push(match);
             });
-
-            Object.values(groups).sort((a, b) => {
-                const aIsImportant = a.competition.toLowerCase().includes('england. premier league') || 
-                                   a.competition.toLowerCase().includes('champions');
-                const bIsImportant = b.competition.toLowerCase().includes('england. premier league') || 
-                                   b.competition.toLowerCase().includes('champions');
-                
-                if (aIsImportant && !bIsImportant) return -1;
-                if (!aIsImportant && bIsImportant) return 1;
-                
-                return a.competition.localeCompare(b.competition);
-            }).forEach(group => {
-                createLeagueSection(container, group, true);
-            });
+            Object.values(groups).forEach(g => createLeagueSection(container, g, true));
         }
 
         function renderUpcomingMatches(container, matches) {
-            container.innerHTML = '';
-
-            if (matches.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
-                        <i class="fas fa-tv-slash fa-2x"></i>
-                        <h3 style="color: var(--text-light); margin: 15px 0 10px;">No Upcoming Matches</h3>
-                        <p>Check back later for scheduled matches</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const groups = groupMatchesByPriority(matches);
-            
-            if (groups.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: var(--text-gray);">
-                        <i class="fas fa-calendar-alt fa-2x"></i>
-                        <h3 style="color: var(--text-light); margin: 15px 0 10px;">No Prioritized Matches</h3>
-                        <p>No matches from prioritized competitions found</p>
-                    </div>
-                `;
-                return;
-            }
-
-            groups.forEach(group => {
-                createLeagueSection(container, group, false);
-            });
+            container.innerHTML = matches.length === 0 ? '<p>No upcoming matches.</p>' : '';
+            groupMatchesByPriority(matches).forEach(g => createLeagueSection(container, g, false));
         }
 
         function createLeagueSection(container, group, isLive) {
             const leagueSection = document.createElement('div');
             leagueSection.className = 'league-section';
-            
             const leagueHeader = document.createElement('div');
             leagueHeader.className = 'league-header';
             leagueHeader.style.borderLeftColor = group.color;
-            leagueHeader.onclick = function() {
-                leagueSection.classList.toggle('collapsed');
-            };
+            leagueHeader.innerHTML = `<div class="league-name">${group.displayName}</div><div class="match-count">${group.matches.length} matches</div>`;
+            leagueHeader.onclick = () => leagueSection.classList.toggle('collapsed');
             
-            if (group.hot) {
-                const hotIndicator = document.createElement('div');
-                hotIndicator.className = 'hot-indicator';
-                leagueHeader.appendChild(hotIndicator);
-            }
-            
-            leagueHeader.innerHTML = `
-                <div class="league-header-content">
-                    <div class="league-icon" style="background: ${group.color}20;">
-                        <i class="${group.icon}" style="color: ${group.color};"></i>
-                    </div>
-                    <div class="league-name">${group.displayName}</div>
-                </div>
-                <div class="match-count" style="background: ${group.color};">
-                    ${group.matches.length} match${group.matches.length > 1 ? 'es' : ''}
-                </div>
-            `;
-            
-            const matchesGrid = document.createElement('div');
-            matchesGrid.className = 'league-matches';
-            
-            group.matches.sort((a, b) => {
-                const dateA = new Date(a.parsed_datetime || a.date_time);
-                const dateB = new Date(b.parsed_datetime || b.date_time);
-                return dateA - dateB;
-            });
-            
-            group.matches.forEach(match => {
-                const matchCard = createMatchCard(match, isLive, group);
-                matchesGrid.appendChild(matchCard);
-            });
+            const grid = document.createElement('div');
+            grid.className = 'league-matches';
+            group.matches.forEach(m => grid.appendChild(createMatchCard(m, isLive, group)));
             
             leagueSection.appendChild(leagueHeader);
-            leagueSection.appendChild(matchesGrid);
+            leagueSection.appendChild(grid);
             container.appendChild(leagueSection);
         }
 
         function createMatchCard(match, isLive, group) {
             const teams = match.matchup.split(' – ');
-            const homeTeam = teams[0]?.trim();
-            const awayTeam = teams[1]?.trim();
-            const homeLogo = match.team_logos[0]?.logo_url;
-            const awayLogo = match.team_logos[1]?.logo_url;
-            const time = formatTime(match.parsed_datetime || match.date_time);
-            const matchId = match.event_id || `${homeTeam}-${awayTeam}-${Date.now()}`;
-            const startTime = match.parsed_datetime || match.date_time;
-            
             const card = document.createElement('div');
             card.className = `match-card ${isLive ? 'live' : 'upcoming'}`;
-            card.dataset.matchId = matchId;
-            card.dataset.startTime = startTime;
-            
+            card.dataset.startTime = match.parsed_datetime;
+            card.dataset.matchId = match.event_id || Math.random();
             card.innerHTML = `
-                <div class="match-status ${isLive ? 'status-live' : 'status-upcoming'}">
-                    ${isLive ? 'LIVE' : 'UPCOMING'}
-                </div>
-                
-                <div class="match-info-header">
-                    <div class="match-league">${group.displayName}</div>
-                    <div class="match-time">${time}</div>
-                </div>
-                
+                <div class="match-status">${isLive ? 'LIVE' : 'UPCOMING'}</div>
+                <div class="match-league">${group.displayName}</div>
+                <div class="match-time">${formatTime(match.parsed_datetime)}</div>
                 <div class="teams-display">
-                    <div class="team">
-                        <div class="team-logo">
-                            <img src="${getTeamLogo(homeTeam, homeLogo)}" alt="${homeTeam}" 
-                                 onerror="this.onerror=null; this.src='${getTeamLogo(homeTeam, null)}'">
-                        </div>
-                        <div class="team-name">${homeTeam}</div>
-                    </div>
-                    
+                    <div class="team"><div class="team-logo"><img src="${getTeamLogo(teams[0], match.team_logos[0]?.logo_url)}"></div><div class="team-name">${teams[0]}</div></div>
                     <div class="vs-divider">VS</div>
-                    
-                    <div class="team">
-                        <div class="team-logo">
-                            <img src="${getTeamLogo(awayTeam, awayLogo)}" alt="${awayTeam}"
-                                 onerror="this.onerror=null; this.src='${getTeamLogo(awayTeam, null)}'">
-                        </div>
-                        <div class="team-name">${awayTeam}</div>
-                    </div>
-                    
-                    ${!isLive ? `
-                    <div class="countdown-container">
-                        <span class="countdown-timer">${updateCountdown(matchId, startTime)}</span>
-                    </div>
-                    ` : ''}
+                    <div class="team"><div class="team-logo"><img src="${getTeamLogo(teams[1], match.team_logos[1]?.logo_url)}"></div><div class="team-name">${teams[1]}</div></div>
+                    ${!isLive ? `<div class="countdown-container"><span class="countdown-timer"></span></div>` : ''}
                 </div>
-                
-                <div class="watch-btn-container">
-                    <button class="watch-btn">
-                        <i class="fas fa-eye"></i> PREVIEW
-                    </button>
-                </div>
+                <div class="watch-btn-container"><button class="watch-btn">PREVIEW</button></div>
             `;
-            
-            card.querySelector('.watch-btn').addEventListener('click', () => {
-                openPreview(match, group);
-            });
-            
+            card.querySelector('.watch-btn').onclick = () => openPreview(match, group);
             return card;
         }
 
-        // ===== NOTIFICATION SYSTEM =====
-        function showNotification(title, message, isReminder = true) {
-            notificationTitle.textContent = title;
-            notificationMessage.textContent = message;
-            notificationBar.classList.add('show');
-            
-            if (isReminder) {
-                setTimeout(() => {
-                    hideNotification();
-                }, 5000);
-            }
-        }
-
-        function hideNotification() {
-            notificationBar.classList.remove('show');
-        }
-
-        // ===== PREVIEW MODAL =====
         function openPreview(match, group) {
             currentModalMatch = match;
-            
-            const teams = match.matchup.split(' – ');
-            const homeTeam = teams[0]?.trim();
-            const awayTeam = teams[1]?.trim();
-            const homeLogo = match.team_logos[0]?.logo_url;
-            const awayLogo = match.team_logos[1]?.logo_url;
-            const time = formatTime(match.parsed_datetime || match.date_time);
-            const displayCompetition = group ? group.displayName : match.competition;
-            const isHotCompetition = group ? group.hot : false;
-            
-            document.getElementById('modalTitle').textContent = `${homeTeam} vs ${awayTeam}`;
-            
-            const modalCompetition = document.getElementById('modalCompetition');
-            modalCompetition.textContent = displayCompetition;
-            
-            if (isHotCompetition) {
-                modalCompetition.innerHTML = `${displayCompetition} <span style="color: var(--hot-color); margin-left: 10px;"><i class="fas fa-fire"></i> PREMIUM</span>`;
-            }
-            
-            document.getElementById('modalTeams').innerHTML = `
-                <div class="modal-team">
-                    <div class="modal-team-logo">
-                        <img src="${getTeamLogo(homeTeam, homeLogo)}" alt="${homeTeam}"
-                             onerror="this.onerror=null; this.src='${getTeamLogo(homeTeam, null)}'">
-                    </div>
-                    <div class="modal-team-name">${homeTeam}</div>
-                </div>
-                <div class="modal-vs">VS</div>
-                <div class="modal-team">
-                    <div class="modal-team-logo">
-                        <img src="${getTeamLogo(awayTeam, awayLogo)}" alt="${awayTeam}"
-                             onerror="this.onerror=null; this.src='${getTeamLogo(awayTeam, null)}'">
-                    </div>
-                    <div class="modal-team-name">${awayTeam}</div>
-                </div>
-            `;
-            
+            document.getElementById('modalTitle').textContent = match.matchup;
+            document.getElementById('modalCompetition').textContent = group.displayName;
             populateStreamLinks(match);
-                
             matchModal.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function populateStreamLinks(match) {
-            if (!match.streams || match.streams.length === 0) {
-                streamsList.innerHTML = `
-                    <div class="no-streams">
-                        <i class="fas fa-tv-slash"></i>
-                        <h4>No Streams Available</h4>
-                        <p>Stream links will appear closer to match time</p>
-                    </div>
-                `;
-                modalStreams.classList.remove('active');
-                return;
-            }
-            
-            const aliezStreams = match.streams.filter(stream => 
-                stream.stream_url && 
-                (stream.stream_url.includes('aliez.tv') || 
-                 stream.stream_url.includes('alieztv') ||
-                 stream.stream_url.includes('webplayer2.php') ||
-                 stream.stream_url.includes('player/live.php'))
-            );
-            
-            if (aliezStreams.length === 0) {
-                streamsList.innerHTML = `
-                    <div class="no-streams">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h4>No Premium Streams</h4>
-                        <p>No encrypted streams available for this match</p>
-                    </div>
-                `;
-                modalStreams.classList.remove('active');
-                return;
-            }
-            
-            streamsList.innerHTML = aliezStreams.map((stream, index) => {
-                const language = stream.language || 'English';
-                const quality = stream.bitrate || stream.stream_type || 'HD';
-                
-                return `
-                    <div class="stream-item" onclick="loadStreamFromFixture('${stream.stream_url}', '${currentModalMatch.matchup}')">
-                        <div class="stream-tv-icon">
-                            <i class="fas fa-tv"></i>
-                        </div>
-                        <div class="stream-watch-now">PREMIUM STREAM</div>
-                        <div class="stream-language">${language}</div>
-                        <div class="stream-quality">${quality} • No Pop-ups</div>
-                    </div>
-                `;
-            }).join('');
-            
+            const streams = match.streams?.filter(s => s.stream_url?.includes('aliez')) || [];
+            streamsList.innerHTML = streams.length ? streams.map(s => `
+                <div class="stream-item" onclick="loadStreamFromFixture('${s.stream_url}', '${match.matchup}')">
+                    <div class="stream-watch-now">PREMIUM STREAM</div>
+                    <div class="stream-language">${s.language || 'English'}</div>
+                </div>
+            `).join('') : '<p>No premium streams.</p>';
             modalStreams.classList.add('active');
         }
 
         function closeModal() {
             matchModal.classList.remove('active');
             document.body.style.overflow = 'auto';
-            currentModalMatch = null;
         }
 
-        // ===== HELPER FUNCTIONS =====
-        function formatTime(dateTime) {
-            if (!dateTime) return 'TBD';
-            
-            try {
-                if (dateTime.includes('T')) {
-                    const date = new Date(dateTime);
-                    if (isNaN(date.getTime())) return dateTime;
-                    
-                    const now = new Date();
-                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                    const matchDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                    
-                    const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    
-                    if (matchDate.getTime() === today.getTime()) {
-                        return `${timeStr} Today`;
-                    } else if (matchDate.getTime() === today.getTime() + 86400000) {
-                        return `${timeStr} Tomorrow`;
-                    } else {
-                        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                        return `${monthNames[date.getMonth()]} ${date.getDate()}, ${timeStr}`;
-                    }
-                } else {
-                    return dateTime.replace(' at ', ' ');
-                }
-            } catch (e) {
-                console.error('Error formatting time:', e);
-                return dateTime;
-            }
+        function formatTime(dt) {
+            if (!dt) return 'TBD';
+            const d = new Date(dt);
+            return isNaN(d.getTime()) ? dt : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
-        // ===== VIEW MANAGEMENT =====
         function switchView(view) {
             currentView = view;
-            
-            dockItems.forEach(item => {
-                item.classList.toggle('active', item.dataset.view === view);
-            });
-            
-            switch(view) {
-                case 'home':
-                    backBtn.style.display = 'none';
-                    sectionTitle.innerHTML = '<i class="fas fa-broadcast-tower"></i> Live Matches';
-                    liveContainer.style.display = 'block';
-                    upcomingContainer.style.display = 'block';
-                    break;
-                    
-                case 'live':
-                    backBtn.style.display = 'flex';
-                    sectionTitle.innerHTML = '<i class="fas fa-broadcast-tower"></i> Live Matches';
-                    liveContainer.style.display = 'block';
-                    upcomingContainer.style.display = 'none';
-                    break;
-                    
-                case 'upcoming':
-                    backBtn.style.display = 'flex';
-                    sectionTitle.innerHTML = '<i class="far fa-clock"></i> Upcoming Matches';
-                    liveContainer.style.display = 'none';
-                    upcomingContainer.style.display = 'block';
-                    break;
-            }
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            dockItems.forEach(i => i.classList.toggle('active', i.dataset.view === view));
+            liveContainer.style.display = (view === 'upcoming') ? 'none' : 'block';
+            upcomingContainer.style.display = (view === 'live') ? 'none' : 'block';
+            backBtn.style.display = (view === 'home') ? 'none' : 'flex';
         }
 
-        // ===== EVENT LISTENERS =====
+        function showNotification(t, m) {
+            notificationTitle.textContent = t;
+            notificationMessage.textContent = m;
+            notificationBar.classList.add('show');
+            setTimeout(() => notificationBar.classList.remove('show'), 5000);
+        }
+
         function setupEventListeners() {
-            backBtn.addEventListener('click', () => switchView('home'));
-            refreshBtn.addEventListener('click', loadData);
-            
-            dockItems.forEach(item => {
-                item.addEventListener('click', function() {
-                    switchView(this.dataset.view);
-                });
-            });
-            
-            modalClose.addEventListener('click', closeModal);
-            matchModal.addEventListener('click', function(e) {
-                if (e.target === matchModal) closeModal();
-            });
-            
-            modalWatchBtn.addEventListener('click', function() {
-                if (!currentModalMatch) return;
-                const aliezStream = currentModalMatch.streams?.find(stream => 
-                    stream.stream_url && stream.stream_url.includes('webplayer2.php?t=alieztv')
-                );
-                if (aliezStream) {
-                    loadStreamFromFixture(aliezStream.stream_url, currentModalMatch.matchup);
-                }
-            });
-            
-            searchBtn.addEventListener('click', performSearch);
-            searchBar.addEventListener('keyup', function(e) {
-                if (e.key === 'Enter') {
-                    performSearch();
-                }
-            });
-            
-            let searchTimeout;
-            searchBar.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(performSearch, 300);
-            });
-            
-            notificationClose.addEventListener('click', hideNotification);
-            
-            matchModal.addEventListener('click', function(e) {
-                if (e.target === matchModal) closeModal();
-            });
-            
-            loadBtn.addEventListener('click', updatePlayer);
-            aliezInput.addEventListener('keyup', function(e) {
-                if (e.key === 'Enter') {
-                    updatePlayer();
-                }
-            });
-            
-            skipBtn.addEventListener('click', skipAd);
-            
-            // Auto-refresh data every 2 minutes
-            setInterval(() => {
-                if (currentView === 'live' || currentView === 'home') {
-                    loadData();
-                }
-            }, 120000);
-            
-            // Update countdown timers every second
-            setInterval(() => {
-                startCountdownTimers();
-            }, 1000);
+            backBtn.onclick = () => switchView('home');
+            refreshBtn.onclick = loadData;
+            modalClose.onclick = closeModal;
+            playerCloseBtn.onclick = closePlayer; // PLAYER BACK BUTTON EVENT
+            loadBtn.onclick = updatePlayer;
+            skipBtn.onclick = skipAd;
+            dockItems.forEach(i => i.onclick = () => switchView(i.dataset.view));
+            setInterval(startCountdownTimers, 1000);
         }
 
-        // ===== GLOBAL FUNCTIONS =====
-        window.openPreview = openPreview;
-        window.loadData = loadData;
-        window.switchView = switchView;
-        window.performSearch = performSearch;
-        window.showNotification = showNotification;
-        window.hideNotification = hideNotification;
-        window.loadStreamFromFixture = loadStreamFromFixture;
-        window.closePlayer = closePlayer;
-        window.updatePlayer = updatePlayer;
-        window.startAdSequence = startAdSequence;
-        window.skipAd = skipAd;
-        window.toggleFullscreen = toggleFullscreen;
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            setupEventListeners();
+        });
     </script>
 </body>
 </html>
