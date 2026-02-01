@@ -1870,48 +1870,41 @@
         let isStreamLoaded = false;
         let uiHideTimer; // Timer for hiding buttons
 
+        // ===== NAVIGATION GUARD (CRITICAL FIX FOR FREEZING) =====
+        window.onpopstate = function(event) {
+            // If the back button is pressed while player is active
+            if (playerModal.classList.contains('active')) {
+                closePlayer();
+            }
+            // If back button is pressed while preview modal is active
+            if (matchModal.classList.contains('active')) {
+                closeModal();
+            }
+        };
+
         // ===== CLEAN PLAYER FUNCTIONS =====
         function updatePlayer() {
             const inputUrl = aliezInput.value;
-            
-            // Extract the channel ID (c=) from the pasted URL
             const match = inputUrl.match(/[?&]c=(\d+)/);
             
             if (match && match[1]) {
                 const channelID = match[1];
-                // Build the APL388 destination link
                 const streamUrl = `https://emb.apl388.me/player/live.php?id=${channelID}`;
-                
-                // Set up iframe with mobile-friendly attributes
                 setupIframeForMobile(streamUrl);
                 startAdSequence();
-                
-                // Hide URL input when stream loads
                 inputBar.style.display = 'none';
                 isStreamLoaded = true;
-                
-                // Show notification
                 showNotification('Stream Loading', 'Premium stream is starting...');
-                
-                // Show mobile hint
                 showMobileHint();
-
-                // START UI AUTO-HIDE TRACKING
                 resetUIHideTimer();
             } else {
                 alert("Invalid link! Please ensure it contains 'c=CHANNEL_ID'");
             }
         }
 
-        // AUTO-HIDE LOGIC
         function resetUIHideTimer() {
-            // Show the UI immediately
             playerUIHeader.classList.remove('hidden');
-            
-            // Clear existing timer
             if (uiHideTimer) clearTimeout(uiHideTimer);
-            
-            // Set new timer to hide after 3 seconds
             uiHideTimer = setTimeout(() => {
                 if (isStreamLoaded) {
                     playerUIHeader.classList.add('hidden');
@@ -1990,11 +1983,11 @@
 
         function closePlayer() {
             playerModal.classList.remove('active');
+            // CRITICAL FIX: Ensure overflow is restored
             document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
             
-            // CRITICAL: Clear src to stop video/audio stream
             streamFrame.src = '';
-            
             adOverlay.style.display = 'none';
             if (countdown) {
                 clearInterval(countdown);
@@ -2005,7 +1998,6 @@
             inputBar.style.display = 'flex';
             isStreamLoaded = false;
             
-            // Clean up UI hide state
             if (uiHideTimer) clearTimeout(uiHideTimer);
             playerUIHeader.classList.remove('hidden');
         }
@@ -2020,7 +2012,6 @@
             }
         }
 
-        // ===== EXTRACT CHANNEL ID FROM STREAM URL =====
         function extractChannelId(streamUrl) {
             if (!streamUrl) return null;
             const match = streamUrl.match(/[?&]c=(\d+)/);
@@ -2030,7 +2021,6 @@
             return null;
         }
 
-        // ===== LOAD STREAM FROM FIXTURE =====
         function loadStreamFromFixture(streamUrl, matchTitle) {
             const channelId = extractChannelId(streamUrl);
             if (!channelId) {
@@ -2040,18 +2030,17 @@
             
             playerModal.classList.add('active');
             document.body.style.overflow = 'hidden';
-            aliezInput.value = streamUrl;
             
+            // Push state for back button handling
+            history.pushState({player: true}, "Player", "#stream");
+
+            aliezInput.value = streamUrl;
             const finalUrl = `https://emb.apl388.me/player/live.php?id=${channelId}`;
             setupIframeForMobile(finalUrl);
             startAdSequence();
             
             inputBar.style.display = 'none';
             isStreamLoaded = true;
-            showNotification('Stream Loading', 'Premium stream is starting...');
-            showMobileHint();
-
-            // ACTIVATE AUTO-HIDE
             resetUIHideTimer();
         }
 
@@ -2216,6 +2205,7 @@
             populateStreamLinks(match);
             matchModal.classList.add('active');
             document.body.style.overflow = 'hidden';
+            history.pushState({modal: true}, "Preview", "#preview");
         }
 
         function populateStreamLinks(match) {
@@ -2232,6 +2222,7 @@
         function closeModal() {
             matchModal.classList.remove('active');
             document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = 'auto';
         }
 
         function formatTime(dt) {
@@ -2258,14 +2249,12 @@
         function setupEventListeners() {
             backBtn.onclick = () => switchView('home');
             refreshBtn.onclick = loadData;
-            modalClose.onclick = closeModal;
-            playerCloseBtn.onclick = closePlayer; // PLAYER BACK BUTTON EVENT
+            modalClose.onclick = () => { history.back(); };
+            playerCloseBtn.onclick = () => { history.back(); }; 
             loadBtn.onclick = updatePlayer;
             skipBtn.onclick = skipAd;
             dockItems.forEach(i => i.onclick = () => switchView(i.dataset.view));
 
-            // INTERACTION TRACKING FOR AUTO-HIDE
-            // Triggers whenever user moves mouse or touches screen inside player
             playerModal.addEventListener('mousemove', resetUIHideTimer);
             playerModal.addEventListener('touchstart', resetUIHideTimer);
             playerModal.addEventListener('click', resetUIHideTimer);
