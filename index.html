@@ -1115,6 +1115,15 @@
             justify-content: space-between; /* Space out buttons */
             align-items: center;
             pointer-events: none;
+            /* UPDATED: Added transition and default visible state */
+            transition: opacity 0.5s ease;
+            opacity: 1;
+        }
+
+        /* Class to hide the header */
+        .player-header.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* Player Back Button */
@@ -1669,7 +1678,7 @@
 
     <div class="player-modal" id="playerModal">
         <div class="player-container">
-            <div class="player-header">
+            <div class="player-header" id="playerUIHeader">
                 <button class="player-back-btn" id="playerCloseBtn">
                     <i class="fas fa-chevron-left"></i> BACK
                 </button>
@@ -1848,6 +1857,7 @@
         const skipBtn = document.getElementById('skip-btn');
         const inputBar = document.getElementById('input-bar');
         const mobileFullscreenBtn = document.getElementById('mobileFullscreenBtn');
+        const playerUIHeader = document.getElementById('playerUIHeader');
 
         // ===== GLOBAL VARIABLES =====
         let allMatches = [];
@@ -1858,6 +1868,7 @@
         let timeLeft = 10;
         let countdown;
         let isStreamLoaded = false;
+        let uiHideTimer; // Timer for hiding buttons
 
         // ===== CLEAN PLAYER FUNCTIONS =====
         function updatePlayer() {
@@ -1884,9 +1895,28 @@
                 
                 // Show mobile hint
                 showMobileHint();
+
+                // START UI AUTO-HIDE TRACKING
+                resetUIHideTimer();
             } else {
                 alert("Invalid link! Please ensure it contains 'c=CHANNEL_ID'");
             }
+        }
+
+        // AUTO-HIDE LOGIC
+        function resetUIHideTimer() {
+            // Show the UI immediately
+            playerUIHeader.classList.remove('hidden');
+            
+            // Clear existing timer
+            if (uiHideTimer) clearTimeout(uiHideTimer);
+            
+            // Set new timer to hide after 3 seconds
+            uiHideTimer = setTimeout(() => {
+                if (isStreamLoaded) {
+                    playerUIHeader.classList.add('hidden');
+                }
+            }, 3000);
         }
 
         function setupIframeForMobile(url) {
@@ -1974,6 +2004,10 @@
             aliezInput.value = '';
             inputBar.style.display = 'flex';
             isStreamLoaded = false;
+            
+            // Clean up UI hide state
+            if (uiHideTimer) clearTimeout(uiHideTimer);
+            playerUIHeader.classList.remove('hidden');
         }
 
         function toggleFullscreen() {
@@ -2016,6 +2050,9 @@
             isStreamLoaded = true;
             showNotification('Stream Loading', 'Premium stream is starting...');
             showMobileHint();
+
+            // ACTIVATE AUTO-HIDE
+            resetUIHideTimer();
         }
 
         // ===== DATA LOGIC =====
@@ -2226,6 +2263,13 @@
             loadBtn.onclick = updatePlayer;
             skipBtn.onclick = skipAd;
             dockItems.forEach(i => i.onclick = () => switchView(i.dataset.view));
+
+            // INTERACTION TRACKING FOR AUTO-HIDE
+            // Triggers whenever user moves mouse or touches screen inside player
+            playerModal.addEventListener('mousemove', resetUIHideTimer);
+            playerModal.addEventListener('touchstart', resetUIHideTimer);
+            playerModal.addEventListener('click', resetUIHideTimer);
+
             setInterval(startCountdownTimers, 1000);
         }
 
