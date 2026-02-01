@@ -1521,7 +1521,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -1543,7 +1542,6 @@
         </div>
     </header>
 
-    <!-- Notification Bar for Reminders -->
     <div class="notification-bar" id="notificationBar">
         <div class="notification-icon">
             <i class="fas fa-bell"></i>
@@ -1557,9 +1555,7 @@
         </button>
     </div>
 
-    <!-- Main Content -->
     <div class="container">
-        <!-- Section Header with Back Button -->
         <div class="section-header">
             <button class="back-btn" id="backBtn" style="display: none;">
                 <i class="fas fa-arrow-left"></i>
@@ -1575,12 +1571,9 @@
             </div>
         </div>
         
-        <!-- Live Matches -->
         <div id="liveContainer">
-            <!-- Dynamically populated with league grouping -->
-        </div>
+            </div>
 
-        <!-- Upcoming Matches Section -->
         <div class="section-header">
             <h2 class="section-title">
                 <i class="far fa-clock"></i> Upcoming Matches
@@ -1588,11 +1581,9 @@
         </div>
         
         <div id="upcomingContainer">
-            <!-- Dynamically populated with prioritized league grouping -->
-        </div>
+            </div>
     </div>
 
-    <!-- Mobile Dock Navigation -->
     <div class="mobile-dock">
         <div class="dock-item active" data-view="home">
             <i class="fas fa-home"></i>
@@ -1608,7 +1599,6 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -1623,7 +1613,6 @@
         </div>
     </footer>
 
-    <!-- Preview Popup Modal -->
     <div class="modal-overlay" id="matchModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1636,16 +1625,14 @@
             </div>
             
             <div class="modal-teams" id="modalTeams">
-                <!-- Dynamically populated -->
-            </div>
+                </div>
             
             <div class="modal-streams" id="modalStreams">
                 <h4 class="streams-title">
                     <i class="fas fa-stream"></i> Available Streams
                 </h4>
                 <div class="streams-list" id="streamsList">
-                    <!-- Stream links will appear here -->
-                </div>
+                    </div>
             </div>
             
             <div class="modal-actions">
@@ -1656,24 +1643,19 @@
         </div>
     </div>
 
-    <!-- CLEAN PLAYER MODAL - NO QUALITY OPTIONS, 4K FORCED -->
     <div class="player-modal" id="playerModal">
         <div class="player-container">
-            <!-- Clean header with only mobile fullscreen button -->
             <div class="player-header">
-                <!-- Mobile fullscreen button (only visible on mobile) -->
                 <button class="mobile-fullscreen-btn" id="mobileFullscreenBtn" onclick="toggleFullscreen()">
                     <i class="fas fa-expand"></i> FULLSCREEN
                 </button>
             </div>
             
-            <!-- URL input (shown before stream loads) -->
             <div id="input-bar">
                 <input type="text" id="alieztv-url" placeholder="Paste Aliez Link here...">
                 <button id="load-btn">LOAD STREAM</button>
             </div>
             
-            <!-- AD overlay -->
             <div id="ad-overlay">
                 <div id="ad-content">
                     <h2>LINK EXTRACTED</h2>
@@ -1682,7 +1664,6 @@
                 <button id="skip-btn">SKIP & WATCH</button>
             </div>
             
-            <!-- MAIN IFRAME - 4K ENHANCEMENT FORCED -->
             <iframe 
                 id="stream-frame"
                 src="" 
