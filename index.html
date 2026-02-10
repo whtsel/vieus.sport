@@ -1716,6 +1716,66 @@
     </div>
 
     <script>
+        // ===== MASTER ARCHITECT FIX: PRODUCTION STREAM CONTROLLER =====
+        // Optimization: macOS Unified Memory & iOS Safari Viewport 
+
+        // ===== CONSTANTS & MIRRORS =====
+        const STREAM_MIRRORS = ['apl389.me', 'apl388.me', 'apl13.me', 'apl6.me']; 
+        const DEFAULT_MIRROR = STREAM_MIRRORS[0];
+
+        // ===== DOM ELEMENTS =====
+        const liveContainer = document.getElementById('liveContainer');
+        const upcomingContainer = document.getElementById('upcomingContainer');
+        const backBtn = document.getElementById('backBtn');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const dockItems = document.querySelectorAll('.dock-item');
+        const matchModal = document.getElementById('matchModal');
+        const modalClose = document.getElementById('modalClose');
+        const streamsList = document.getElementById('streamsList');
+        const modalStreams = document.getElementById('modalStreams');
+        const modalWatchBtn = document.getElementById('modalWatchBtn');
+        const searchBar = document.getElementById('searchBar');
+        const searchBtn = document.getElementById('searchBtn');
+        const notificationBar = document.getElementById('notificationBar');
+        const notificationTitle = document.getElementById('notificationTitle');
+        const notificationMessage = document.getElementById('notificationMessage');
+        const notificationClose = document.getElementById('notificationClose');
+        
+        // Player modal elements
+        const playerModal = document.getElementById('playerModal');
+        const playerCloseBtn = document.getElementById('playerCloseBtn');
+        const aliezInput = document.getElementById('alieztv-url');
+        const loadBtn = document.getElementById('load-btn');
+        const streamFrame = document.getElementById('stream-frame');
+        const adOverlay = document.getElementById('ad-overlay');
+        const timerSpan = document.getElementById('timer');
+        const skipBtn = document.getElementById('skip-btn');
+        const inputBar = document.getElementById('input-bar');
+        const mobileFullscreenBtn = document.getElementById('mobileFullscreenBtn');
+        const playerUIHeader = document.getElementById('playerUIHeader');
+
+        // ===== GLOBAL VARIABLES =====
+        let allMatches = [];
+        let filteredMatches = [];
+        let currentView = 'home';
+        let currentModalMatch = null;
+        let countdownTimers = {};
+        let timeLeft = 10;
+        let countdown = null; // Explicit null for GC
+        let isStreamLoaded = false;
+        let uiHideTimer = null;
+
+        // ===== NAVIGATION GUARD =====
+        window.onpopstate = function(event) {
+            if (playerModal?.classList.contains('active')) {
+                closePlayer();
+            }
+            if (matchModal?.classList.contains('active')) {
+                closeModal();
+            }
+        };
+
         // ===== CONFIGURATION =====
         const API_BASE_URL = 'https://raw.githubusercontent.com/whtsel/try/main/index.json';
         
@@ -1827,82 +1887,45 @@
             }
         ];
 
-        // ===== DOM ELEMENTS =====
-        const liveContainer = document.getElementById('liveContainer');
-        const upcomingContainer = document.getElementById('upcomingContainer');
-        const backBtn = document.getElementById('backBtn');
-        const sectionTitle = document.getElementById('sectionTitle');
-        const refreshBtn = document.getElementById('refreshBtn');
-        const dockItems = document.querySelectorAll('.dock-item');
-        const matchModal = document.getElementById('matchModal');
-        const modalClose = document.getElementById('modalClose');
-        const streamsList = document.getElementById('streamsList');
-        const modalStreams = document.getElementById('modalStreams');
-        const modalWatchBtn = document.getElementById('modalWatchBtn');
-        const searchBar = document.getElementById('searchBar');
-        const searchBtn = document.getElementById('searchBtn');
-        const notificationBar = document.getElementById('notificationBar');
-        const notificationTitle = document.getElementById('notificationTitle');
-        const notificationMessage = document.getElementById('notificationMessage');
-        const notificationClose = document.getElementById('notificationClose');
-        
-        // Player modal elements
-        const playerModal = document.getElementById('playerModal');
-        const playerCloseBtn = document.getElementById('playerCloseBtn');
-        const aliezInput = document.getElementById('alieztv-url');
-        const loadBtn = document.getElementById('load-btn');
-        const streamFrame = document.getElementById('stream-frame');
-        const adOverlay = document.getElementById('ad-overlay');
-        const timerSpan = document.getElementById('timer');
-        const skipBtn = document.getElementById('skip-btn');
-        const inputBar = document.getElementById('input-bar');
-        const mobileFullscreenBtn = document.getElementById('mobileFullscreenBtn');
-        const playerUIHeader = document.getElementById('playerUIHeader');
+        // ===== CLEAN PLAYER ENGINE =====
 
-        // ===== GLOBAL VARIABLES =====
-        let allMatches = [];
-        let filteredMatches = [];
-        let currentView = 'home';
-        let currentModalMatch = null;
-        let countdownTimers = {};
-        let timeLeft = 10;
-        let countdown;
-        let isStreamLoaded = false;
-        let uiHideTimer; // Timer for hiding buttons
-
-        // ===== NAVIGATION GUARD (CRITICAL FIX FOR FREEZING) =====
-        window.onpopstate = function(event) {
-            // If the back button is pressed while player is active
-            if (playerModal.classList.contains('active')) {
-                closePlayer();
-            }
-            // If back button is pressed while preview modal is active
-            if (matchModal.classList.contains('active')) {
-                closeModal();
-            }
-        };
-
-        // ===== CLEAN PLAYER FUNCTIONS =====
-        function updatePlayer() {
-            const inputUrl = aliezInput.value;
-            const match = inputUrl.match(/[?&]c=(\d+)/);
+        /**
+         * Robust Channel ID Extraction
+         * Handles: ?c=ID, ?id=ID, and direct numeric input
+         */
+        function extractChannelId(streamUrl) {
+            if (!streamUrl) return null;
+            const urlPattern = /[?&](c|id)=(\d+)/;
+            const match = streamUrl.match(urlPattern);
+            if (match && match[2]) return match[2];
             
-            if (match && match[1]) {
-                const channelID = match[1];
-                const streamUrl = `https://emb.apl388.me/player/live.php?id=${channelID}`;
+            // Fallback for raw ID input
+            if (/^\d+$/.test(streamUrl)) return streamUrl;
+            return null;
+        }
+
+        function updatePlayer() {
+            const inputUrl = aliezInput.value.trim();
+            const channelID = extractChannelId(inputUrl);
+            
+            if (channelID) {
+                // Optimized: Uses HTTPS and the confirmed Mirror with emb subdomain
+                const streamUrl = `https://emb.${DEFAULT_MIRROR}/player/live.php?id=${channelID}`;
                 setupIframeForMobile(streamUrl);
                 startAdSequence();
-                inputBar.style.display = 'none';
+                
+                if (inputBar) inputBar.style.display = 'none';
                 isStreamLoaded = true;
-                showNotification('Stream Loading', 'Premium stream is starting...');
+                showNotification('Stream Loading', 'Establishing secure connection...');
                 showMobileHint();
                 resetUIHideTimer();
             } else {
-                alert("Invalid link! Please ensure it contains 'c=CHANNEL_ID'");
+                showNotification('Error', 'Invalid Link. Ensure it contains a Channel ID.');
             }
         }
 
         function resetUIHideTimer() {
+            if (!playerUIHeader) return;
             playerUIHeader.classList.remove('hidden');
             if (uiHideTimer) clearTimeout(uiHideTimer);
             uiHideTimer = setTimeout(() => {
@@ -1913,118 +1936,105 @@
         }
 
         function setupIframeForMobile(url) {
-            streamFrame.src = '';
-            streamFrame.setAttribute('playsinline', '');
-            streamFrame.setAttribute('webkit-playsinline', '');
-            streamFrame.setAttribute('x-webkit-airplay', 'allow');
-            streamFrame.setAttribute('x5-video-player-type', 'h5-page');
-            streamFrame.setAttribute('x5-video-player-fullscreen', 'true');
-            streamFrame.setAttribute('x5-video-orientation', 'landscape');
-            streamFrame.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; accelerometer; gyroscope');
+            if (!streamFrame) return;
             
-            setTimeout(() => {
+            // Terminate existing stream to clear memory
+            streamFrame.src = 'about:blank';
+            
+            // Production Security & Mobile Fullscreen Attributes
+            const attrs = {
+                'playsinline': '',
+                'webkit-playsinline': '',
+                'allow': 'autoplay; fullscreen; picture-in-picture',
+                'sandbox': 'allow-scripts allow-same-origin allow-forms',
+                'loading': 'lazy'
+            };
+            
+            Object.keys(attrs).forEach(key => streamFrame.setAttribute(key, attrs[key]));
+            
+            // Use requestAnimationFrame for smoother DOM transition
+            window.requestAnimationFrame(() => {
                 streamFrame.src = url;
-            }, 100);
+            });
             
-            if (isMobile()) {
+            if (window.innerWidth <= 768) {
                 streamFrame.style.cssText = `
                     width: 100vw !important;
                     height: 100vh !important;
                     position: fixed !important;
                     top: 0 !important;
                     left: 0 !important;
-                    -webkit-overflow-scrolling: touch !important;
-                    overflow: auto !important;
                     background: #000 !important;
                 `;
             }
         }
 
-        function isMobile() {
-            return window.innerWidth <= 768;
-        }
-
-        function showMobileHint() {
-            if (isMobile()) {
-                setTimeout(() => {
-                    const hint = document.createElement('div');
-                    hint.className = 'mobile-hint';
-                    hint.innerHTML = `
-                        <p style="margin: 0 0 10px 0; font-weight: bold;">👆 Tap video to show controls</p>
-                        <p style="margin: 0; font-size: 0.9rem;">📱 Use the FULLSCREEN button for best experience</p>
-                    `;
-                    document.querySelector('.player-container').appendChild(hint);
-                    
-                    setTimeout(() => {
-                        if (hint.parentNode) hint.remove();
-                    }, 5000);
-                }, 2000);
-            }
-        }
-
         function startAdSequence() {
+            if (!adOverlay || !timerSpan) return;
+            
             timeLeft = 10;
             adOverlay.style.display = 'flex';
-            skipBtn.style.display = 'none';
+            if (skipBtn) skipBtn.style.display = 'none';
 
-            if(countdown) clearInterval(countdown);
+            if (countdown) clearInterval(countdown);
+            
             countdown = setInterval(() => {
                 timeLeft--;
                 timerSpan.innerText = timeLeft;
-                if (timeLeft <= 5) skipBtn.style.display = 'block';
-                if (timeLeft <= 0) skipAd();
+                
+                if (timeLeft <= 5 && skipBtn) {
+                    skipBtn.style.display = 'block';
+                }
+                
+                if (timeLeft <= 0) {
+                    skipAd();
+                }
             }, 1000);
         }
 
         function skipAd() {
-            clearInterval(countdown);
-            adOverlay.style.display = 'none';
+            if (countdown) {
+                clearInterval(countdown);
+                countdown = null;
+            }
+            if (adOverlay) adOverlay.style.display = 'none';
         }
 
         function closePlayer() {
             playerModal.classList.remove('active');
-            // CRITICAL FIX: Ensure overflow is restored
             document.body.style.overflow = 'auto';
-            document.documentElement.style.overflow = 'auto';
             
-            streamFrame.src = '';
-            adOverlay.style.display = 'none';
+            // Stop all network activity in iframe
+            if (streamFrame) streamFrame.src = 'about:blank';
+            
             if (countdown) {
                 clearInterval(countdown);
                 countdown = null;
             }
             
-            aliezInput.value = '';
-            inputBar.style.display = 'flex';
-            isStreamLoaded = false;
-            
             if (uiHideTimer) clearTimeout(uiHideTimer);
-            playerUIHeader.classList.remove('hidden');
+            
+            isStreamLoaded = false;
+            if (inputBar) inputBar.style.display = 'flex';
+            if (playerUIHeader) playerUIHeader.classList.remove('hidden');
         }
 
         function toggleFullscreen() {
             const playerContainer = document.querySelector('.player-container');
+            if (!playerContainer) return;
+
             if (!document.fullscreenElement) {
-                if (playerContainer.requestFullscreen) playerContainer.requestFullscreen();
-                else if (playerContainer.webkitRequestFullscreen) playerContainer.webkitRequestFullscreen();
+                const req = playerContainer.requestFullscreen || playerContainer.webkitRequestFullscreen;
+                if (req) req.call(playerContainer);
             } else {
                 if (document.exitFullscreen) document.exitFullscreen();
             }
         }
 
-        function extractChannelId(streamUrl) {
-            if (!streamUrl) return null;
-            const match = streamUrl.match(/[?&]c=(\d+)/);
-            if (match && match[1]) return match[1];
-            const altMatch = streamUrl.match(/id=(\d+)/);
-            if (altMatch && altMatch[1]) return altMatch[1];
-            return null;
-        }
-
         function loadStreamFromFixture(streamUrl, matchTitle) {
             const channelId = extractChannelId(streamUrl);
             if (!channelId) {
-                alert("Could not extract channel ID from stream URL");
+                showNotification('Stream Error', 'Channel configuration missing.');
                 return;
             }
             
@@ -2034,12 +2044,13 @@
             // Push state for back button handling
             history.pushState({player: true}, "Player", "#stream");
 
-            aliezInput.value = streamUrl;
-            const finalUrl = `https://emb.apl388.me/player/live.php?id=${channelId}`;
+            if (aliezInput) aliezInput.value = streamUrl;
+            
+            const finalUrl = `https://emb.${DEFAULT_MIRROR}/player/live.php?id=${channelId}`;
             setupIframeForMobile(finalUrl);
             startAdSequence();
             
-            inputBar.style.display = 'none';
+            if (inputBar) inputBar.style.display = 'none';
             isStreamLoaded = true;
             resetUIHideTimer();
         }
@@ -2259,7 +2270,80 @@
             playerModal.addEventListener('touchstart', resetUIHideTimer);
             playerModal.addEventListener('click', resetUIHideTimer);
 
+            // Search functionality
+            searchBtn.onclick = performSearch;
+            searchBar.addEventListener('input', debounce(performSearch, 300));
+            searchBar.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') performSearch();
+            });
+
             setInterval(startCountdownTimers, 1000);
+        }
+
+        /**
+         * Enhanced Search Functionality
+         * Searches through match names, teams, leagues, and competition names
+         */
+        function performSearch() {
+            const searchTerm = searchBar.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                // Reset to all matches
+                filteredMatches = [...allMatches];
+                renderAllMatches();
+                showNotification('Search', 'Showing all matches');
+                return;
+            }
+
+            // Filter matches based on search term
+            filteredMatches = allMatches.filter(match => {
+                const teams = match.matchup ? match.matchup.toLowerCase().split(' – ') : [];
+                const league = match.competition ? match.competition.toLowerCase() : '';
+                const priority = getCompetitionPriority(match);
+                const priorityName = priority ? priority.name.toLowerCase() : '';
+                
+                // Search criteria
+                const team1Match = teams[0] && teams[0].includes(searchTerm);
+                const team2Match = teams[1] && teams[1].includes(searchTerm);
+                const leagueMatch = league.includes(searchTerm);
+                const priorityMatch = priorityName.includes(searchTerm);
+                
+                // Check if any team name contains any word from search term
+                const searchWords = searchTerm.split(' ').filter(word => word.length > 2);
+                const teamWordsMatch = searchWords.some(word => 
+                    teams.some(team => team && team.includes(word))
+                );
+                
+                // Check if league contains any word from search term
+                const leagueWordsMatch = searchWords.some(word => 
+                    league.includes(word) || priorityName.includes(word)
+                );
+
+                return team1Match || team2Match || leagueMatch || priorityMatch || teamWordsMatch || leagueWordsMatch;
+            });
+
+            renderAllMatches();
+            
+            if (filteredMatches.length === 0) {
+                showNotification('Search Result', 'No matches found');
+            } else {
+                showNotification('Search Result', `${filteredMatches.length} matches found`);
+            }
+        }
+
+        /**
+         * Debounce function to optimize search performance
+         */
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
 
         document.addEventListener('DOMContentLoaded', () => {
