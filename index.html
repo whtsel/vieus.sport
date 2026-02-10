@@ -1102,22 +1102,24 @@
             flex-direction: column;
         }
 
-        /* Clean header with click-through fix */
+        /* Clean header with improved visibility */
         .player-header {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             padding: 15px 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
             z-index: 10;
             display: flex;
-            justify-content: space-between; /* Space out buttons */
+            justify-content: space-between;
             align-items: center;
             pointer-events: none;
-            /* UPDATED: Added transition and default visible state */
             transition: opacity 0.5s ease;
             opacity: 1;
+            /* Auto-rotation support */
+            transform-origin: center;
+            transform: rotate(0deg);
         }
 
         /* Class to hide the header */
@@ -1126,51 +1128,88 @@
             pointer-events: none;
         }
 
-        /* Player Back Button */
+        /* Player Back Button - Enhanced visibility */
         .player-back-btn {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid var(--cyan);
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid var(--cyan);
             color: white;
-            padding: 10px 18px;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            padding: 12px 20px;
+            border-radius: 35px;
+            font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             transition: all 0.3s;
             pointer-events: auto;
             text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 204, 255, 0.5), inset 0 0 15px rgba(0, 204, 255, 0.3);
+            backdrop-filter: blur(5px);
+            border-left: 4px solid var(--cyan);
         }
 
         .player-back-btn:hover {
             background: var(--cyan);
             color: #000;
-            transform: translateX(5px);
+            transform: translateX(8px) scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 204, 255, 0.8), inset 0 0 25px rgba(0, 204, 255, 0.5);
         }
 
-        /* Mobile fullscreen button - ONLY on mobile */
+        .player-back-btn:active {
+            transform: translateX(8px) scale(0.98);
+        }
+
+        /* Mobile fullscreen button - Enhanced visibility */
         .mobile-fullscreen-btn {
-            background: rgba(0, 0, 0, 0.7);
-            border: 2px solid gold;
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid gold;
             color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 1rem;
             cursor: pointer;
             display: none; /* Hidden by default */
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             transition: all 0.3s;
-            /* FIX: Re-enable pointer events for the button */
             pointer-events: auto;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border-left: 4px solid gold;
         }
 
         .mobile-fullscreen-btn:hover {
             background: gold;
             color: #000;
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .mobile-fullscreen-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Auto-rotation support styles */
+        .player-container.rotated {
+            transform: rotate(90deg);
+            transform-origin: center;
+            width: 100vh;
+            height: 100vw;
+            top: 50%;
+            left: 50%;
+            margin-top: -50vh;
+            margin-left: -50vw;
+        }
+
+        .player-container.rotated .player-header {
+            transform: rotate(-90deg);
+            transform-origin: center;
+        }
+
+        .player-container.rotated .player-back-btn,
+        .player-container.rotated .mobile-fullscreen-btn {
+            transform: rotate(-90deg);
         }
 
         /* URL input */
@@ -1930,9 +1969,12 @@
             if (uiHideTimer) clearTimeout(uiHideTimer);
             uiHideTimer = setTimeout(() => {
                 if (isStreamLoaded) {
-                    playerUIHeader.classList.add('hidden');
+                    // Only hide if user hasn't interacted recently
+                    if (!isUserInteracting) {
+                        playerUIHeader.classList.add('hidden');
+                    }
                 }
-            }, 3000);
+            }, 5000); // Increased timeout for better visibility
         }
 
         function setupIframeForMobile(url) {
@@ -2028,6 +2070,118 @@
                 if (req) req.call(playerContainer);
             } else {
                 if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        /**
+         * Auto-rotation functionality for mobile devices
+         */
+        function setupAutoRotation() {
+            // Listen for orientation changes
+            window.addEventListener('orientationchange', handleOrientationChange);
+            window.addEventListener('resize', handleOrientationChange);
+            
+            // Initial check
+            handleOrientationChange();
+        }
+
+        function handleOrientationChange() {
+            const playerContainer = document.querySelector('.player-container');
+            const playerHeader = document.querySelector('.player-header');
+            const backButton = document.querySelector('.player-back-btn');
+            const fullscreenBtn = document.querySelector('.mobile-fullscreen-btn');
+            
+            if (!playerContainer || !playerHeader) return;
+
+            const orientation = window.orientation;
+            const isLandscape = (orientation === 90 || orientation === -90 || window.innerWidth > window.innerHeight);
+            const isPortrait = (orientation === 0 || orientation === 180 || window.innerHeight > window.innerWidth);
+
+            // Auto-rotate for landscape mode on mobile
+            if (isLandscape && window.innerWidth <= 768) {
+                playerContainer.classList.add('rotated');
+                playerHeader.style.top = '20px'; // Adjust header position for rotated layout
+                if (backButton) backButton.style.transform = 'rotate(-90deg) translateX(-10px)';
+                if (fullscreenBtn) fullscreenBtn.style.transform = 'rotate(-90deg) translateX(-10px)';
+            } else {
+                playerContainer.classList.remove('rotated');
+                playerHeader.style.top = '0';
+                if (backButton) backButton.style.transform = 'none';
+                if (fullscreenBtn) fullscreenBtn.style.transform = 'none';
+            }
+        }
+
+        /**
+         * Enhanced header visibility control
+         */
+        function resetUIHideTimer() {
+            if (!playerUIHeader) return;
+            playerUIHeader.classList.remove('hidden');
+            if (uiHideTimer) clearTimeout(uiHideTimer);
+            uiHideTimer = setTimeout(() => {
+                if (isStreamLoaded) {
+                    // Only hide if user hasn't interacted recently
+                    if (!isUserInteracting) {
+                        playerUIHeader.classList.add('hidden');
+                    }
+                }
+            }, 5000); // Increased timeout for better visibility
+        }
+
+        // Track user interaction to prevent auto-hiding
+        let isUserInteracting = false;
+        let interactionTimer = null;
+
+        function handleUserInteraction() {
+            isUserInteracting = true;
+            playerUIHeader.classList.remove('hidden');
+            
+            if (interactionTimer) clearTimeout(interactionTimer);
+            interactionTimer = setTimeout(() => {
+                isUserInteracting = false;
+                if (isStreamLoaded) {
+                    playerUIHeader.classList.add('hidden');
+                }
+            }, 3000);
+        }
+
+        // Add event listeners for user interaction
+        function setupInteractionListeners() {
+            const playerModal = document.getElementById('playerModal');
+            if (!playerModal) return;
+
+            playerModal.addEventListener('mousemove', handleUserInteraction);
+            playerModal.addEventListener('touchstart', handleUserInteraction);
+            playerModal.addEventListener('click', handleUserInteraction);
+            
+            // Also listen for hover on controls
+            const backButton = document.querySelector('.player-back-btn');
+            const fullscreenBtn = document.querySelector('.mobile-fullscreen-btn');
+            
+            if (backButton) {
+                backButton.addEventListener('mouseenter', handleUserInteraction);
+                backButton.addEventListener('mouseleave', () => {
+                    if (isStreamLoaded) {
+                        setTimeout(() => {
+                            if (!isUserInteracting) {
+                                playerUIHeader.classList.add('hidden');
+                            }
+                        }, 1000);
+                    }
+                });
+            }
+            
+            if (fullscreenBtn) {
+                fullscreenBtn.addEventListener('mouseenter', handleUserInteraction);
+                fullscreenBtn.addEventListener('mouseleave', () => {
+                    if (isStreamLoaded) {
+                        setTimeout(() => {
+                            if (!isUserInteracting) {
+                                playerUIHeader.classList.add('hidden');
+                            }
+                        }, 1000);
+                    }
+                });
             }
         }
 
@@ -2349,6 +2503,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             setupEventListeners();
+            setupAutoRotation();
+            setupInteractionListeners();
         });
     </script>
 </body>
