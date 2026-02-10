@@ -1212,6 +1212,16 @@
             transform: rotate(-90deg);
         }
 
+        /* Force iframe rotation to match container */
+        .player-container.rotated #stream-frame {
+            transform: rotate(-90deg);
+            transform-origin: center;
+            width: 100vh !important;
+            height: 100vw !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+
         /* URL input */
         #input-bar {
             position: absolute;
