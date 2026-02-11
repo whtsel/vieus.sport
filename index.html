@@ -1102,24 +1102,22 @@
             flex-direction: column;
         }
 
-        /* Clean header with improved visibility */
+        /* Clean header with click-through fix */
         .player-header {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             padding: 15px 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
             z-index: 10;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-between; /* Space out buttons */
             align-items: center;
             pointer-events: none;
+            /* UPDATED: Added transition and default visible state */
             transition: opacity 0.5s ease;
             opacity: 1;
-            /* Auto-rotation support */
-            transform-origin: center;
-            transform: rotate(0deg);
         }
 
         /* Class to hide the header */
@@ -1128,98 +1126,51 @@
             pointer-events: none;
         }
 
-        /* Player Back Button - Enhanced visibility */
+        /* Player Back Button */
         .player-back-btn {
-            background: rgba(0, 0, 0, 0.9);
-            border: 3px solid var(--cyan);
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--cyan);
             color: white;
-            padding: 12px 20px;
-            border-radius: 35px;
-            font-size: 1rem;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             transition: all 0.3s;
             pointer-events: auto;
             text-transform: uppercase;
-            box-shadow: 0 0 20px rgba(0, 204, 255, 0.5), inset 0 0 15px rgba(0, 204, 255, 0.3);
-            backdrop-filter: blur(5px);
-            border-left: 4px solid var(--cyan);
+            box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
         }
 
         .player-back-btn:hover {
             background: var(--cyan);
             color: #000;
-            transform: translateX(8px) scale(1.05);
-            box-shadow: 0 0 30px rgba(0, 204, 255, 0.8), inset 0 0 25px rgba(0, 204, 255, 0.5);
+            transform: translateX(5px);
         }
 
-        .player-back-btn:active {
-            transform: translateX(8px) scale(0.98);
-        }
-
-        /* Mobile fullscreen button - Enhanced visibility */
+        /* Mobile fullscreen button - ONLY on mobile */
         .mobile-fullscreen-btn {
-            background: rgba(0, 0, 0, 0.9);
-            border: 3px solid gold;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid gold;
             color: white;
-            padding: 10px 18px;
-            border-radius: 25px;
-            font-size: 1rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
             cursor: pointer;
             display: none; /* Hidden by default */
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: all 0.3s;
+            /* FIX: Re-enable pointer events for the button */
             pointer-events: auto;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.3);
-            backdrop-filter: blur(5px);
-            border-left: 4px solid gold;
         }
 
         .mobile-fullscreen-btn:hover {
             background: gold;
             color: #000;
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 25px rgba(255, 215, 0, 0.5);
-        }
-
-        .mobile-fullscreen-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Auto-rotation support styles */
-        .player-container.rotated {
-            transform: rotate(90deg);
-            transform-origin: center;
-            width: 100vh;
-            height: 100vw;
-            top: 50%;
-            left: 50%;
-            margin-top: -50vh;
-            margin-left: -50vw;
-        }
-
-        .player-container.rotated .player-header {
-            transform: rotate(-90deg);
-            transform-origin: center;
-        }
-
-        .player-container.rotated .player-back-btn,
-        .player-container.rotated .mobile-fullscreen-btn {
-            transform: rotate(-90deg);
-        }
-
-        /* Force iframe rotation to match container */
-        .player-container.rotated #stream-frame {
-            transform: rotate(-90deg);
-            transform-origin: center;
-            width: 100vh !important;
-            height: 100vw !important;
-            top: 0 !important;
-            left: 0 !important;
         }
 
         /* URL input */
@@ -1979,12 +1930,9 @@
             if (uiHideTimer) clearTimeout(uiHideTimer);
             uiHideTimer = setTimeout(() => {
                 if (isStreamLoaded) {
-                    // Only hide if user hasn't interacted recently
-                    if (!isUserInteracting) {
-                        playerUIHeader.classList.add('hidden');
-                    }
+                    playerUIHeader.classList.add('hidden');
                 }
-            }, 5000); // Increased timeout for better visibility
+            }, 3000);
         }
 
         function setupIframeForMobile(url) {
@@ -2080,118 +2028,6 @@
                 if (req) req.call(playerContainer);
             } else {
                 if (document.exitFullscreen) document.exitFullscreen();
-            }
-        }
-
-        /**
-         * Auto-rotation functionality for mobile devices
-         */
-        function setupAutoRotation() {
-            // Listen for orientation changes
-            window.addEventListener('orientationchange', handleOrientationChange);
-            window.addEventListener('resize', handleOrientationChange);
-            
-            // Initial check
-            handleOrientationChange();
-        }
-
-        function handleOrientationChange() {
-            const playerContainer = document.querySelector('.player-container');
-            const playerHeader = document.querySelector('.player-header');
-            const backButton = document.querySelector('.player-back-btn');
-            const fullscreenBtn = document.querySelector('.mobile-fullscreen-btn');
-            
-            if (!playerContainer || !playerHeader) return;
-
-            const orientation = window.orientation;
-            const isLandscape = (orientation === 90 || orientation === -90 || window.innerWidth > window.innerHeight);
-            const isPortrait = (orientation === 0 || orientation === 180 || window.innerHeight > window.innerWidth);
-
-            // Auto-rotate for landscape mode on mobile
-            if (isLandscape && window.innerWidth <= 768) {
-                playerContainer.classList.add('rotated');
-                playerHeader.style.top = '20px'; // Adjust header position for rotated layout
-                if (backButton) backButton.style.transform = 'rotate(-90deg) translateX(-10px)';
-                if (fullscreenBtn) fullscreenBtn.style.transform = 'rotate(-90deg) translateX(-10px)';
-            } else {
-                playerContainer.classList.remove('rotated');
-                playerHeader.style.top = '0';
-                if (backButton) backButton.style.transform = 'none';
-                if (fullscreenBtn) fullscreenBtn.style.transform = 'none';
-            }
-        }
-
-        /**
-         * Enhanced header visibility control
-         */
-        function resetUIHideTimer() {
-            if (!playerUIHeader) return;
-            playerUIHeader.classList.remove('hidden');
-            if (uiHideTimer) clearTimeout(uiHideTimer);
-            uiHideTimer = setTimeout(() => {
-                if (isStreamLoaded) {
-                    // Only hide if user hasn't interacted recently
-                    if (!isUserInteracting) {
-                        playerUIHeader.classList.add('hidden');
-                    }
-                }
-            }, 5000); // Increased timeout for better visibility
-        }
-
-        // Track user interaction to prevent auto-hiding
-        let isUserInteracting = false;
-        let interactionTimer = null;
-
-        function handleUserInteraction() {
-            isUserInteracting = true;
-            playerUIHeader.classList.remove('hidden');
-            
-            if (interactionTimer) clearTimeout(interactionTimer);
-            interactionTimer = setTimeout(() => {
-                isUserInteracting = false;
-                if (isStreamLoaded) {
-                    playerUIHeader.classList.add('hidden');
-                }
-            }, 3000);
-        }
-
-        // Add event listeners for user interaction
-        function setupInteractionListeners() {
-            const playerModal = document.getElementById('playerModal');
-            if (!playerModal) return;
-
-            playerModal.addEventListener('mousemove', handleUserInteraction);
-            playerModal.addEventListener('touchstart', handleUserInteraction);
-            playerModal.addEventListener('click', handleUserInteraction);
-            
-            // Also listen for hover on controls
-            const backButton = document.querySelector('.player-back-btn');
-            const fullscreenBtn = document.querySelector('.mobile-fullscreen-btn');
-            
-            if (backButton) {
-                backButton.addEventListener('mouseenter', handleUserInteraction);
-                backButton.addEventListener('mouseleave', () => {
-                    if (isStreamLoaded) {
-                        setTimeout(() => {
-                            if (!isUserInteracting) {
-                                playerUIHeader.classList.add('hidden');
-                            }
-                        }, 1000);
-                    }
-                });
-            }
-            
-            if (fullscreenBtn) {
-                fullscreenBtn.addEventListener('mouseenter', handleUserInteraction);
-                fullscreenBtn.addEventListener('mouseleave', () => {
-                    if (isStreamLoaded) {
-                        setTimeout(() => {
-                            if (!isUserInteracting) {
-                                playerUIHeader.classList.add('hidden');
-                            }
-                        }, 1000);
-                    }
-                });
             }
         }
 
@@ -2434,25 +2270,22 @@
             playerModal.addEventListener('touchstart', resetUIHideTimer);
             playerModal.addEventListener('click', resetUIHideTimer);
 
-            // Search functionality
+            // Enhanced search functionality
             searchBtn.onclick = performSearch;
-            searchBar.addEventListener('input', debounce(performSearch, 300));
+            searchBar.addEventListener('input', debounceSearch);
             searchBar.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') performSearch();
             });
-
-            setInterval(startCountdownTimers, 1000);
         }
 
         /**
-         * Enhanced Search Functionality
-         * Searches through match names, teams, leagues, and competition names
+         * Enhanced search function that searches through all match data
          */
         function performSearch() {
             const searchTerm = searchBar.value.trim().toLowerCase();
             
             if (!searchTerm) {
-                // Reset to all matches
+                // Reset to all matches if search is empty
                 filteredMatches = [...allMatches];
                 renderAllMatches();
                 showNotification('Search', 'Showing all matches');
@@ -2461,60 +2294,56 @@
 
             // Filter matches based on search term
             filteredMatches = allMatches.filter(match => {
-                const teams = match.matchup ? match.matchup.toLowerCase().split(' – ') : [];
-                const league = match.competition ? match.competition.toLowerCase() : '';
-                const priority = getCompetitionPriority(match);
-                const priorityName = priority ? priority.name.toLowerCase() : '';
+                const teams = match.matchup.split(' – ').map(t => t.toLowerCase());
+                const competition = (match.competition || '').toLowerCase();
+                const league = (match.league || '').toLowerCase();
+                const time = (match.parsed_datetime || '').toLowerCase();
                 
-                // Search criteria
-                const team1Match = teams[0] && teams[0].includes(searchTerm);
-                const team2Match = teams[1] && teams[1].includes(searchTerm);
-                const leagueMatch = league.includes(searchTerm);
-                const priorityMatch = priorityName.includes(searchTerm);
-                
-                // Check if any team name contains any word from search term
-                const searchWords = searchTerm.split(' ').filter(word => word.length > 2);
-                const teamWordsMatch = searchWords.some(word => 
-                    teams.some(team => team && team.includes(word))
-                );
-                
-                // Check if league contains any word from search term
-                const leagueWordsMatch = searchWords.some(word => 
-                    league.includes(word) || priorityName.includes(word)
+                // Search in teams (both home and away)
+                const teamMatch = teams.some(team => 
+                    team.includes(searchTerm) || 
+                    team.replace(/\s+/g, '').includes(searchTerm.replace(/\s+/g, '')) ||
+                    team.split(' ').some(word => word.startsWith(searchTerm))
                 );
 
-                return team1Match || team2Match || leagueMatch || priorityMatch || teamWordsMatch || leagueWordsMatch;
+                // Search in competition/league names
+                const competitionMatch = competition.includes(searchTerm) || 
+                                       league.includes(searchTerm);
+
+                // Search in time/date
+                const timeMatch = time.includes(searchTerm);
+
+                // Search in team logos alt text (if available)
+                const logoMatch = match.team_logos && match.team_logos.some(logo => 
+                    (logo.alt || '').toLowerCase().includes(searchTerm)
+                );
+
+                return teamMatch || competitionMatch || timeMatch || logoMatch;
             });
 
             renderAllMatches();
             
             if (filteredMatches.length === 0) {
-                showNotification('Search Result', 'No matches found');
+                showNotification('Search Results', 'No matches found for your search');
             } else {
-                showNotification('Search Result', `${filteredMatches.length} matches found`);
+                showNotification('Search Results', `${filteredMatches.length} matches found`);
             }
         }
 
         /**
-         * Debounce function to optimize search performance
+         * Debounced search to improve performance
          */
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(performSearch, 300);
         }
+
+        // Global variable for search timeout
+        let searchTimeout;
 
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             setupEventListeners();
-            setupAutoRotation();
-            setupInteractionListeners();
         });
     </script>
 </body>
