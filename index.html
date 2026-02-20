@@ -1720,7 +1720,7 @@
         // Optimization: macOS Unified Memory & iOS Safari Viewport 
 
         // ===== CONSTANTS & MIRRORS =====
-        const STREAM_MIRRORS = ['apl389.me', 'apl388.me', 'apl13.me', 'apl6.me']; 
+        const STREAM_MIRRORS = ['apl390.me', 'apl389.me', 'apl388.me', 'apl13.me', 'apl6.me']; 
         const DEFAULT_MIRROR = STREAM_MIRRORS[0];
 
         // ===== DOM ELEMENTS =====
@@ -1778,6 +1778,158 @@
 
         // ===== CONFIGURATION =====
         const API_BASE_URL = 'https://raw.githubusercontent.com/whtsel/try/main/index.json';
+        
+        // ===== IMPORTANT FIXTURES OF THE DAY - WORKING LISTING SYSTEM =====
+        // This system prioritizes matches based on competition importance and team popularity
+        
+        // Top European Clubs for Popularity Boost
+        const TOP_CLUBS = [
+            "Man Utd", "Man City", "Liverpool", "Arsenal", "Chelsea", "Tottenham", 
+            "Real Madrid", "Barcelona", "Atletico", "Bayern", "PSG", "Inter", "Juventus"
+        ];
+        
+        // Competition Priority Weights (Higher = More Important)
+        const COMPETITION_WEIGHTS = {
+            // Tier 1: International Tournaments (Weight: 10)
+            "world cup": 10,
+            "afcon": 10,
+            "euros": 10,
+            "nations league": 10,
+            
+            // Tier 2: Elite Club Competitions (Weight: 9)
+            "champions league": 9,
+            "club world cup": 9,
+            
+            // Tier 3: Top European Leagues (Weight: 8)
+            "premier league": 8,
+            "la liga": 8,
+            "bundesliga": 8,
+            "serie a": 8,
+            "ligue 1": 8,
+            
+            // Tier 4: Domestic Cups (Weight: 6)
+            "fa cup": 6,
+            "copa del rey": 6,
+            "league cup": 6,
+            "dfb pokal": 6,
+            "copa del rey": 6,
+            
+            // Tier 5: Second Divisions (Weight: 4)
+            "championship": 4,
+            "segunda": 4,
+            "2nd division": 4,
+            
+            // Tier 6: Women's Football (Weight: 2)
+            "wsl": 2,
+            "feminine": 2,
+            "women": 2
+        };
+
+        /**
+         * Calculate match importance score for prioritization
+         * Returns a numerical score where higher = more important
+         */
+        function calculateMatchScore(match) {
+            let score = 0;
+            const compName = (match.competition || '').toLowerCase();
+            const teams = match.matchup.split(' – ').map(t => t.trim());
+            
+            // Base competition score based on priority weights
+            let baseScore = 0;
+            for (const [keyword, weight] of Object.entries(COMPETITION_WEIGHTS)) {
+                if (compName.includes(keyword)) {
+                    baseScore = Math.max(baseScore, weight * 500); // Scale up for better differentiation
+                }
+            }
+            
+            // If no recognized competition, give minimal score
+            if (baseScore === 0) {
+                baseScore = 100;
+            }
+            
+            score += baseScore;
+            
+            // Popularity Boost: Top Clubs (+1500)
+            const hasTopClub = teams.some(team => TOP_CLUBS.some(topClub => 
+                team.toLowerCase().includes(topClub.toLowerCase())
+            ));
+            if (hasTopClub) {
+                score += 1500;
+            }
+            
+            // Women's football bonus (+200)
+            if (match.matchup.toLowerCase().includes('women') || 
+                compName.includes('wsl') || compName.includes('feminine')) {
+                score += 200;
+            }
+            
+            // Live matches bonus (+500)
+            if (match.is_live) {
+                score += 500;
+            }
+            
+            return score;
+        }
+        
+        // ===== DYNAMIC LABELING LOGIC =====
+        function getCompetitionLabel(match) {
+            // If competition exists and is NOT "Undefined", use it as the display label
+            if (match.competition && match.competition !== "Undefined") {
+                return match.competition;
+            }
+            // Fallback: If competition is missing/undefined, use match.league
+            if (match.league) {
+                return match.league;
+            }
+            // If both are missing/undefined, return empty string (do not show "Undefined")
+            return "";
+        }
+        
+        // ===== LIVE FIXTURE GARBAGE COLLECTION (25-Minute Rule) =====
+        function filterExpiredMatches() {
+            const now = new Date();
+            const matchesToRemove = [];
+            
+            // Filter live matches for expiration
+            allMatches = allMatches.filter(match => {
+                if (!match.is_live || !match.parsed_datetime) {
+                    return true; // Keep non-live matches
+                }
+                
+                const matchStartTime = new Date(match.parsed_datetime);
+                if (isNaN(matchStartTime.getTime())) {
+                    return true; // Keep if invalid date
+                }
+                
+                // Calculate estimated end time (Match Start Time + 110 minutes for play/stoppage)
+                const estimatedEndTime = new Date(matchStartTime.getTime() + (110 * 60 * 1000));
+                
+                // Removal Trigger: If current time is more than 25 minutes past estimated end time
+                const timeSinceEnd = now.getTime() - estimatedEndTime.getTime();
+                const isExpired = timeSinceEnd > (25 * 60 * 1000); // 25 minutes in milliseconds
+                
+                if (isExpired) {
+                    matchesToRemove.push(match);
+                    return false; // Remove from array
+                }
+                
+                return true; // Keep in array
+            });
+            
+            // Remove expired matches from liveContainer DOM
+            if (matchesToRemove.length > 0) {
+                matchesToRemove.forEach(match => {
+                    // Find and remove the match card from the DOM
+                    const matchId = match.event_id || `${match.matchup.split(' – ')[0]}-${match.matchup.split(' – ')[1]}-${match.parsed_datetime}`;
+                    const matchCard = liveContainer.querySelector(`.match-card[data-match-id="${matchId}"]`);
+                    if (matchCard) {
+                        matchCard.remove();
+                    }
+                });
+            }
+            
+            return matchesToRemove.length > 0;
+        }
         
         // ===== UPDATED PRIORITIZED COMPETITION ORDER =====
         const PRIORITIZED_COMPETITIONS = [
@@ -2086,8 +2238,65 @@
                 const startTime = card.dataset.startTime;
                 if (!matchId || !startTime) return;
                 const countdownElement = card.querySelector('.countdown-timer');
-                if (countdownElement) countdownElement.textContent = updateCountdown(matchId, startTime);
+                if (countdownElement) {
+                    const timeLeft = updateCountdown(matchId, startTime);
+                    countdownElement.textContent = timeLeft;
+                    
+                    // Check if countdown has expired and move to live section
+                    if (timeLeft === "Match Started" || timeLeft === "Invalid time") {
+                        moveMatchToLive(card, matchId);
+                    }
+                }
             });
+        }
+
+        function moveMatchToLive(card, matchId) {
+            // Find the match data
+            const matchData = allMatches.find(m => m.event_id === matchId || 
+                `${m.matchup.split(' – ')[0]}-${m.matchup.split(' – ')[1]}-${m.parsed_datetime}` === matchId);
+            
+            if (matchData) {
+                // Remove from upcoming section
+                card.remove();
+                
+                // Add to live section if it has streams
+                if (matchData.streams?.some(s => s.stream_url?.includes('aliez'))) {
+                    // Mark as live
+                    matchData.is_live = true;
+                    
+                    // Find or create live section for this competition
+                    const priority = getCompetitionPriority(matchData);
+                    const sectionName = priority ? priority.name : (matchData.competition || "Other");
+                    
+                    let liveSection = liveContainer.querySelector(`.league-section:has(.league-header:contains('${sectionName}'))`);
+                    if (!liveSection) {
+                        // Create new live section
+                        liveSection = document.createElement('div');
+                        liveSection.className = 'league-section';
+                        const leagueHeader = document.createElement('div');
+                        leagueHeader.className = 'league-header';
+                        leagueHeader.style.borderLeftColor = priority ? priority.color : "#8b0000";
+                        leagueHeader.innerHTML = `<div class="league-name">${sectionName}</div><div class="match-count">1 matches</div>`;
+                        leagueHeader.onclick = () => liveSection.classList.toggle('collapsed');
+                        
+                        const grid = document.createElement('div');
+                        grid.className = 'league-matches';
+                        
+                        liveSection.appendChild(leagueHeader);
+                        liveSection.appendChild(grid);
+                        liveContainer.appendChild(liveSection);
+                    }
+                    
+                    // Add match card to live section
+                    const matchCard = createMatchCard(matchData, true, priority || {displayName: sectionName, color: "#8b0000", icon: "fas fa-tv", hot: true});
+                    liveSection.querySelector('.league-matches').appendChild(matchCard);
+                    
+                    // Update match count
+                    const matchCount = liveSection.querySelector('.match-count');
+                    const currentCount = parseInt(matchCount.textContent.split(' ')[0]);
+                    matchCount.textContent = `${currentCount + 1} matches`;
+                }
+            }
         }
 
         async function loadData() {
@@ -2146,8 +2355,18 @@
         }
 
         function renderAllMatches() {
-            const liveMatches = filteredMatches.filter(m => m.is_live);
-            const upcomingMatches = filteredMatches.filter(m => !m.is_live);
+            // Call the expiry filter before sorting to remove expired live matches
+            filterExpiredMatches();
+            
+            // Sort matches by calculated score (highest to lowest) for prioritization
+            const sortedMatches = [...filteredMatches].sort((a, b) => {
+                const scoreA = calculateMatchScore(a);
+                const scoreB = calculateMatchScore(b);
+                return scoreB - scoreA; // Sort descending (highest score first)
+            });
+            
+            const liveMatches = sortedMatches.filter(m => m.is_live);
+            const upcomingMatches = sortedMatches.filter(m => !m.is_live);
             renderLiveMatches(liveContainer, liveMatches);
             renderUpcomingMatches(upcomingContainer, upcomingMatches);
             setTimeout(startCountdownTimers, 100);
@@ -2157,7 +2376,7 @@
             container.innerHTML = matches.length === 0 ? '<p>No live matches.</p>' : '';
             const groups = {};
             matches.forEach(match => {
-                const comp = match.competition || "Other";
+                const comp = getCompetitionLabel(match) || "Other";
                 if (!groups[comp]) groups[comp] = { displayName: comp, matches: [], color: "#8b0000", icon: "fas fa-tv", hot: true };
                 groups[comp].matches.push(match);
             });
@@ -2166,7 +2385,13 @@
 
         function renderUpcomingMatches(container, matches) {
             container.innerHTML = matches.length === 0 ? '<p>No upcoming matches.</p>' : '';
-            groupMatchesByPriority(matches).forEach(g => createLeagueSection(container, g, false));
+            const groups = {};
+            matches.forEach(match => {
+                const comp = getCompetitionLabel(match) || "Other";
+                if (!groups[comp]) groups[comp] = { displayName: comp, matches: [], color: "#8b0000", icon: "fas fa-tv", hot: true };
+                groups[comp].matches.push(match);
+            });
+            Object.values(groups).forEach(g => createLeagueSection(container, g, false));
         }
 
         function createLeagueSection(container, group, isLive) {
@@ -2214,6 +2439,16 @@
             document.getElementById('modalTitle').textContent = match.matchup;
             document.getElementById('modalCompetition').textContent = group.displayName;
             populateStreamLinks(match);
+            
+            // Set up the main modalWatchBtn to trigger the first available stream
+            const streams = match.streams?.filter(s => s.stream_url?.includes('aliez')) || [];
+            if (streams.length > 0) {
+                modalWatchBtn.onclick = () => loadStreamFromFixture(streams[0].stream_url, match.matchup);
+                modalWatchBtn.style.display = 'flex';
+            } else {
+                modalWatchBtn.style.display = 'none';
+            }
+            
             matchModal.classList.add('active');
             document.body.style.overflow = 'hidden';
             history.pushState({modal: true}, "Preview", "#preview");
@@ -2221,9 +2456,9 @@
 
         function populateStreamLinks(match) {
             const streams = match.streams?.filter(s => s.stream_url?.includes('aliez')) || [];
-            streamsList.innerHTML = streams.length ? streams.map(s => `
+            streamsList.innerHTML = streams.length ? streams.map((s, index) => `
                 <div class="stream-item" onclick="loadStreamFromFixture('${s.stream_url}', '${match.matchup}')">
-                    <div class="stream-watch-now">PREMIUM STREAM</div>
+                    <div class="stream-watch-now">STREAM ${index + 1}</div>
                     <div class="stream-language">${s.language || 'English'}</div>
                 </div>
             `).join('') : '<p>No premium streams.</p>';
@@ -2239,7 +2474,11 @@
         function formatTime(dt) {
             if (!dt) return 'TBD';
             const d = new Date(dt);
-            return isNaN(d.getTime()) ? dt : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if (isNaN(d.getTime())) return dt;
+            
+            // Fix timezone offset - subtract 1 hour to correct the display
+            const correctedTime = new Date(d.getTime() - (1 * 60 * 60 * 1000));
+            return correctedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
         function switchView(view) {
@@ -2275,7 +2514,7 @@
             searchBar.addEventListener('input', debounceSearch);
             searchBar.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') performSearch();
-            });
+             });
         }
 
         /**
