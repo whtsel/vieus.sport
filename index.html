@@ -82,7 +82,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            flex-wrap: wrap;           /* allow wrapping on small screens */
+            flex-wrap: wrap;
             row-gap: 10px;
         }
 
@@ -261,7 +261,7 @@
             font-weight: 700;
             font-size: 0.9rem;
             box-shadow: 0 0 15px var(--neon-cyan);
-            white-space: nowrap;         /* prevent wrapping of "4 matches" */
+            white-space: nowrap;
         }
 
         .league-matches {
@@ -325,6 +325,7 @@
             font-family: var(--font-display);
         }
 
+        /* Status badges – styled based on parent card (original JS does not add extra classes) */
         .match-card.live .match-status {
             background: var(--neon-pink);
             color: black;
@@ -371,7 +372,7 @@
             flex-direction: column;
             align-items: center;
             flex: 1;
-            width: 100%;          /* ensure full width for name centering */
+            width: 100%;
         }
 
         .team-logo {
@@ -398,7 +399,6 @@
             object-fit: contain;
         }
 
-        /* ===== IMPROVED TEAM NAME – FITS PERFECTLY WITH GLOW ===== */
         .team-name {
             display: inline-block;
             max-width: 100%;
@@ -836,10 +836,9 @@
             background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
             z-index: 10;
             display: flex;
-            justify-content: space-between; /* Space out buttons */
+            justify-content: space-between;
             align-items: center;
             pointer-events: none;
-            /* UPDATED: Added transition and default visible state */
             transition: opacity 0.5s ease;
             opacity: 1;
         }
@@ -884,11 +883,10 @@
             border-radius: 20px;
             font-size: 0.9rem;
             cursor: pointer;
-            display: none; /* Hidden by default */
+            display: none;
             align-items: center;
             gap: 8px;
             transition: all 0.3s;
-            /* FIX: Re-enable pointer events for the button */
             pointer-events: auto;
         }
 
@@ -969,18 +967,15 @@
             cursor: pointer;
         }
 
-        /* IFRAME - FIXED to not block header clicks */
+        /* IFRAME - NO FILTER (removed to avoid playback issues) */
         #stream-frame {
             position: absolute;
-            top: 60px; /* Push down below the header area */
+            top: 60px;
             left: 0;
             width: 100%;
-            height: calc(100% - 60px); /* Reduce height by header size */
+            height: calc(100% - 60px);
             border: none;
             z-index: 1;
-            /* 4K ENHANCEMENT ALWAYS APPLIED */
-            filter: contrast(110%) saturate(130%) brightness(105%);
-            -webkit-filter: contrast(110%) saturate(130%) brightness(105%);
         }
 
         /* Mobile hint overlay */
@@ -1008,12 +1003,10 @@
 
         /* Mobile fullscreen adjustments */
         @media (max-width: 768px) {
-            /* Show mobile fullscreen button */
             .mobile-fullscreen-btn {
                 display: flex;
             }
             
-            /* Ensure iframe uses full screen properly */
             .player-modal {
                 position: fixed !important;
                 top: 0 !important;
@@ -1034,7 +1027,6 @@
                 overflow: auto !important;
             }
             
-            /* Hide hint after showing */
             .mobile-hint {
                 display: block;
                 animation: fadeInOut 5s forwards;
@@ -1045,10 +1037,10 @@
         @media (max-width: 768px) {
             .mobile-dock { display: flex; }
             body { padding-bottom: 70px; }
-            .search-bar { width: 160px; }              /* smaller to prevent overlap */
+            .search-bar { width: 160px; }
             .search-bar:focus { width: 200px; }
             .sport-header-tab {
-                padding: 6px 16px;                     /* smaller padding */
+                padding: 6px 16px;
                 font-size: 0.9rem;
             }
             .modal-content { padding: 25px; }
@@ -1062,7 +1054,7 @@
     </style>
 </head>
 <body>
-    <!-- ========== ORIGINAL HTML – EXACTLY THE SAME STRUCTURE ========== -->
+    <!-- ========== HTML STRUCTURE (NEW UI) – KEPT IDENTICAL ========== -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -1228,7 +1220,7 @@
         </div>
     </div>
 
-    <!-- ===== ORIGINAL JAVASCRIPT – FULLY INTACT ===== -->
+    <!-- ===== ORIGINAL JAVASCRIPT (WITH ONE FIX: FILTEREDMATCHES SYNC) ===== -->
     <script>
         // ===== MASTER ARCHITECT FIX: PRODUCTION STREAM CONTROLLER =====
         // ===== CONSTANTS & MIRRORS =====
@@ -1616,8 +1608,11 @@
             return PRIORITIZED_COMPETITIONS.find(c => c.keywords.some(k => compName.includes(k.toLowerCase()))) || null;
         }
 
+        // ===== FIXED renderAllMatches – filteredMatches now synced after expiry =====
         function renderAllMatches() {
-            filterExpiredMatches();
+            filterExpiredMatches();                 // removes expired matches from allMatches
+            filteredMatches = [...allMatches];      // *** FIX: sync filteredMatches with updated allMatches
+            
             const sortedMatches = [...filteredMatches].sort((a, b) => calculateMatchScore(b) - calculateMatchScore(a));
             const liveMatches = sortedMatches.filter(m => m.is_live);
             const upcomingMatches = sortedMatches.filter(m => !m.is_live);
