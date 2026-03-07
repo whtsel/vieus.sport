@@ -579,12 +579,12 @@
             flex-direction: row;
             justify-content: center;
             gap: 10px;
-            flex-wrap: wrap; /* fallback if screen extremely tiny, but we prevent wrap with flex basis */
+            flex-wrap: wrap;
         }
 
         .card-btn {
-            flex: 1 1 0; /* allow both buttons to grow and share space equally */
-            min-width: 120px; /* prevent them from becoming too narrow */
+            flex: 1 1 0;
+            min-width: 120px;
             padding: 12px 10px;
             border: none;
             border-radius: 25px;
@@ -1064,31 +1064,26 @@
         }
 
         .lineup-list li {
-            display: grid;
-            grid-template-columns: 50px 1fr 60px;
-            gap: 8px;
-            padding: 8px 10px;
+            padding: 8px 12px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             font-size: 0.95rem;
-            align-items: center;
+            font-family: 'Courier New', monospace;
+            color: #fff;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
         }
 
-        .lineup-list li .player-number {
-            font-weight: 700;
-            color: var(--info-gold);
-            text-align: right;
+        .lineup-list li:hover {
+            border-left-color: var(--info-gold);
+            background: rgba(255,255,255,0.05);
         }
 
-        .lineup-list li .player-name {
-            font-weight: 500;
-            color: white;
+        .lineup-list li:nth-child(even) {
+            background: rgba(255,255,255,0.02);
         }
 
-        .lineup-list li .player-position {
-            font-weight: 400;
-            color: #aaa;
-            text-align: left;
-            font-style: italic;
+        .player-entry {
+            display: inline-block;
         }
 
         .league-table table {
@@ -1566,7 +1561,6 @@
             }
         }
 
-        /* Remove the column rule for small screens - buttons stay side by side */
         @media (max-width: 480px) {
             .header-content {
                 flex-direction: column;
@@ -1653,7 +1647,6 @@
                 font-size: 0.8rem;
             }
 
-            /* Buttons stay side by side */
             .card-actions {
                 flex-direction: row;
                 gap: 8px;
@@ -1663,12 +1656,6 @@
                 min-width: 100px;
                 padding: 10px 5px;
                 font-size: 0.8rem;
-            }
-
-            .lineup-list li {
-                grid-template-columns: 40px 1fr 50px;
-                gap: 4px;
-                font-size: 0.85rem;
             }
         }
 
@@ -1738,7 +1725,7 @@
         </div>
         
         <div id="liveContainer">
-            </div>
+        </div>
 
         <div class="section-header">
             <h2 class="section-title">
@@ -1747,7 +1734,7 @@
         </div>
         
         <div id="upcomingContainer">
-            </div>
+        </div>
     </div>
 
     <div class="mobile-dock">
@@ -1792,14 +1779,14 @@
             </div>
             
             <div class="modal-teams" id="modalTeams">
-                </div>
+            </div>
             
             <div class="modal-streams" id="modalStreams">
                 <h4 class="streams-title">
                     <i class="fas fa-stream"></i> Available Streams
                 </h4>
                 <div class="streams-list" id="streamsList">
-                    </div>
+                </div>
             </div>
             
             <div class="modal-actions">
@@ -2433,7 +2420,44 @@
                 lineupsSection.style.display = 'block';
                 lineupContainer.innerHTML = '';
                 
-                // Helper to create lineup list
+                // Helper function to intelligently combine lineup data
+                const formatPlayerEntry = (items, startIdx) => {
+                    let number = items[startIdx] || '';
+                    let name = '';
+                    let position = '';
+                    
+                    // If next item exists and is not a number (doesn't start with digit or contain parentheses), it's the name
+                    if (startIdx + 1 < items.length) {
+                        const nextItem = items[startIdx + 1];
+                        // Check if next item is likely a name (not starting with digit/parentheses)
+                        if (!nextItem.match(/^\d|^\(/)) {
+                            name = nextItem;
+                            
+                            // Check for position after name
+                            if (startIdx + 2 < items.length) {
+                                const possiblePosition = items[startIdx + 2];
+                                if (possiblePosition.startsWith('(') || possiblePosition.includes(')') || possiblePosition === 'G') {
+                                    position = possiblePosition;
+                                    return {
+                                        text: `${number} ${name} ${position}`.trim(),
+                                        usedItems: 3
+                                    };
+                                }
+                            }
+                            return {
+                                text: `${number} ${name}`.trim(),
+                                usedItems: 2
+                            };
+                        }
+                    }
+                    
+                    // If we couldn't parse name separately, just return the number
+                    return {
+                        text: number,
+                        usedItems: 1
+                    };
+                };
+                
                 const createLineupList = (teamName, lineupArray) => {
                     const div = document.createElement('div');
                     div.className = 'lineup-team';
@@ -2441,15 +2465,54 @@
                     const list = document.createElement('ul');
                     list.className = 'lineup-list';
                     
-                    // Group every 3 items: number, name, position
-                    for (let i = 0; i < lineupArray.length; i += 3) {
-                        const li = document.createElement('li');
-                        const number = lineupArray[i] || '';
-                        const name = lineupArray[i+1] || '';
-                        const position = lineupArray[i+2] || '';
-                        li.innerHTML = `<span class="player-number">${number}</span> <span class="player-name">${name}</span> <span class="player-position">${position}</span>`;
-                        list.appendChild(li);
+                    if (lineupArray && lineupArray.length) {
+                        let i = 0;
+                        while (i < lineupArray.length) {
+                            const li = document.createElement('li');
+                            
+                            // Handle the current item
+                            const currentItem = lineupArray[i];
+                            
+                            // Check if current item contains a number (like "22.")
+                            if (currentItem.match(/^\d+\.?$/)) {
+                                // This is a number, try to get name and position
+                                const result = formatPlayerEntry(lineupArray, i);
+                                li.innerHTML = `<span class="player-entry">${result.text}</span>`;
+                                i += result.usedItems;
+                            } 
+                            // Check if current item is a name without preceding number
+                            else if (!currentItem.match(/^\d|^\(/)) {
+                                li.innerHTML = `<span class="player-entry">${currentItem}</span>`;
+                                i++;
+                            }
+                            // Check if current item is a position
+                            else if (currentItem.startsWith('(') || currentItem.includes(')')) {
+                                // If previous item was a number+name, this position might be separate
+                                // Try to attach to previous if it makes sense
+                                const lastLi = list.lastChild;
+                                if (lastLi) {
+                                    const lastEntry = lastLi.querySelector('.player-entry');
+                                    if (lastEntry) {
+                                        lastEntry.textContent = lastEntry.textContent + ' ' + currentItem;
+                                    }
+                                } else {
+                                    li.innerHTML = `<span class="player-entry">${currentItem}</span>`;
+                                }
+                                i++;
+                            }
+                            // Default case
+                            else {
+                                li.innerHTML = `<span class="player-entry">${currentItem}</span>`;
+                                i++;
+                            }
+                            
+                            // Only append if we created a new li
+                            if (li.innerHTML) {
+                                list.appendChild(li);
+                            }
+                        }
                     }
+                    
                     div.appendChild(list);
                     return div;
                 };
