@@ -571,29 +571,34 @@
             animation: pulse 2s infinite;
         }
 
-        /* Two-button container */
+        /* Two-button container - always side by side */
         .card-actions {
             width: 100%;
             margin-top: 50px;
             display: flex;
+            flex-direction: row;
             justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
+            gap: 10px;
+            flex-wrap: wrap; /* fallback if screen extremely tiny, but we prevent wrap with flex basis */
         }
 
         .card-btn {
-            padding: 12px 30px;
+            flex: 1 1 0; /* allow both buttons to grow and share space equally */
+            min-width: 120px; /* prevent them from becoming too narrow */
+            padding: 12px 10px;
             border: none;
             border-radius: 25px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .preview-btn {
@@ -1561,6 +1566,7 @@
             }
         }
 
+        /* Remove the column rule for small screens - buttons stay side by side */
         @media (max-width: 480px) {
             .header-content {
                 flex-direction: column;
@@ -1647,14 +1653,16 @@
                 font-size: 0.8rem;
             }
 
+            /* Buttons stay side by side */
             .card-actions {
-                flex-direction: column;
-                gap: 10px;
+                flex-direction: row;
+                gap: 8px;
             }
             
             .card-btn {
-                width: 100%;
-                justify-content: center;
+                min-width: 100px;
+                padding: 10px 5px;
+                font-size: 0.8rem;
             }
 
             .lineup-list li {
